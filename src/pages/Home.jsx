@@ -1,5 +1,9 @@
+import HomeSearch from "./home/HomeSearch";
+
 const Home = () => {
-    return <h1>My Home</h1>;
+    return (
+      <HomeSearch />
+    );
   };
   
   export default Home;

@@ -1,0 +1,17 @@
+.homeSearchSection{
+    min-height: 450px;
+    background: url('../assets/digital.jpg');
+    background-size: cover;
+    overflow: hidden;
+}
+
+.searchArea{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+}
+.searchArea input{
+    width: 90%;
+    max-width: 460px;
+}
