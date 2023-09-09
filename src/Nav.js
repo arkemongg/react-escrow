@@ -38,7 +38,7 @@ const NavWithoutLogin = () => {
                         </label>
                     </div>
                    
-                        <ul className={`drawer ${navActive?'active':''}`}>
+                        <ul className={`drawer ${navActive?'active':''} z-50`}>
                             <li>
                                 <Link onClick={handleNav} to="/">Home</Link>
                             </li>
