@@ -1,5 +1,8 @@
 import styles from './styles/Featured.module.css'
-import img from './assets/digitalss.jpg'
+import {FeaturedProductsCard} from '../templates/featuredProducts';
+import { Link } from 'react-router-dom';
+
+
 const Featured = () => {
     return (
         <>
@@ -12,31 +15,12 @@ const Featured = () => {
                 </div>
 
                 <div className={styles.featuredProudctsArea}>
-                    <div className={styles.featuredProduct}>
-                        <div  className={styles.productImg}>
-                            <img src={img} alt="" />
-                        </div>
-                        <div  className={styles.productTitle}>
-                            <p className="text-2xl">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, fugiat.</p>
-                        </div>
+                {Array.from({ length: 6 }, (_, index) => <FeaturedProductsCard/>)}    
+                
 
-                        <div  className={styles.productSeller}>
-                            <div className={styles.sellerLogo}>
-                                M
-                            </div>
-                            <div className={`${styles.sellerFirstName} text-xl`}>
-                                Mr White
-                            </div>
-                            <div className={`${styles.ProductCategory} text-sm`}>
-                                in GiftCard
-                            </div>
-                        </div>
-                        <hr />
-                        <div className={`${styles.productPrice} text-primary text-xl`}>
-                            $ 10000.99
-                        </div>
-                    </div>
-
+                </div>
+                <div className="btnArea flex justify-center w-full mt-5">
+                    <Link className='btn btn-info'>More Featured Products</Link>
                 </div>
             </section>
         </>

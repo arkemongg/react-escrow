@@ -1,0 +1,45 @@
+.featuredProduct{
+    width: 350px;
+    height: 430px;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    margin: auto;
+    margin: 10px;
+}
+
+.productImg{
+    height: 240px;
+    overflow: hidden;
+}
+.productImg img{
+    width: 100%;
+}
+.productTitle{
+    height: 70px;
+    overflow: hidden;
+}
+.productSeller{
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.productSeller > * {
+    margin-right: 10px;
+}
+.sellerLogo{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #37A8EA;
+    text-align: center;
+    color: white;
+    font-size: 19px;
+}
+
+.productPrice{
+    margin: 5px;
+    padding: 8px;
+    background: #F4F1FE;
+    display: inline-block;
+}
