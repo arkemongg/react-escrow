@@ -1,5 +1,5 @@
 import styles from './styles/Featured.module.css'
-import {FeaturedProductsCard} from '../templates/featuredProducts';
+import {FeaturedProductsCard} from './templates/featuredProducts';
 import { Link } from 'react-router-dom';
 
 
@@ -17,10 +17,9 @@ const Featured = () => {
                 <div className={styles.featuredProudctsArea}>
                 {Array.from({ length: 6 }, (_, index) => <FeaturedProductsCard/>)}    
                 
-
                 </div>
                 <div className="btnArea flex justify-center w-full mt-5">
-                    <Link className='btn btn-info'>More Featured Products</Link>
+                    <Link className='btn btn-info text-white'>More Featured Products</Link>
                 </div>
             </section>
         </>
