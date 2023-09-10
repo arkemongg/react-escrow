@@ -1,5 +1,6 @@
 import styles from './featuredProducts.module.css'
 import img from '../assets/digitalss.jpg'
+import star from '../assets/star.png'
 import { Link } from 'react-router-dom'
 
 export const FeaturedProductsCard = () => {
@@ -33,7 +34,7 @@ export const FeaturedProductsCard = () => {
                     <div className={`${styles.sellerRating} text-primary text-sm text-center`}>
                         Seller Review
                         <br />
-                        <span>5 Star</span>
+                        <span className='flex text-xl items-center justify-center'>5.00 <img className={styles.star} src={star} alt="star" /></span>
                     </div>
                 </div>
             </div>

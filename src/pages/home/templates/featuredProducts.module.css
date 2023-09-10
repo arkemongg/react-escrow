@@ -6,6 +6,7 @@
     border-radius: 5px;
     margin: auto;
     margin: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.206);
 }
 
 .productImg{
@@ -42,4 +43,9 @@
     padding: 8px;
     background: #F4F1FE;
     display: inline-block;
+}
+
+.star {
+    width: 20px;
+    height: 20px;
 }

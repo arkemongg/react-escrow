@@ -1,0 +1,31 @@
+.NewProductsSection{
+    min-height: 550px;
+    padding-bottom: 50px;
+}
+
+.newProductsArea{
+    max-width: 1140px;
+    min-height: 150px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 20px;
+}
+
+.categoryArea{
+    max-width: 1140px;
+    width: 95%;
+    min-height: 100px;
+    border :1px solid rgba(0, 0, 0, 0.242);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: auto;
+}
+.categoryArea > * {
+    margin: 10px;
+    padding: 10px;
+}
