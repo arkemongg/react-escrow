@@ -1,0 +1,25 @@
+.ServicesSection{
+    min-height: 270px;
+    background: #F1F2F7;
+}
+.servicesArea{
+    max-width: 1140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    flex-wrap: wrap;
+}
+.SecurePayment{
+    width: 260px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.SecurePayment img{
+    width: 50px;
+    height: 50px;
+}
