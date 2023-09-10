@@ -44,10 +44,16 @@ const NavWithoutLogin = () => {
                                 <Link onClick={handleNav} to="/">Home</Link>
                             </li>
                             <li>
-                                <Link onClick={handleNav} to="/login">Login</Link>
+                                <Link onClick={handleNav} to="/login">Login/Register</Link>
                             </li>
                             <li>
-                                <Link onClick={handleNav} to="/contact">Contact</Link>
+                                <Link onClick={handleNav} to="/login">All Products</Link>
+                            </li>
+                            <li>
+                                <Link onClick={handleNav} to="/contact">About</Link>
+                            </li>
+                            <li>
+                                <Link onClick={handleNav} to="/contact">Contact Us</Link>
                             </li>
                         </ul>
 
@@ -82,10 +88,17 @@ const NavWithoutLogin = () => {
                         <Link to="/">Home</Link>
                     </li>
                     <li>
-                        <Link to="/login">Login</Link>
+                        <Link to="/products">All Products</Link>
                     </li>
                     <li>
-                        <Link to="/contact">Contact</Link>
+                        <Link to="/login">Login/Register</Link>
+                    </li>
+
+                    <li>
+                        <Link to="/products">About</Link>
+                    </li>
+                    <li>
+                        <Link to="/contact">Contact Us</Link>
                     </li>
                 </ul>
             </div>
