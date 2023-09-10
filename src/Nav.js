@@ -22,7 +22,7 @@ const NavWithoutLogin = () => {
                         <a className="btn btn-ghost normal-case text-4xl">ESCROW</a>
                     </div>
                     <div className="navbar-end">
-                        <ul className="flex default-nav text-xl">
+                        {/* <ul className="flex default-nav text-xl">
                             <li>
                                 <Link to="/">Home</Link>
                             </li>
@@ -32,7 +32,7 @@ const NavWithoutLogin = () => {
                             <li>
                                 <Link to="/contact">Contact</Link>
                             </li>
-                        </ul>
+                        </ul> */}
                         <div className="dropdown drop-down-nav-responsive">
                             <label tabIndex={0} className="btn btn-ghost btn-circle" onClick={handleNav}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>

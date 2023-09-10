@@ -59,4 +59,7 @@
     .default-nav li{
         display: none;
     }
+    .mainNavWrapper{
+        display: none;
+    }
 }

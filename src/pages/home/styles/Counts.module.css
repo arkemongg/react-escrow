@@ -1,0 +1,29 @@
+.CountsSection{
+    min-height: 250px;
+    background: url('../assets/countsbg.jpg');
+    background-size: cover;
+    background-position: center;
+    /* background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); */
+}
+
+.CountArea{
+    max-width: 1140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    flex-wrap: wrap;
+}
+.Count{
+    width: 260px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+.Count img{
+    width: 100px;
+    height: 100px;
+}
