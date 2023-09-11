@@ -1,0 +1,78 @@
+.HowToBuySection{
+    min-height: 450px;
+}
+
+.HowToBuyArea{
+    max-width: 1140px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+}
+.HowToBuyAreaTwo{
+    max-width: 1140px;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap-reverse;
+    margin: auto;
+}
+
+
+.HowToBuyArea > *{
+    width: 45%;
+    min-width: 350px;
+    margin: auto;
+}
+
+.HowToBuyAreaTwo > *{
+    width: 45%;
+    min-width: 350px;
+    margin: auto;
+}
+.HowToBuyAreaTwo .LeftArea{
+    border-right: none;
+}
+.HowToBuyAreaTwo .LeftArea{
+    border-left: 1px solid rgba(0, 0, 0, 0.122);
+    padding-left: 10px;
+    margin-left: 0px;
+}
+.LeftArea{
+    width: 48%;
+    border-right: 1px solid rgba(0, 0, 0, 0.122);
+    height: 450px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.LeftArea p {
+    width: 80%;
+}
+.RightArea{
+    display: flex;
+    align-items: center;
+    min-width: 350px;
+    min-height: 350px;
+}
+.RightArea img{
+    width: 100%;
+}
+
+@media screen and (max-width: 715px){
+    .HowToBuyArea > *{
+        width: 90%;
+    }
+    .HowToBuyAreaTwo > *{
+        width: 90%;
+    }
+    .LeftArea{
+        width: 100%;
+        height: 250px;
+        border:none;
+        text-align: center;
+    }
+    .LeftArea p {
+        width: 80%;
+        margin: 0 auto 0 auto;
+    }
+}

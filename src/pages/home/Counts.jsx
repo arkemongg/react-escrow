@@ -6,6 +6,7 @@ import happy from './assets/happy.png'
 import users from './assets/users.png'
 
 const Counts = () => {
+    
     return (
         <>
             <section className={`${styles.CountsSection}`}>
