@@ -1,0 +1,29 @@
+.JoinUsSection{
+    min-height: 300px;
+    background: #F1F2F7;
+}
+.JoinUsArea{
+    max-width: 1160px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: inherit;
+    flex-wrap: wrap;
+}
+
+.JoinUsArea > * {
+   width: 45%;
+   min-width: 350px;
+}
+.BecomeBuyer{
+    margin: 12px;
+    border-right: 1px solid rgba(0, 0, 0, 0.184);
+}
+
+@media screen and (max-width: 740px){
+    .BecomeBuyer{
+        border-right: 0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.184)
+    }
+}

@@ -58,7 +58,7 @@
     width: 100%;
 }
 
-@media screen and (max-width: 715px){
+@media screen and (max-width: 740px){
     .HowToBuyArea > *{
         width: 90%;
     }
@@ -74,5 +74,8 @@
     .LeftArea p {
         width: 80%;
         margin: 0 auto 0 auto;
+    }
+    .downArea{
+        padding-top: 10px;
     }
 }

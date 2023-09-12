@@ -4,6 +4,7 @@ import HomeSearch from "./home/HomeSearch";
 import HowToBuy from "./home/HowToBuy";
 import NewProducts from "./home/NewestProducts";
 import Services from "./home/Services";
+import JoinUs from "./home/JoinUs";
 
 const Home = () => {
     return (
@@ -14,6 +15,7 @@ const Home = () => {
       <Services />
       <Counts />
       <HowToBuy />
+      <JoinUs />
       </>
     );
   };
