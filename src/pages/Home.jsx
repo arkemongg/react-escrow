@@ -5,6 +5,7 @@ import HowToBuy from "./home/HowToBuy";
 import NewProducts from "./home/NewestProducts";
 import Services from "./home/Services";
 import JoinUs from "./home/JoinUs";
+import Subscribe from "./home/Subscribe";
 
 const Home = () => {
     return (
@@ -16,6 +17,7 @@ const Home = () => {
       <Counts />
       <HowToBuy />
       <JoinUs />
+      <Subscribe/>
       </>
     );
   };

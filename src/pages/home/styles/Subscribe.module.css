@@ -1,0 +1,15 @@
+.SubscribeSection{
+    min-height: 200px;
+    background: url('../assets/subscribebg.jpg');
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+}
+.SubscribeArea{
+    max-width: 1160px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    min-height: inherit;
+    flex-wrap: wrap;
+}
