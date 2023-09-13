@@ -15,7 +15,7 @@ const Featured = () => {
                 </div>
 
                 <div className={styles.featuredProudctsArea}>
-                    {Array.from({ length: 6 }, (_, index) => <FeaturedProductsCard/>)}    
+                    {Array.from({ length: 6 }, (_, index) => <FeaturedProductsCard key={index}/>)}    
                 
                 </div>
                 <div className="btnArea flex justify-center w-full mt-5">

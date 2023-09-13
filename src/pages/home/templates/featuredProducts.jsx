@@ -3,7 +3,7 @@ import img from '../assets/digitalss.jpg'
 import star from '../assets/star.png'
 import { Link } from 'react-router-dom'
 
-export const FeaturedProductsCard = () => {
+export const FeaturedProductsCard = (props) => {
     return (
         <>
             <div className={styles.featuredProduct}>
@@ -11,7 +11,7 @@ export const FeaturedProductsCard = () => {
                     <img src={img} alt="" />
                 </div>
                 <div className={styles.productTitle}>
-                    <Link className="text-2xl ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, fugiat.</Link>
+                    <Link className="text-2xl ">{props.title}</Link>
                 </div>
 
                 <div className={styles.productSeller}>
@@ -28,7 +28,7 @@ export const FeaturedProductsCard = () => {
                 <hr />
                 <div className={`${styles.priceSection} flex justify-between pr-5`}>
                     <div className={`${styles.productPrice} text-primary text-xl`}>
-                        $ 10000.99
+                        $ {props.price?props.price.toFixed(2):0}
                     </div>
 
                     <div className={`${styles.sellerRating} text-primary text-sm text-center`}>
@@ -42,3 +42,12 @@ export const FeaturedProductsCard = () => {
     )
 }
 
+export const LoadingProductsCard = () => {
+    return (
+        <>
+            <div className={`${styles.featuredProduct} flex justify-center items-center`}>
+                <span className="loading loading-ring loading-lg"></span>
+            </div>
+        </>
+    )
+}

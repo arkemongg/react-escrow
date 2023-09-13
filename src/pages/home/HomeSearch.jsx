@@ -12,12 +12,12 @@ const HomeSearch = () => {
                 </div>
                 <div className={`${styles.searchArea}`}>
                     <input type="text" placeholder="Type here" className={`${styles.searchInput} input rounded-none input-bordered`} />
-                    <select className={`select rounded-none select-bordered ${styles.select}`}>
-                        <option disabled selected>Large</option>
-                        <option>Large Apple</option>
-                        <option>Large Orange</option>
-                        <option>Large Tomato</option>
-                        </select>
+                    <select className={`select rounded-none select-bordered ${styles.select}`} defaultValue="disabled" >
+                        <option value="disabled" disabled>Large</option>
+                        <option value="largeApple">Large Apple</option>
+                        <option value="largeOrange">Large Orange</option>
+                        <option value="largeTomato">Large Tomato</option>
+                    </select>
                     <button className={`${styles.homeSearchBtn} btn btn-primary`}>Search</button>
                 </div>
             </section>
