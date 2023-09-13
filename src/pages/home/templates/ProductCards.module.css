@@ -1,6 +1,6 @@
 .featuredProduct{
     width: 350px;
-    height: 430px;
+    height: 440px;
     padding: 10px;
     background: white;
     border-radius: 5px;
@@ -68,6 +68,7 @@
     padding: 8px;
     background: #F4F1FE;
     display: inline-block;
+    border-radius: 2px;
 }
 
 .star {

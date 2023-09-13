@@ -45,7 +45,7 @@ export const FeaturedProductsCard = () => {
 export const Product = (props) => {
     return (
         <>
-            <div className={styles.Product}>
+            <Link className={styles.Product}>
                 <div className={styles.productImg}>
                     <img src={`http://127.0.0.1:8000${props.img}`} alt="" />
                 </div>
@@ -76,7 +76,7 @@ export const Product = (props) => {
                         <span className='flex text-xl items-center justify-center'>5.00 <img className={styles.star} src={star} alt="star" /></span>
                     </div>
                 </div>
-            </div>
+            </Link>
         </>
     )
 }
