@@ -1,5 +1,5 @@
 import styles from './styles/NewestProducts.module.css'
-import { FeaturedProductsCard, LoadingProductsCard } from './templates/featuredProducts';
+import { FeaturedProductsCard, LoadingProductsCard, Product } from './templates/ProductCards';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -57,9 +57,10 @@ const NewProducts = () => {
                     {fetched?(
                         data.map(product=>{
                             console.log(product);
-                            return <FeaturedProductsCard 
+                            return <Product 
                             title = {product.title}
                             price = {product.price}
+                            img = {product.image}
                             key={product.id}/>
                         })
                     ):(

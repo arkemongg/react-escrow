@@ -1,5 +1,5 @@
 import styles from './styles/HowToBuy.module.css'
-import { FeaturedProductsCard } from './templates/featuredProducts';
+import { FeaturedProductsCard } from './templates/ProductCards';
 import { Link } from 'react-router-dom';
 import img from './assets/digitalss.jpg'
 import down from './assets/down.png'

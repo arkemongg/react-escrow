@@ -14,12 +14,32 @@
     border-radius: 0px;
     box-shadow: 0 26px 58px 0 rgba(0, 0, 0, .22), 0 5px 14px 0 rgba(0, 0, 0, .18);
 }
+
+.Product{
+    width: 350px;
+    height: 440px;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    margin: auto;
+    margin: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.206);
+    transition: transform 0.3s, box-shadow 0.5s;
+}
+.Product:hover {
+    transform:scale(1.05); 
+    border-radius: 0px;
+    box-shadow: 0 26px 58px 0 rgba(0, 0, 0, .22), 0 5px 14px 0 rgba(0, 0, 0, .18);
+}
+
+
 .productImg{
-    height: 240px;
+    height: 250px;
     overflow: hidden;
 }
 .productImg img{
     width: 100%;
+    max-height: 250px;
 }
 .productTitle{
     height: 70px;

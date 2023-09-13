@@ -1,5 +1,5 @@
 import styles from './styles/Featured.module.css'
-import {FeaturedProductsCard} from './templates/featuredProducts';
+import {FeaturedProductsCard} from './templates/ProductCards';
 import { Link } from 'react-router-dom';
 
 
