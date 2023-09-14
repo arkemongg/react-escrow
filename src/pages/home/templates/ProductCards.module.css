@@ -8,11 +8,28 @@
     margin: 10px;
     border: 1px solid rgba(0, 0, 0, 0.206);
     transition: transform 0.3s, box-shadow 0.5s;
+    position: relative;
+    overflow: hidden;
 }
 .featuredProduct:hover {
     transform:scale(1.05); 
     border-radius: 0px;
     box-shadow: 0 26px 58px 0 rgba(0, 0, 0, .22), 0 5px 14px 0 rgba(0, 0, 0, .18);
+}
+
+.featuredLogo{
+    position: absolute;
+    background: rgba(13, 171, 116, 0.786);
+    width: 180px;
+    height: 30px;
+    top: 25px;
+    left: -55px;
+    transform:rotate(-50deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 20px;
 }
 
 .Product{

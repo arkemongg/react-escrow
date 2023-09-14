@@ -1,24 +1,16 @@
-import { useEffect } from "react";
-import { useAuth } from "../AuthContext"
-import { useNavigate } from "react-router-dom";
-const Login = ()=>{
-    const { isLogged, login, logout } = useAuth();
-    const navigate = useNavigate()
-    
-    useEffect(()=>{
-        if(isLogged){
-            navigate('/*')
-        }
-    },[])
 
-    const handleLogin = ()=>{
-        localStorage.setItem('logged','yes')
-        login()
-        navigate('/')
-    }
+import { PageLocation } from "./GlobalTemplates/PageLocation";
+
+import LoginArea from "./login/LoginForm";
+import Subscribe from "./home/Subscribe";
+const Login = ()=>{
     return (
         <>
-            <button onClick={handleLogin} className="btn btn-primary">Login</button>
+            <PageLocation head={"Login"} tail={"Home / Login"}/>
+
+            <LoginArea />
+
+            <Subscribe />
         </>
     )
 

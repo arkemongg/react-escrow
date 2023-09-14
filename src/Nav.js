@@ -182,7 +182,7 @@ const NavWithLogin = () => {
                 <Outlet />
             </div>
 
-            <footer className="footer p-10 bg-base-300 text-base-content">
+            <footer className="footer items-center p-10 bg-base-300 text-base-content max-w-[1140px] m-auto">
                 <nav>
                     <header className="footer-title">Services</header>
                     <a className="link link-hover">Branding</a>

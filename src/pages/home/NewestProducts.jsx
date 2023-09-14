@@ -3,17 +3,20 @@ import { FeaturedProductsCard, LoadingProductsCard, Product } from './templates/
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Error } from './templates/Error';
 
 
 const NewProducts = () => {
     const [data,setData] = useState([])
+    const [err,setErr] = useState(false)
+    const [errMessage,setErrMessage] = useState("404")
     const [fetched,setFetched] = useState(false)
     async function getProducts() {
         try {
           const response = await axios.get('http://127.0.0.1:8000/api/products/');
           return response
         } catch (error) {
-          console.error(error);
+          return error
         }
       }
 
@@ -26,10 +29,14 @@ const NewProducts = () => {
                     data = data.data.results
                     setData([...data])
                     setFetched(true)  
+                }else if(data.request.status===0){
+                    // setErr(true)
+                    // setErrMessage(data.message)
                 }
             })
         }, 2000);
       },[]);
+
 
     return (
         <>
@@ -61,10 +68,13 @@ const NewProducts = () => {
                             title = {product.title}
                             price = {product.price}
                             img = {product.image}
+                            verified = {product.is_verified}
+                            super = {product.super_seller}
+                            category = {product.category.title}
                             key={product.id}/>
                         })
                     ):(
-                       Array.from({ length: 8 }, (_, index) => <LoadingProductsCard key={index} />)
+                       err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}
                 </div>
                 <div className="btnArea flex justify-center w-full mt-5">

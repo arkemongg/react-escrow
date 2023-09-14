@@ -1,0 +1,15 @@
+.PageLocationSection{
+    margin-top: 1px;
+    height: 150px;
+    background: #6E4FF6;
+}
+
+.PageLocationArea{
+    max-width: 1140px;
+    width: 95%;
+    margin: auto;
+    height: inherit;
+    font-weight: 400;
+    font-style: italic;
+    font-family: 'Roboto', sans-serif;
+}
