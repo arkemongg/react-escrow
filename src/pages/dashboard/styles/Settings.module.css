@@ -1,3 +1,7 @@
+*{
+    font-family:'roboto';
+}
+
 .SettingsSection{
     min-height: 1500px;
     background: #F1F2F7;
@@ -58,7 +62,7 @@
     min-width: 450px
 }
 /* Change Password */
-.ChangePassowrd{
+.ChangePassoword{
     max-width: 1140px;
     width: 95%;
     margin: auto;
@@ -66,7 +70,17 @@
     min-height: 450px;
     background: white;
 }
+.PasswordForm {
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
+.PasswordForm input {
+    min-width: 540px; /* Set the minimum width */
+}
 
 @media screen and (max-width: 922px){
     .FormArea div{
@@ -78,10 +92,16 @@
     .FormArea div{
         min-width: 450px
     }
+    .PasswordForm input {
+        min-width: 450px; /* Set the minimum width */
+    }
 }
 
 @media screen and (max-width: 450px){
     .FormArea div{
         min-width: 350px
+    }
+    .PasswordForm input {
+        min-width: 330px; /* Set the minimum width */
     }
 }

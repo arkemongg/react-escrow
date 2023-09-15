@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import styles from './styles/Settings.module.css'
 
 const Settings = (props) => {
@@ -27,7 +27,7 @@ const Settings = (props) => {
     )
   };
   
-  export default Settings;
+  export default memo(Settings);
 
 
 
@@ -60,7 +60,7 @@ const Settings = (props) => {
                     </div>
                 </div>
                 <div className="btnArea flex justify-center p-5">
-                    <div className="btn btn-primary w-[350px]">Save</div>
+                    <div className="btn btn-primary w-[330px]">Save</div>
                 </div>
             </div>
         )
@@ -68,8 +68,10 @@ const Settings = (props) => {
 
   const ChangePassword = ()=>{
     return (
-        <div className={styles.ChangePassowrd}>
-            <div className="passWordForm">
+        <div className={styles.ChangePassoword}>
+            <h1 className='text-4xl p-5 text-center'>Security Details</h1>
+            <hr />
+            <div className={styles.PasswordForm}>
                 <div className="inptGroup flex flex-col p-5">
                     <label className='text-2xl pb-2' htmlFor="firstname">Password</label>
                     <input type="password" id='password' placeholder="Password" className="input input-bordered w-full max-w-xl" />   
@@ -81,10 +83,15 @@ const Settings = (props) => {
                 </div>
 
                 <div className="inptGroup flex flex-col p-5">
-                    <label className='text-2xl pb-2' htmlFor="firstname">Current Password</label>
-                    <input type="password" id='currentpassword' placeholder="Current Password" className="input input-bordered w-full max-w-xl" />   
+                    <label className='text-2xl pb-2' htmlFor="firstname">Confrim Password</label>
+                    <input type="password" id='confirmpassword' placeholder="Confrim Password" className="input input-bordered w-full max-w-xl" />   
                 </div>
             </div>
+            <div className="div flex justify-center p-5">
+                    <button className='btn btn-primary w-[330px] '>Update Password</button>
+            </div>
+            
+
         </div>
     )
   }

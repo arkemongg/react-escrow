@@ -3,11 +3,11 @@ import styles from './styles/DashboardMenu.module.css'
 
 const DashboardMenu = (props) => {
 
-    const [buttonIndex, setButtonIndex] = useState(null);
+    const [buttonIndex, setButtonIndex] = useState(0);
     
     const handleClick = (event,buttonIndex)=>{
         setButtonIndex(buttonIndex)
-        const head = event.target.parentElement.querySelector('div').textContent
+        const head = event.target.closest('button').textContent
         props.setActive(head)
         props.setHead(head)
         props.setTail(head)
@@ -33,7 +33,7 @@ const DashboardMenu = (props) => {
                     </button>
                     <button onClick={(event) => handleClick(event, 3)} className={`${styles.dashboard} flex justify-center items-center text-white ${styles.button} ${buttonIndex===3?styles.clicked:""}`}>
                         <img src="./dashboardassets/deposit.png" alt="" /> 
-                        <div className="ml-2">Add Credits</div>
+                        <div className="ml-2">Deposit</div>
                     </button>
                     <button onClick={(event) => handleClick(event, 4)} className={`${styles.dashboard} flex justify-center items-center text-white ${styles.button} ${buttonIndex===4?styles.clicked:""}`}>
                         <img src="./dashboardassets/sales.png" alt="" /> 
