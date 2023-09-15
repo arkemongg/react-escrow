@@ -8,7 +8,7 @@ const DashboardMenu = (props) => {
     const handleClick = (event,buttonIndex)=>{
         setButtonIndex(buttonIndex)
         const head = event.target.parentElement.querySelector('div').textContent
-
+        props.setActive(head)
         props.setHead(head)
         props.setTail(head)
     }
