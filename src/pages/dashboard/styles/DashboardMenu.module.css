@@ -1,0 +1,31 @@
+.DashboardMenuSection{
+    background: #3E51EB;
+}
+.DashboardMenuArea{
+    max-width: 1140px;
+    min-height: 150px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.DashboardMenuArea > *{
+    min-width: 100px;
+    padding: 10px;
+}
+.button{
+    opacity: 0.7;
+}
+.button:hover{
+    opacity: 1;
+}
+.clicked{
+    opacity: 1;
+    border-bottom: 4px solid ;
+}
+.DashboardMenuArea img{
+    width: 25px;
+    height: 25px;
+    filter: invert(1);
+}

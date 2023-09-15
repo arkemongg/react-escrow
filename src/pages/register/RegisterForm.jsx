@@ -6,12 +6,6 @@ import LoadingArea  from '../GlobalTemplates/LoadingArea';
 
 const RegisterArea = () => {
     const [hidden , setHidden]= useState(true)
-    const navigate = useNavigate()
-    // useEffect(()=>{
-    //     if(isLogged){
-    //         navigate('/*')
-    //     }
-    // },[])
 
     const handleSignUp = (event)=>{
         event.preventDefault()
