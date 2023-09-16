@@ -99,7 +99,7 @@ const Transaction = (props) => {
                 </div>
                 <div className="w-[100px] min-w-[100px]">20</div>
                 <div className="w-[150px] min-w-[150px]">
-                    {props.paymenturl === '-'?"-":<a className='bg-primary text-sm text-white min-w-[100px] px-10 rounded text-center ' target='_blank' href='#'>Pay</a>}
+                    {props.paymenturl === '-'?"-":<a className='bg-primary text-sm text-white min-w-[100px] px-10 rounded text-center py-0.5' target='_blank' href='#'>Pay</a>}
                 </div>
                 <div className="w-[100px] min-w-[100px]">-</div>
             </li>
