@@ -1,4 +1,40 @@
+*{
+    font-family:'roboto';
+}
+
 .DepositSection{
     min-height: 450px;
-    background: #000;
+    min-height: 500px;
+    background: #F1F2F7;
+}
+
+.DepositArea{
+    max-width: 1140px;
+    min-height: 200px;
+    margin: auto;
+    width: 95%;
+    background: white;
+}
+
+.active{
+    background: #6E4FF6;
+    color: white;
+}
+/* Deposit History */
+.DepositHistory{
+    max-width: 1140px;
+    min-height: 500px;
+    margin: auto;
+    width: 95%;
+    background: white;
+    margin-top: 10px;
+}
+
+
+/* Responsive */
+@media screen and (max-width: 450px){
+    .DepositArea{
+        display: flex;
+        flex-direction: column;
+    }
 }

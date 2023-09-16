@@ -3,8 +3,9 @@
 }
 
 .SettingsSection{
-    min-height: 1500px;
+    min-height: 1600px;
     background: #F1F2F7;
+    padding-bottom: 10px;
 }
 
 .SettingsArea{
@@ -53,13 +54,31 @@
 }
 
 .FormArea{
-
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 .FormArea div{
     min-width: 450px
+}
+/* Social Details */
+.SociaDetailsArea{
+    max-width: 1140px;
+    width: 95%;
+    margin: auto;
+    margin-top: 20px;
+    min-height: 370px;
+    background: white;
+}
+.SocialDetails{
+    margin: auto;
+    width: 98%;
+}
+
+.SocialDetails input{
+    border: 1px solid rgba(0, 0, 0, 0.208);
+    max-width: 1140px;
+    width: 100%;
 }
 /* Change Password */
 .ChangePassoword{
@@ -88,12 +107,17 @@
     }
 }
 
-@media screen and (max-width: 550px){
+@media screen and (max-width: 570px){
+    .profileWrapper{
+        flex-direction: column;
+        padding: 10px;
+    }
+
     .FormArea div{
         min-width: 450px
     }
     .PasswordForm input {
-        min-width: 450px; /* Set the minimum width */
+        min-width: 450px; 
     }
 }
 
