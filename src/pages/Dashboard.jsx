@@ -6,6 +6,7 @@ import DashboardOption from "./dashboard/DashboardOption";
 import Settings from "./dashboard/Settings";
 import Subscribe from "./home/Subscribe";
 import Deposit from "./dashboard/Deposit";
+import Withdrawals from "./dashboard/Withdrawals";
 
 const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
@@ -19,6 +20,7 @@ const Dashboard = () => {
         {active === 'Dashboard' && <DashboardOption />}
         {active === 'Settings' && <Settings />}
         {active === 'Deposit' && <Deposit />}
+        {active === 'Withdrawals' && <Withdrawals />}
 
 
         <Subscribe />

@@ -95,7 +95,7 @@ const NavWithoutLogin = () => {
                     </li>
 
                     <li>
-                        <Link to="/dashboard">About</Link>
+                        <Link to="/dashboard">Dashboard</Link>
                     </li>
                     <li>
                         <Link to="/contact">Contact Us</Link>
