@@ -15,7 +15,6 @@
     margin: auto;
     width: 95%;
     background: white;
-
 }
 
 .active{
@@ -37,9 +36,10 @@
     min-height: 400px;
 }
 .Deposits{
-    min-width: 850px;
     display: flex;
-    border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+    min-width: 1000px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    align-items: center;
 }
 .Deposits div{
     margin: 5px;

@@ -1,11 +1,77 @@
 .DashboardOptionSection{
-    height: 450px;
+    min-height: 1050px;
     background: #F1F2F7;
+    padding-bottom: 10px;
 }
 
 .BalanceDetailsArea{
     max-width: 1140px;
-    min-height: 150px;
+    min-height: 200px;
+    margin: auto;
+    position: relative;
+    top: 10px;
     width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.BalanceDetailsArea > * {
+    min-width: 200px;
+    min-height: 150px;
+    max-height: 350px;
+    flex-grow: 1;
+    margin: 10px;
     background: white;
+}
+/* Recent Items Sales */
+
+.RecentSoldItemsArea{
+    max-width: 1140px;
+    width: 93%;
+    min-height: 200px;
+    background: white;
+    margin: auto;
+    margin-top: 10px;
+}
+.SoldItemsArea , .PopularProductArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.imageArea{
+    min-width: 100px;
+    max-width: 100px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.SoldItemsArea img{
+    width: 100%;
+}
+.titleArea{
+    flex-grow: 1;
+}
+/* Responsive */
+@media screen and (max-width: 950px){
+    .BalanceDetailsArea > * {
+        min-width: 350px;
+        flex-grow: 1;
+        margin: 10px;
+    }
+}
+@media screen and (max-width: 400px){
+    .imageArea{
+        min-width: 150px;
+        max-width: 150px;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .titleArea{
+        padding: 10px;
+        min-width: 350px;
+        overflow: hidden;
+    }
 }

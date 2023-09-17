@@ -52,7 +52,7 @@ const DepositHistory = () => {
                         <div className="text-xl w-[150px] min-w-[150px]">Payment URL</div>
                         <div className="text-xl w-[100px] min-w-[100px]">TX ID</div>
                     </li>
-                    <hr />
+                    
                     <Transaction status={"failed"} />
                     <Transaction status={"complete"} paymenturl={"-"} />
                     <Transaction status={"failed"} />
@@ -103,7 +103,7 @@ const Transaction = (props) => {
                 </div>
                 <div className="w-[100px] min-w-[100px]">-</div>
             </li>
-            <hr />
+            
         </>
     )
 }
