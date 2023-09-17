@@ -2,10 +2,6 @@ import { memo, useState } from 'react';
 import styles from './styles/Purchase.module.css'
 
 const Purchase = (props) => {
-    const [amount, setAmount] = useState(0)
-    const handleAmount = (event, amount) => {
-        setAmount(amount)
-    }
     return (
         <>
             <section className={`${styles.DepositSection} `}>
@@ -68,11 +64,11 @@ const Transaction = (props) => {
     const complete = <div className='bg-success text-sm text-white w-[100px] rounded text-center'> Complete </div>
     const failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'> Failed </div>
     
-    const escrow_pending = <button className='bg-primary text-sm text-white w-[100px]  rounded text-center'> Mark As Complete </button>
+    const escrow_pending = <button className='bg-primary text-xs py-2 text-white w-[110px] rounded'> Mark As Complete </button>
     const escrow_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'>Complete </div>
-    const escrow_failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'>Complete </div>
+    const escrow_failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'>Failed </div>
     
-    const review_pending = <button className='bg-primary text-sm text-white w-[100px]  rounded text-center'> Write A Review </button>
+    const review_pending = <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Write A Review </button>
     const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> 5* </div>
     const review_failed = <div className=''> - </div>
     
