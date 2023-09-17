@@ -24,7 +24,7 @@ const Deposit = (props) => {
 
                     <div className="customDepositArea p-5">
                         <p className="text-2xl pb-5">Enter custom amount</p>
-                        <input onChange={(e) => setAmount(e.target.value)} placeholder={amount} type="text" className='input input-bordered rounded-none md:w-[80%] w-[100%] bg-[#EFF1F5]' />
+                        <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={amount} type="text" className='input input-bordered rounded-none md:w-[80%] w-[100%] bg-[#EFF1F5]' />
                     </div>
                     <div className="div flex p-5">
                         <button className='btn btn-primary w-[330px] '>Deposit</button>

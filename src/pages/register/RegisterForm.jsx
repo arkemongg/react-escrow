@@ -36,7 +36,7 @@ const RegisterArea = () => {
                                             <input type="text" name="username" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Username" required />
                                         </div>
                                         <div>
-                                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Username</label>
+                                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                                             <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Email@domain.com" required />
                                         </div>
                                         <div>

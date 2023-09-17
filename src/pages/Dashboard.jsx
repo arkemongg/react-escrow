@@ -12,7 +12,7 @@ const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
-    const [active,setActive] = useState("Deposit")
+    const [active,setActive] = useState("Dashboard")
     return (
       <>
         <PageLocation head={head} tail={`Home / ${tail}`}/>

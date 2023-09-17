@@ -12,6 +12,8 @@ import Contact from './pages/Contact';
 import NoPage from './pages/NoPage';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ResetPassword from './pages/ResetPassword';
+import Products from './pages/Products';
 
 function App() {
   return (
@@ -22,8 +24,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigation />}>
               <Route index element={<Home />} />
+              <Route path='products' element={<Products />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
+              <Route path="resetpassword" element={<ResetPassword />} />
               {/* <Route path="reset" element={<Reset />} /> */}
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="contact" element={<Contact />} />

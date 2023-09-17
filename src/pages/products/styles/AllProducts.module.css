@@ -1,0 +1,15 @@
+.AllProductsSection{
+    min-height: 550px;
+    padding-bottom: 50px;
+}
+
+.AllProductsArea{
+    max-width: 1140px;
+    min-height: 150px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 20px;
+}

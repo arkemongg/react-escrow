@@ -1,4 +1,11 @@
 .DashboardOptionSection{
     height: 450px;
-    background: #000;
+    background: #F1F2F7;
+}
+
+.BalanceDetailsArea{
+    max-width: 1140px;
+    min-height: 150px;
+    width: 95%;
+    background: white;
 }

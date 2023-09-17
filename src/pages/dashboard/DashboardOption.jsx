@@ -17,3 +17,11 @@ const DashboardOption = (props) => {
   };
   
   export default DashboardOption;
+
+  const BalanceDetails = ()=>{
+    return(
+        <div className={styles.BalanceDetailsArea}>
+            
+        </div>
+    )
+  }

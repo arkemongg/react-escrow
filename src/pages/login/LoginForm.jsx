@@ -61,7 +61,7 @@ const LoginArea = () => {
                                                     <label htmlFor="remember" className="text-gray-500">Remember me</label>
                                                 </div>
                                             </div>
-                                            <a href="#" className="text-sm font-medium text-primary-600 hover:underline">Forgot password?</a>
+                                            <Link to="/resetpassword" className="text-sm font-medium text-primary-600 hover:underline">Forgot password?</Link>
                                         </div>
                                         <button onClick={handleLogin} className="w-full text-white btn-primary  font-medium  px-5 py-2.5 text-center">Sign in</button>
                                         <p className="text-sm text-black">
