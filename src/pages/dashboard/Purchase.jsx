@@ -6,11 +6,10 @@ const Purchase = (props) => {
         <>
             <section className={`${styles.DepositSection} `}>
                 <div className={styles.DepositArea}>
-                    <h1 className="text-4xl p-5">Purchase History</h1>
-                    <hr />
                     <DepositHistory />
                 </div>
 
+                <PurchaseHistory />
                 
             </section>
         </>
@@ -20,6 +19,8 @@ const Purchase = (props) => {
 const DepositHistory = () => {
     return (
         <div className={styles.DepositHistory}>
+            <h1 className="text-4xl p-5">Purchase History</h1>
+            <hr />
             <div className={styles.DepositHistoryArea}>
 
                 <ul className={styles.DepositsList}>
@@ -106,9 +107,44 @@ const Transaction = (props) => {
                         <div className=" w-[100px] min-w-[120px]">
                         {review}
                         </div>
-                        <div className=" w-[100px] min-w-[120px]">Seller Details</div>
+                        <div className=" w-[100px] min-w-[120px]">
+                            <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Contact Seller </button>
+                        </div>
             </li>
             
         </>
+    )
+}
+
+const PurchaseHistory = () => {
+    return (
+        <div className={styles.PurchaseHistoryArea}>
+            <h1 className="text-4xl p-5">Purchase History</h1>
+            <hr />
+            <div className={styles.PurchaseHistory}>
+
+                <div className={styles.orderCard}>
+                    <div className="imageArea w-[100%] h-[200px] overflow-hidden">
+                        <img src="/dashboardassets/d.jpg" alt="" />
+                    </div>
+                    <h1 className="text-xl text-center font-bold">Order Summery</h1>
+                    <div className='orderId flex justify-between p-2 font-light bg-info text-white rounded w-[98%] m-auto'>
+                        <div>ORDER ID: 1000</div>
+                        <div>Date : 12/10/20</div>
+                    </div>
+                    <h1 className="text-center font-bold">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis, quam.</h1>
+                    <div className='orderId flex justify-between p-2 font-light bg-success text-white rounded w-[98%] m-auto'>
+                        <div>QTY: 1000</div>
+                        <div>Price :  $50000.99</div>
+                    </div>
+                    <div className='orderId flex justify-between p-2 mt-2 mb-2 font-light bg-success text-white rounded w-[98%] m-auto'>
+                        <div>Order Status: Failed</div>
+                        <div>Total :  $50000.99</div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
     )
 }
