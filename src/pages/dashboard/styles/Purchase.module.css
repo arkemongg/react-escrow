@@ -65,14 +65,27 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    min-height: 1000px;
 }
 .orderCard{
     width: 300px;
-    height: 550px;
+    height: 530px;
     flex-grow: 1;
     background: #F1F2F7;
     border-radius: 5px;
     max-width: 400px;
     margin: 10px;
+    border-radius: 5px;
+    transition: transform 0.3s, box-shadow 0.5s;
+    overflow: hidden;
+}
+.orderCard:hover {
+    transform:scale(1.05); 
+    border-radius: 0px;
+    box-shadow: 0 26px 58px 0 rgba(0, 0, 0, .22), 0 5px 14px 0 rgba(0, 0, 0, .18);
+}
+
+
+.activeBtn{
+    color: black;
 }

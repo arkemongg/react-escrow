@@ -10,6 +10,7 @@ const Purchase = (props) => {
                 </div>
 
                 <PurchaseHistory />
+
                 
             </section>
         </>
@@ -123,11 +124,26 @@ const PurchaseHistory = () => {
             <hr />
             <div className={styles.PurchaseHistory}>
 
-                <div className={styles.orderCard}>
+                {/*<div className={styles.orderCard}>
                     <div className="imageArea w-[100%] h-[200px] overflow-hidden">
                         <img src="/dashboardassets/d.jpg" alt="" />
                     </div>
-                    <h1 className="text-xl text-center font-bold">Order Summery</h1>
+                    
+                    <div className={`${styles.orderAndProdctBtn} text-center bg-info m-1 text-xl font-bold`}>
+                        <button onClick={(event) => handleClick(event, 1)} className={`p-2 ${btnSelected===1?'text-primary underline':'text-white'} `} >
+                            Order Details
+                        </button>
+
+                        <button onClick={(event) => handleClick(event, 2)} className={`p-2 ${btnSelected===2?'text-primary underline':'text-white'}`}>
+                            Products Details
+                        </button>
+                    </div>
+                    {btnSelected===1 ? <OrderDetails />:""}
+                    {btnSelected===2 ? <ProductDetails />:""}
+                    
+                    
+                    
+                    
                     <div className='orderId flex justify-between p-2 font-light bg-info text-white rounded w-[98%] m-auto'>
                         <div>ORDER ID: 1000</div>
                         <div>Date : 12/10/20</div>
@@ -140,11 +156,136 @@ const PurchaseHistory = () => {
                     <div className='orderId flex justify-between p-2 mt-2 mb-2 font-light bg-success text-white rounded w-[98%] m-auto'>
                         <div>Order Status: Failed</div>
                         <div>Total :  $50000.99</div>
-                    </div>
-                </div>
-
+                    </div> 
+                </div>*/}
+                <OrderCard/>
+                <OrderCard/>
+                <OrderCard/>
+                <OrderCard/>
+                <OrderCard/>
+                <OrderCard/>
 
             </div>
         </div>
+    )
+}
+
+const OrderDetails = ()=>{
+    
+    return (
+        <>
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl'>ORDER ID</h1>
+                <h1>1</h1>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl'>Date</h1>
+                <h1>12/10/10</h1>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl '>Order Status</h1>
+                <p>
+                <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
+                </p>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl'>Escrow Status</h1>
+                <p>
+                    <button className='bg-primary text-xs py-2 text-white w-[110px] rounded'> Mark As Complete </button>
+                </p>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl'>Review</h1>
+                <p className='font-light'>
+                <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Write A Review </button>
+                </p>
+            </div>
+            <hr />
+        </>
+    )
+}
+
+const ProductDetails = ()=>{
+    return (
+        <>
+            <div className='flex justify-between w-[90%] m-auto my-2 max-h-[50px] overflow-hidden'>
+                <h1 className='text-2xl min-w-[150px] mt-3'>Title</h1>
+                <h1>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, porro.</h1>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl'>Price</h1>
+                <h1>$10</h1>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl '>QTY</h1>
+                <p>
+                    100
+                </p>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl'>Total</h1>
+                <p className='font-bold text-primary'>
+                    $1000
+                </p>
+            </div>
+            <hr />
+            <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
+                <h1 className='text-2xl'>Seller</h1>
+                <p className='font-light'>
+                <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Contact Seller </button>
+                </p>
+            </div>
+
+        </>
+    )
+}
+
+const OrderCard = ()=>{
+    const [btnSelected , setBtnSelected] = useState(1)
+    const handleClick = (event,index)=>{
+        setBtnSelected(index)
+    }
+    return(
+        <div className={styles.orderCard}>
+                    <div className="imageArea w-[100%] h-[200px] overflow-hidden">
+                        <img src="/dashboardassets/d.jpg" alt="" />
+                    </div>
+                    
+                    <div className={`${styles.orderAndProdctBtn} text-center bg-info m-1 text-xl font-bold`}>
+                        <button onClick={(event) => handleClick(event, 1)} className={`p-2 ${btnSelected===1?' underline':'text-white'} `} >
+                            Order Details
+                        </button>
+
+                        <button onClick={(event) => handleClick(event, 2)} className={`p-2 ${btnSelected===2?'underline':'text-white'}`}>
+                            Products Details
+                        </button>
+                    </div>
+                    {btnSelected===1 ? <OrderDetails />:""}
+                    {btnSelected===2 ? <ProductDetails />:""}
+                    
+                    
+                    
+                    
+                    {/* <div className='orderId flex justify-between p-2 font-light bg-info text-white rounded w-[98%] m-auto'>
+                        <div>ORDER ID: 1000</div>
+                        <div>Date : 12/10/20</div>
+                    </div>
+                    <h1 className="text-center font-bold">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis, quam.</h1>
+                    <div className='orderId flex justify-between p-2 font-light bg-success text-white rounded w-[98%] m-auto'>
+                        <div>QTY: 1000</div>
+                        <div>Price :  $50000.99</div>
+                    </div>
+                    <div className='orderId flex justify-between p-2 mt-2 mb-2 font-light bg-success text-white rounded w-[98%] m-auto'>
+                        <div>Order Status: Failed</div>
+                        <div>Total :  $50000.99</div>
+                    </div> */}
+                </div>
     )
 }

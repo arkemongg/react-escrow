@@ -8,12 +8,13 @@ import Subscribe from "./home/Subscribe";
 import Deposit from "./dashboard/Deposit";
 import Withdrawals from "./dashboard/Withdrawals";
 import Purchase from "./dashboard/Purchase";
+import Sellitems from "./dashboard/SellItems";
 
 const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
-    const [active,setActive] = useState("Purchase")
+    const [active,setActive] = useState("Sell Items")
     return (
       <>
         <PageLocation head={head} tail={`Home / ${tail}`}/>
@@ -23,6 +24,7 @@ const Dashboard = () => {
         {active === 'Deposit' && <Deposit />}
         {active === 'Withdrawals' && <Withdrawals />}
         {active === 'Purchase' && <Purchase />}
+        {active === 'Sell Items' && <Sellitems />}
 
 
         <Subscribe />
