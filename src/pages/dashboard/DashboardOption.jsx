@@ -49,14 +49,15 @@ const DashboardOption = (props) => {
             </div>
             <hr />
 
-            <RecentSoldItem/>
-            <RecentSoldItem/>
+            <div className={styles.recentSoldItemsWrapper}>
+                <RecentSoldItem/>
+                <RecentSoldItem/>
+                <RecentSoldItem/>
+                <RecentSoldItem/>
+                <RecentSoldItem/>
+            </div>
+            
 
-            <RecentSoldItem/>
-
-            <RecentSoldItem/>
-
-            <RecentSoldItem/>
 
         </div>
     )
@@ -65,24 +66,17 @@ const DashboardOption = (props) => {
   const RecentSoldItem = ()=>{
     return(
         <>
-        <div className={`${styles.SoldItemsArea} p-5`}>
+        <div className={`${styles.SoldItemsArea} p-2`}>
                 <div className={styles.imageArea}>
                     <img src="/dashboardassets/d.jpg" alt="" />
                 </div>
 
-                <div className={`${styles.titleArea} text-center`}>
-                    <div className="text-2xl">
-                        Lorem ipsum dolor sit amet.
-                    </div>
-                </div>
-                
-                <div className='priceArea'>
-                    <div className="text-3xl font-light text-primary">
-                        $40
-                    </div>
+                <div>
+                    <p className='text-sm font-bold'> Lorem ipsum dolor sit amet.</p>
+                    <p className='text-sm text-center text-primary'> $60</p>
+                    <p className='text-sm text-center text-info'> 120 views</p>
                 </div>
             </div>
-            <hr />
         </>
     )
   }
@@ -95,11 +89,15 @@ const DashboardOption = (props) => {
             </div>
             <hr />
 
-            <PopularProduct />
-            <PopularProduct />
-            <PopularProduct />
-            <PopularProduct />
-            <PopularProduct />
+            <div className={styles.PopularProductWrapper}>
+                <PopularProduct />
+                <PopularProduct />
+                <PopularProduct />
+                <PopularProduct />
+                <PopularProduct />
+                <PopularProduct />
+            </div>
+
 
         </div>
     )
@@ -108,28 +106,17 @@ const DashboardOption = (props) => {
   const PopularProduct = ()=>{
     return(
         <>
-        <div className={`${styles.PopularProductArea} p-5`}>
+        <div className={`${styles.PopularProductArea}`}>
                 <div className={styles.imageArea}>
                     <img src="/dashboardassets/d.jpg" alt="" />
                 </div>
+                <div>
+                    <p className='text-sm font-bold'> Lorem ipsum dolor sit amet.</p>
+                    <p className='text-sm text-center text-primary'> $60</p>
+                    <p className='text-sm text-center font-light'> 120 sales</p> 
+                </div>
 
-                <div className={`${styles.titleArea} text-center`}>
-                    <div className="text-2xl">
-                        Lorem ipsum dolor sit amet.
-                    </div>
-                </div>
-                <div className='priceArea p-5'>
-                    <div className="text-sm font-light">
-                        120 sales
-                    </div>
-                </div>
-                <div className='priceArea'>
-                    <div className="text-3xl font-light text-success">
-                        $40
-                    </div>
-                </div>
             </div>
-            <hr />
         </>
     )
   }

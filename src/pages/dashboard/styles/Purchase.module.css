@@ -54,6 +54,8 @@
     flex-grow: 1;
 }
 
+
+
 /* Responsive */
 @media screen and (max-width: 450px){
     .DepositArea{
@@ -78,6 +80,12 @@
     border-radius: 5px;
     transition: transform 0.3s, box-shadow 0.5s;
     overflow: hidden;
+}
+.complete{
+    background: rgba(0, 128, 28, 0.339);
+}
+.failed{
+    background: rgba(128, 0, 13, 0.339);
 }
 .orderCard:hover {
     transform:scale(1.05); 

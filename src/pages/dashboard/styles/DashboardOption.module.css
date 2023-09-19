@@ -27,33 +27,45 @@
 /* Recent Items Sales */
 
 .RecentSoldItemsArea{
-    max-width: 1140px;
-    width: 93%;
+    max-width: 1120px;
+    width: 93.5%;
     min-height: 200px;
+    padding-bottom: 50px;
     background: white;
     margin: auto;
     margin-top: 10px;
+    flex-wrap: wrap;
+    
 }
-.SoldItemsArea , .PopularProductArea{
+.recentSoldItemsWrapper , .PopularProductWrapper{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    
+
+}
+.SoldItemsArea , .PopularProductArea{
+    max-width: 300px;
+    max-height:300px;
+    background: white;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
     flex-wrap: wrap;
 }
 
 
 .imageArea{
-    min-width: 100px;
-    max-width: 100px;
-    border-radius: 5px;
+    min-width: 300px;
+    max-width: 300px;
     overflow: hidden;
 }
 .SoldItemsArea img{
     width: 100%;
+    object-fit: fill;
 }
-.titleArea{
-    flex-grow: 1;
-}
+
 /* Responsive */
 @media screen and (max-width: 950px){
     .BalanceDetailsArea > * {
@@ -62,16 +74,4 @@
         margin: 10px;
     }
 }
-@media screen and (max-width: 400px){
-    .imageArea{
-        min-width: 150px;
-        max-width: 150px;
-        border-radius: 5px;
-        overflow: hidden;
-    }
-    .titleArea{
-        padding: 10px;
-        min-width: 350px;
-        overflow: hidden;
-    }
-}
+

@@ -158,19 +158,19 @@ const PurchaseHistory = () => {
                         <div>Total :  $50000.99</div>
                     </div> 
                 </div>*/}
-                <OrderCard/>
-                <OrderCard/>
-                <OrderCard/>
-                <OrderCard/>
-                <OrderCard/>
-                <OrderCard/>
+                <OrderCard status = {"complete"}/>
+                <OrderCard  status = {"failed"}/>
+                <OrderCard  status = {"pending"}/>
+                <OrderCard  status = {"complete"}/>
+                <OrderCard  status = {"failed"}/>
+                <OrderCard  status = {"pending"}/>
 
             </div>
         </div>
     )
 }
 
-const OrderDetails = ()=>{
+const OrderDetails = (props)=>{
     
     return (
         <>
@@ -187,7 +187,7 @@ const OrderDetails = ()=>{
             <div className='flex justify-between w-[90%] m-auto my-2 items-center'>
                 <h1 className='text-2xl '>Order Status</h1>
                 <p>
-                <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
+                    {props.status}
                 </p>
             </div>
             <hr />
@@ -204,7 +204,6 @@ const OrderDetails = ()=>{
                 <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Write A Review </button>
                 </p>
             </div>
-            <hr />
         </>
     )
 }
@@ -247,27 +246,53 @@ const ProductDetails = ()=>{
     )
 }
 
-const OrderCard = ()=>{
+const OrderCard = (props)=>{
+    const pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
+    const complete = <div className='bg-success text-sm text-white w-[100px] rounded text-center'> Complete </div>
+    const failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'> Failed </div>
+    
+    const escrow_pending = <button className='bg-primary text-xs py-2 text-white w-[110px] rounded'> Mark As Complete </button>
+    const escrow_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'>Complete </div>
+    const escrow_failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'>Failed </div>
+    
+    const review_pending = <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Write A Review </button>
+    const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> 5* </div>
+    const review_failed = <div className=''> - </div>
+    
+    let status = pending
+    let escrow = escrow_pending
+    let review = review_pending
+
+    if (props.status === "failed") {
+        status = failed
+        escrow = escrow_failed
+        review = review_failed
+    } else if (props.status === "complete") {
+        status = complete
+        escrow = escrow_complete
+        review = review_complete
+    }
+
     const [btnSelected , setBtnSelected] = useState(1)
     const handleClick = (event,index)=>{
         setBtnSelected(index)
     }
     return(
-        <div className={styles.orderCard}>
+        <div className={`${styles.orderCard}  ${props.status=="complete"?styles.complete:""}  ${props.status=="failed"?styles.failed:""}`}>
                     <div className="imageArea w-[100%] h-[200px] overflow-hidden">
                         <img src="/dashboardassets/d.jpg" alt="" />
                     </div>
                     
-                    <div className={`${styles.orderAndProdctBtn} text-center bg-info m-1 text-xl font-bold`}>
-                        <button onClick={(event) => handleClick(event, 1)} className={`p-2 ${btnSelected===1?' underline':'text-white'} `} >
+                    <div className={`${styles.orderAndProdctBtn} text-center bg-[#1D1678] m-1 text-xl font-bold rounded`}>
+                        <button onClick={(event) => handleClick(event, 1)} className={`p-2 ${btnSelected===1?'text-white underline':'text-white'} `} >
                             Order Details
                         </button>
 
-                        <button onClick={(event) => handleClick(event, 2)} className={`p-2 ${btnSelected===2?'underline':'text-white'}`}>
+                        <button onClick={(event) => handleClick(event, 2)} className={`p-2 ${btnSelected===2?'text-white underline':'text-white'}`}>
                             Products Details
                         </button>
                     </div>
-                    {btnSelected===1 ? <OrderDetails />:""}
+                    {btnSelected===1 ? <OrderDetails status = {status} />:""}
                     {btnSelected===2 ? <ProductDetails />:""}
                     
                     
