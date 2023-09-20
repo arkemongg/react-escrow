@@ -50,11 +50,14 @@
 
 .productPrice{
     padding: 8px;
-    background: #F4F1FE;
-    display: inline-block;
     border-radius: 2px;
+    border-top: 1px solid rgba(0, 0, 0, 0.136);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.136);
+
     width: 330px;
     margin: auto;
-    text-align: center;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
 }
 

@@ -98,7 +98,7 @@ const Sellitems = (props) => {
                         <div className="PriceSaveArea p-5">
                             <label className='block text-2xl' htmlFor="price">Price</label>
                             <div className="btnArea flex grow">
-                                <input id='price' type="text" placeholder="Procut Price" className="input input-bordered rounded-none w-full"/>
+                                <input id='price' type="text" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
                                 <div className="btn btn-success ml-5">Save Product</div>
                             </div>
                         </div>

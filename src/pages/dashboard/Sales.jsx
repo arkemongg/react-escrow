@@ -5,6 +5,26 @@ const Sales = (props) => {
     return (
         <>
             <section className={`${styles.SalesHistorySection} `}>
+                
+                <div className={styles.SalesDetailsArea}>
+                    <div className="balance flex flex-col items-center text-primary justify-center">
+                        <h1 className='text-4xl'>$0000</h1>
+                        <div className="text-lg">Total Earnings</div>
+                    </div>
+                    <div className="escrowBalance flex flex-col items-center text-info justify-center">
+                        <h1 className='text-4xl'>0000</h1>
+                        <div className="text-lg">Pending Sales</div>
+                    </div>
+                    <div className="totalDeposit flex flex-col items-center text-success justify-center">
+                        <h1 className='text-4xl'>0000</h1>
+                        <div className="text-lg">Complete Sales</div>
+                    </div>
+                    <div className="totalPurchase flex flex-col items-center text-error justify-center">
+                        <h1 className='text-4xl'>0000</h1>
+                        <div className="text-lg">Failed Sales</div>
+                    </div>
+                </div>
+                
                 <div className={styles.SalesHistoryArea}>
                     <SalesHistory />
                 </div>
@@ -28,7 +48,7 @@ const SalesHistory = () => {
                         <div className="font-bold w-[100px] min-w-[80px]">Date</div>
                         <div className="font-bold w-[100px] min-w-[100px]">Product</div>
                         <div className="font-bold w-[100px] min-w-[50px]">QTY</div> 
-                        <div className="font-bold w-[180px] min-w-[120px]">Order Status</div>
+                        <div className="font-bold w-[120px] min-w-[120px]">Price</div>
                         <div className="font-bold w-[180px] min-w-[120px]">Escrow Status</div>
                         <div className="font-bold w-[100px] min-w-[80px]">Total</div>
                         <div className="font-bold w-[100px] min-w-[120px]">Review</div>
@@ -95,8 +115,8 @@ const SalesCard = (props) => {
                             <img src="/dashboardassets/d.jpg" alt="" />
                         </div>
                         <div className=" w-[100px] min-w-[50px]">5000</div> 
-                        <div className=" w-[180px] min-w-[120px]">
-                            {status}
+                        <div className="w-[120px] min-w-[120px]">
+                            $50000.99
                         </div>
                         <div className=" w-[180px] min-w-[120px]">
                             {escrow}

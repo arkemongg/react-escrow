@@ -39,3 +39,31 @@
     margin: 5px;
     flex-grow: 1;
 }
+
+.SalesDetailsArea{
+    max-width: 1160px;
+    min-height: 200px;
+    margin: auto;
+    position: relative;
+    top: 10px;
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.SalesDetailsArea > * {
+    min-width: 200px;
+    min-height: 150px;
+    max-height: 350px;
+    flex-grow: 1;
+    margin: 10px;
+    background: white;
+}
+
+
+@media screen and (max-width: 1020px){
+    .SalesDetailsArea > * {
+        min-width: 320px;
+    }
+}
