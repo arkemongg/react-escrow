@@ -1,0 +1,41 @@
+
+.SalesHistorySection{
+    min-height: 450px;
+    min-height: 500px;
+    background: #F1F2F7;
+    padding-bottom: 20px;
+}
+
+.SalesHistoryArea{
+    max-width: 1140px;
+    min-height: 200px;
+    margin: auto;
+    width: 95%;
+    background: white;
+    position: relative;
+    top: 10px;
+}
+
+
+.SalesHistory{
+    max-width: 1140px;
+    min-height: 400px;
+    margin: auto;
+    background: white;
+    overflow: hidden;
+}
+
+.SalesList{
+    overflow-x: auto;
+    min-height: 400px;
+}
+.Sales{
+    display: flex;
+    min-width: 1100px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    align-items: center;
+}
+.Sales div{
+    margin: 5px;
+    flex-grow: 1;
+}

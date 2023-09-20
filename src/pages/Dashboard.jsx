@@ -9,23 +9,27 @@ import Deposit from "./dashboard/Deposit";
 import Withdrawals from "./dashboard/Withdrawals";
 import Purchase from "./dashboard/Purchase";
 import Sellitems from "./dashboard/SellItems";
+import Sales from "./dashboard/Sales";
+import ManageItems from "./dashboard/ManageItems";
 
 const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
-    const [active,setActive] = useState("Purchase")
+    const [active,setActive] = useState("Manage Items")
     return (
       <>
         <PageLocation head={head} tail={`Home / ${tail}`}/>
         <DashboardMenu setHead={setHead} setTail={setTail} setActive = {setActive} />
         {active === 'Dashboard' && <DashboardOption />}
         {active === 'Settings' && <Settings />}
-        {active === 'Deposit' && <Deposit />}
-        {active === 'Withdrawals' && <Withdrawals />}
         {active === 'Purchase' && <Purchase />}
+        {active === 'Deposit' && <Deposit />}
+        {active === 'Sales' && <Sales />}
+      
         {active === 'Sell Items' && <Sellitems />}
-
+        {active === 'Withdrawals' && <Withdrawals />}
+        {active === 'Manage Items' && <ManageItems />}
 
         <Subscribe />
       </>

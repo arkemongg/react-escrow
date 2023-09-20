@@ -4,28 +4,25 @@ import styles from './styles/Purchase.module.css'
 const Purchase = (props) => {
     return (
         <>
-            <section className={`${styles.DepositSection} `}>
-                <div className={styles.DepositArea}>
-                    <DepositHistory />
+            <section className={`${styles.PurchaseHistorySection} `}>
+                <div className={styles.PurchaseHistoryArea}>
+                    <PurchaseHistory />
                 </div>
 
-                <PurchaseHistory />
-
-                
             </section>
         </>
     )
 };
 
-const DepositHistory = () => {
+const PurchaseHistory = () => {
     return (
-        <div className={styles.DepositHistory}>
+        <div className={styles.PurchaseHistory}>
             <h1 className="text-4xl p-5">Purchase History</h1>
             <hr />
-            <div className={styles.DepositHistoryArea}>
+            <div className={styles.PurchaseHistoryArea}>
 
-                <ul className={styles.DepositsList}>
-                    <li className={`${styles.Deposits} p-5 pb-0`}>
+                <ul className={styles.PurchaseList}>
+                    <li className={`${styles.Purchase} p-5 pb-0`}>
                     <div className="font-bold w-[100px] min-w-[70px]">ID</div> 
                         <div className='font-bold w-[120px] min-w-[120px]'>Title</div>
                         <div className="font-bold w-[100px] min-w-[80px]">Date</div>
@@ -38,14 +35,14 @@ const DepositHistory = () => {
                         <div className="font-bold w-[100px] min-w-[120px]">Seller Details</div>
                     </li>
                     <hr />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"complete"} paymenturl={"-"} />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"pending"} paymenturl={"-"} />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"complete"} />
-                    <Transaction status={"failed"} paymenturl={"-"}/>
-                    <Transaction status={"pending"} />
+                    <PurchaseCard status={"failed"} props={["ark","emon"]} />
+                    <PurchaseCard status={"complete"} paymenturl={"-"} />
+                    <PurchaseCard status={"failed"} />
+                    <PurchaseCard status={"pending"} paymenturl={"-"} />
+                    <PurchaseCard status={"failed"} />
+                    <PurchaseCard status={"complete"} />
+                    <PurchaseCard status={"failed"} paymenturl={"-"}/>
+                    <PurchaseCard status={"pending"} />
                 </ul>
                 <div className="DepositHistoryBtn flex justify-center p-5">
                     <button className='btn btn-primary w-[150px]'>Previous</button>
@@ -61,7 +58,8 @@ const DepositHistory = () => {
 export default memo(Purchase);
 
 
-const Transaction = (props) => {
+const PurchaseCard = (props) => {
+    
     const pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
     const complete = <div className='bg-success text-sm text-white w-[100px] rounded text-center'> Complete </div>
     const failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'> Failed </div>
@@ -90,7 +88,7 @@ const Transaction = (props) => {
 
     return (
         <>
-            <li className={`${styles.Deposits} p-5 pt-0 pb-0 font-light`}>
+            <li className={`${styles.Purchase} p-5 pt-0 pb-0 font-light`}>
                         <div className="w-[100px] min-w-[70px]">100000</div>
                         <div className='w-[120px] min-w-[120px]'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero, id?</div>
                         <div className="w-[100px] min-w-[80px]">12/10/15</div> 
@@ -117,14 +115,14 @@ const Transaction = (props) => {
     )
 }
 
-const PurchaseHistory = () => {
+{/*const PurchaseHistory = () => {
     return (
         <div className={styles.PurchaseHistoryArea}>
             <h1 className="text-4xl p-5">Purchase History</h1>
             <hr />
             <div className={styles.PurchaseHistory}>
 
-                {/*<div className={styles.orderCard}>
+                <div className={styles.orderCard}>
                     <div className="imageArea w-[100%] h-[200px] overflow-hidden">
                         <img src="/dashboardassets/d.jpg" alt="" />
                     </div>
@@ -157,7 +155,7 @@ const PurchaseHistory = () => {
                         <div>Order Status: Failed</div>
                         <div>Total :  $50000.99</div>
                     </div> 
-                </div>*/}
+                </div>
                 <OrderCard status = {"complete"}/>
                 <OrderCard  status = {"failed"}/>
                 <OrderCard  status = {"pending"}/>
@@ -310,7 +308,8 @@ const OrderCard = (props)=>{
                     <div className='orderId flex justify-between p-2 mt-2 mb-2 font-light bg-success text-white rounded w-[98%] m-auto'>
                         <div>Order Status: Failed</div>
                         <div>Total :  $50000.99</div>
-                    </div> */}
+                    </div> 
                 </div>
     )
 }
+*/}
