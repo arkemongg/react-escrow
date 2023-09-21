@@ -57,10 +57,21 @@ const AllProducts = () => {
                             key={product.id}/>
                         })
                     ):(
-                       err?<Error error={errMessage} />:Array.from({ length: 12 }, (_, index) => <LoadingProductsCard key={index} />)
+                       err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}
                 </div>
 
+                <div className='nextPrev flex justify-center'>
+                    <div className="btn btn-primary min-w-[150px]">Prev</div>
+                    <div className="btn btn-primary min-w-[150px] ml-5 ">Next</div>
+                </div>
+                <div className='flex justify-center items-center p-5'>
+                    <input type="text" placeholder="Page" className={` text-sm p-1 w-[80px] h-[32px] input rounded-none input-bordered`} /> 
+                    <div className="text-2xl pr-5">
+                        /0
+                    </div>
+                    <div className="btn btn-sm btn-primary">Go</div>
+                </div>
             </section>
             
         </>
