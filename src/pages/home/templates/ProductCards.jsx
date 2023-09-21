@@ -54,7 +54,7 @@ export const Product = (props) => {
     console.log(props.verified);
     return (
         <>
-            <Link className={styles.Product}>
+            <Link to={`/buynow/${props.id}/${props.slug}`} className={styles.Product}>
                 <div className={styles.productImg}>
                     <img src={`http://127.0.0.1:8000${props.img}`} alt="" />
                 </div>

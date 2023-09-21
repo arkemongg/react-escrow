@@ -65,7 +65,9 @@ const NewProducts = () => {
                         data.map(product=>{
                             console.log(product);
                             return <Product 
+                            id = {product.id}
                             title = {product.title}
+                            slug = {product.slug}
                             price = {product.price}
                             img = {product.image}
                             verified = {product.is_verified}
@@ -78,7 +80,7 @@ const NewProducts = () => {
                     )}
                 </div>
                 <div className="btnArea flex justify-center w-full mt-5">
-                    <Link className='btn btn-info text-white'>More New Products</Link>
+                    <Link to='/products' className='btn btn-info text-white'>More New Products</Link>
                 </div>
             </section>
             <hr />
