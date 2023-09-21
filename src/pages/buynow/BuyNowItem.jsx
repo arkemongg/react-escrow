@@ -1,1 +1,6 @@
-const 
+const BuyNowItem = ()=>{
+    return (
+        <>
+        </>
+    )
+}
