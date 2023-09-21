@@ -59,10 +59,26 @@
     justify-content: center;
 }
 .FormArea div{
-    min-width: 450px
+    min-width:350px;
+    flex-grow: 1;
 }
+/* Shipping */
+.ShippingDetailsArea{
+    max-width: 1140px;
+    width: 95%;
+    margin: auto;
+    margin-top: 20px;
+    min-height: 370px;
+    background: white;
+}
+.ShippingDetails{
+    margin: auto;
+    width: 98%;
+}
+
+
 /* Social Details */
-.SociaDetailsArea{
+.SocialDetailsArea{
     max-width: 1140px;
     width: 95%;
     margin: auto;

@@ -59,7 +59,6 @@
 .PurchaseDetailsArea > * {
     min-width: 200px;
     min-height: 150px;
-    max-height: 350px;
     flex-grow: 1;
     margin: 10px;
     background: white;

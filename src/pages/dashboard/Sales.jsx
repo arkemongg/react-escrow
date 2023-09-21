@@ -37,8 +37,16 @@ const Sales = (props) => {
 const SalesHistory = () => {
     return (
         <div className={styles.SalesHistory}>
-            <h1 className="text-4xl p-5">Sales History</h1>
-            <hr />
+            <div className='flex items-center justify-between pr-5'>
+                <h1 className="text-2xl p-5">Sales History</h1>
+                <select className="select select-bordered rounded-none">
+                    <option selected disabled>Filter</option>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                    <option>Failed</option>
+               
+                </select>
+            </div>
             <div className={styles.SalesHistoryArea}>
 
                 <ul className={styles.SalesList}>
@@ -48,10 +56,11 @@ const SalesHistory = () => {
                         <div className="font-bold w-[100px] min-w-[80px]">Date</div>
                         <div className="font-bold w-[100px] min-w-[100px]">Product</div>
                         <div className="font-bold w-[100px] min-w-[50px]">QTY</div> 
-                        <div className="font-bold w-[120px] min-w-[120px]">Price</div>
+                        <div className="font-bold w-[80px] min-w-[80px]">Price</div>
                         <div className="font-bold w-[180px] min-w-[120px]">Escrow Status</div>
                         <div className="font-bold w-[100px] min-w-[80px]">Total</div>
                         <div className="font-bold w-[100px] min-w-[120px]">Review</div>
+                        <div className="font-bold w-[100px] min-w-[120px]">Shipping Details </div>
                     </li>
                     <hr />
                     <SalesCard status={"failed"} />
@@ -115,7 +124,7 @@ const SalesCard = (props) => {
                             <img src="/dashboardassets/d.jpg" alt="" />
                         </div>
                         <div className=" w-[100px] min-w-[50px]">5000</div> 
-                        <div className="w-[120px] min-w-[120px]">
+                        <div className="w-[80px] min-w-[80px]">
                             $50000.99
                         </div>
                         <div className=" w-[180px] min-w-[120px]">
@@ -124,6 +133,9 @@ const SalesCard = (props) => {
                         <div className=" w-[100px] min-w-[80px]">$50000.00</div>
                         <div className=" w-[100px] min-w-[120px]">
                         {review}
+                        </div>
+                        <div className=" w-[100px] min-w-[120px]">
+                        <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Click to see details </button>
                         </div>
             </li>
             

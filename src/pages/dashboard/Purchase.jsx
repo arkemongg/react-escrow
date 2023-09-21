@@ -37,7 +37,16 @@ const PurchaseHistory = () => {
     return (
 
         <div className={styles.PurchaseHistory}>
-            <h1 className="text-4xl p-5">Purchase History</h1>
+            <div className='flex items-center justify-between pr-5'>
+                <h1 className="text-2xl p-5">Purchase History</h1>
+                <select className="select select-bordered rounded-none">
+                    <option selected disabled>Filter</option>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                    <option>Failed</option>
+               
+                </select>
+            </div>
             <hr />
             
             <div className={styles.PurchaseHistoryArea}>
