@@ -13,3 +13,35 @@
     flex-wrap: wrap;
     padding-top: 20px;
 }
+
+.SearchProductsSection{
+    background: #f1f1f1;
+    max-width: 1090px;
+    margin: auto;
+}
+.searchArea{
+    width: 90%;
+    max-width: 1140px;
+    display: flex;
+    justify-content: center;
+    opacity: 1;
+    flex-wrap: wrap;
+}
+.searchArea > *{
+    flex-grow: 1;
+    min-width: 300px;
+}
+
+.FilterArea {
+    width: 90%;
+    max-width: 1140px;
+    display: flex;
+    justify-content: center;
+    opacity: 1;
+    flex-wrap: wrap;
+    border-radius: 2px;
+}
+.FilterArea > *{
+    flex-grow: 1;
+    min-width: 300px;
+}

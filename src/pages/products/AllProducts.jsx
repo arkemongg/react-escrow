@@ -39,7 +39,8 @@ const AllProducts = () => {
 
 
     return (
-        <>
+        <>  
+            <SearchPrdoucts />
             <section className={`${styles.AllProductsSection}`}>
                 
                 <div className={styles.AllProductsArea}>
@@ -56,7 +57,7 @@ const AllProducts = () => {
                             key={product.id}/>
                         })
                     ):(
-                       err?<Error error={errMessage} />:Array.from({ length: 9 }, (_, index) => <LoadingProductsCard key={index} />)
+                       err?<Error error={errMessage} />:Array.from({ length: 12 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}
                 </div>
 
@@ -67,3 +68,36 @@ const AllProducts = () => {
 };
 
 export default AllProducts;
+
+
+const SearchPrdoucts = ()=>{
+    return (
+        <>
+            <section className={`${styles.SearchProductsSection} `}>
+                <h1 className='text-4xl p-5 text-center'>Search Products</h1>
+                <hr />
+                <div className={`${styles.searchProducts} flex flex-col justify-center items-center`} >
+                    <div className={`${styles.searchArea} p-5 pb-0`}>
+                        <input type="text" placeholder="Product Name" className={`${styles.searchInput} input rounded-none input-bordered`} />
+                        <select className={`select rounded-none select-bordered ${styles.select} lg:max-w-[360px]`} defaultValue="disabled" >
+                            <option value="disabled" disabled>Category</option>
+                            <option value="largeApple">Large Apple</option>
+                            <option value="largeOrange">Large Orange</option>
+                            <option value="largeTomato">Large Tomato</option>
+                        </select>
+                    </div>
+                    <div className={`${styles.FilterArea}  p-5 pt-0 items-center`}>
+                        <input type="text" placeholder="Price greater than" className={`${styles.searchInput} input rounded-none input-bordered`} />
+                        <input type="text" placeholder="Price less than" className={`${styles.searchInput} input rounded-none input-bordered `} />
+                    </div>
+                    
+                    <div className="btnArea pb-5 flex grow">
+                    <button className="btn btn-primary min-w-[300px] rounded-none">Search</button>
+                    </div>
+
+                </div>
+
+            </section>
+        </>
+    )
+}
