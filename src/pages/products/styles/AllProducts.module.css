@@ -18,6 +18,8 @@
     background: #f1f1f1;
     max-width: 1090px;
     margin: auto;
+    position: relative;
+    top: 10px;
 }
 .searchArea{
     width: 90%;
@@ -44,4 +46,12 @@
 .FilterArea > *{
     flex-grow: 1;
     min-width: 300px;
+}
+
+@media screen and (max-width:1090px) {
+    .SearchProductsSection{
+        max-width: 98%;
+        position: relative;
+        top:10px;
+     }
 }

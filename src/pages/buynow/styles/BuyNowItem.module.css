@@ -1,0 +1,74 @@
+.BuyNowSection{
+    background: #F1F2F7;
+    min-height: 1540px;
+}
+.BuyNowSectionWrapper{
+    max-width: 1160px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.BuyNowProductArea{
+    max-width: 760px;
+    min-height: 1500px;
+    overflow: hidden;
+    background: white;
+    margin: 10px;
+    flex-grow: 1;
+}
+.BuyNowProductImageArea {
+    max-width: 500px;
+    max-height: 500px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.BuyNowProductImageArea img {
+    width: 100%;
+    height: auto;
+}
+.ProductsStats {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.ProductsStats > * {
+    min-width: 100px;
+    height: 100px;
+    border: 3px solid rgba(0, 0, 0, 0.135);
+    flex-grow: 1;
+    margin: 10px;
+}
+
+/* Detaisl BTN */
+.ProductsDetailsBtnArea{
+    min-width: 150px;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.ProductsDetailsBtnArea > *{
+    margin: 10px;
+    cursor: pointer;
+}
+.active{
+    color: blueviolet;
+    border-bottom: 2px solid blueviolet;
+}
+/* Buy Now Btns */
+.BuyNowProductBuyArea{
+    background: white;
+    min-width: 350px;
+    flex-grow: 1;
+    max-height: 520px;
+    margin: 10px;
+    max-width: 760px;
+}
+.ProductPrice{
+    height: 100px;
+    margin: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.135);
+}

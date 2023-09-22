@@ -1,7 +1,9 @@
+import BuyNowItem from "./buynow/BuyNowItem"
+
 const BuyNow = ()=>{
     return (
         <>
-            <h1>Buy</h1>
+            <BuyNowItem />
         </>
     )
 }
