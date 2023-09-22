@@ -139,7 +139,7 @@ const SocialDetails = ()=>{
                 </div>
                 <div className="social flex p-5">
                     <div className="socialImgArea w-[80px]">
-                        <img className='w-[50px]' src="./dashboardassets/instagram.png" alt="ok" />
+                        <img className='w-[50px]' src="./dashboardassets/telegram.png" alt="ok" />
                     </div>
                     <input className='input rounded-none' type="text"/>
                 </div>

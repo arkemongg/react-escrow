@@ -1,0 +1,27 @@
+.ConverSationSection{
+    min-height: 1450px;
+    background: #F1F2F7;
+}
+.ConversationWrapper{
+    max-width: 1140px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.ConverSationsArea{
+    max-width: 760px;
+    min-width: 300px;
+    background:white;
+    margin: 10px;
+    min-height: 500px;
+    flex-grow: 1;
+}
+.MessageBoxArea{
+    max-width: 760px;
+    min-width: 350px;
+    min-height: 500px;
+    background: white;
+    margin: 10px;
+    flex-grow: 2;
+}

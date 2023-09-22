@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard';
 import ResetPassword from './pages/ResetPassword';
 import Products from './pages/Products';
 import BuyNow from './pages/BuyNow';
+import Messages from './pages/Messages';
 
 function App() {
   return (
@@ -30,8 +31,10 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="resetpassword" element={<ResetPassword />} />
-              
+
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="messages" element={<Messages />} />
+              
               <Route path="contact" element={<Contact />} />
               <Route path="*" element={<NoPage />} />
             </Route>

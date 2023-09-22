@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { PageLocation } from '../GlobalTemplates/PageLocation'
 import styles from './styles/BuyNowItem.module.css'
+import { Link } from 'react-router-dom'
 
 const BuyNowItem = () => {
     return (
@@ -24,7 +26,9 @@ const BuyNowProductArea = () => {
 
     return (
         <div className={styles.BuyNowProductArea}>
-
+            <div className='text-center p-3 pb-5 font-bold'>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis provident iste consequatur aliquam quos saepe ipsum quisquam esse, debitis nisi.
+            </div>
             <div className={styles.BuyNowProductImageArea}>
                 <img src="/dashboardassets/d.jpg" alt="" />
             </div>
@@ -63,7 +67,7 @@ const BuyNowProductArea = () => {
                 <div className={`ReviewsArea`}>
 
                     <div className="text-center text-xl font-light p-2 flex items-center justify-center">
-                        <img className='w-[30px]' src="/dashboardassets/views.png" alt="" />
+                        <img className='w-[30px]' src="/dashboardassets/views.png" alt="views" />
                         <div className='ml-2'>
                             Total Views
                         </div>
@@ -75,58 +79,63 @@ const BuyNowProductArea = () => {
                     </div>
                 </div>
             </div>
-                <div className="h-[10px] bg-[#F1F2F7]"></div>
-                <BuyNowProductsDetailsArea />
+            <div className="h-[10px] bg-[#F1F2F7]"></div>
+            <BuyNowProductsDetailsArea />
         </div>
     )
 
 }
 
-const BuyNowProductsDetailsArea = ()=>{
+const BuyNowProductsDetailsArea = () => {
+    const [SelectedDetails,setSelectedDetails] = useState("Product Details")
+    const handleCLick = (event)=>{
+        const parent = event.target.parentElement
+        const text = parent.querySelector('p').textContent
+
+        setSelectedDetails(text)
+    }
     return (
         <>
-            <div className={styles.ProductsDetailsBtnArea}>
-                <div className={`text-xl Description ${styles.active} flex items-center`} >
+            <div className={`${styles.ProductsDetailsBtnArea} `}>
+                <div onClick={handleCLick}  className={`text-xl Description flex items-center ${SelectedDetails==="Product Details"?styles.active:""}`} >
                     <img className='w-[20px] h-[20px]' src="/dashboardassets/details.png" alt="" />
-                    <div className='ml-1'>
+                    <p className='ml-1 title'>
                         Product Details
-                    </div>
+                    </p>
                 </div>
 
-                <div className={`text-xl SellerProfile flex items-center`}>
+                <div onClick={handleCLick} className={`text-xl SellerProfile flex items-center ${SelectedDetails==="Seller Profile"?styles.active:""}`}>
                     <img className='w-[20px] h-[20px]' src="/dashboardassets/profile.png" alt="" />
-                    <div className='ml-1'>
+                    <p className='ml-1'>
                         Seller Profile
-                    </div>
-                    
+                    </p>
+
                 </div>
 
-                <div className={`text-xl Reviews flex items-center`}>
+                <div onClick={handleCLick} className={`text-xl Reviews flex items-center ${SelectedDetails==="Reviews"?styles.active:""}`}>
                     <img className='w-[20px] h-[20px]' src="/dashboardassets/reviews.png" alt="" />
-                    <div className='ml-1'>
+                    <p className='ml-1'>
                         Reviews
-                    </div>
+                    </p>
                 </div>
             </div>
             <hr />
-            {/* <ProductDetails /> */}
-            <ProductReviews />
+            {SelectedDetails==="Product Details"?<ProductDetails />:""}
+            {SelectedDetails==="Reviews"?<ProductReviews />:""}
+            {SelectedDetails==="Seller Profile"?<SellerProfile />:""}
+            
         </>
     )
-    
+
 }
 
-const ProductDetails = ()=>{
+const ProductDetails = () => {
     return (
         <div className={`${styles.ProductDetailsArea} text-xl font-light pb-[100px]`}>
-            
-            <div className='text-center p-3 pb-5 font-bold'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis provident iste consequatur aliquam quos saepe ipsum quisquam esse, debitis nisi.
-            </div>
 
             <div className='flex justify-between p-3'>
                 <div className="id min-w-[200px]">
-                    Product ID : 
+                    Product ID :
                 </div>
                 <div className="id">
                     #1
@@ -135,7 +144,7 @@ const ProductDetails = ()=>{
             <hr />
             <div className='flex justify-between p-3'>
                 <div className="category min-w-[200px]">
-                    Category : 
+                    Category :
                 </div>
                 <div className="id">
                     Gaming
@@ -144,7 +153,7 @@ const ProductDetails = ()=>{
             <hr />
             <div className='flex justify-between p-3'>
                 <div className="inventory min-w-[200px]">
-                    Inventory : 
+                    Inventory :
                 </div>
                 <div className="id">
                     1000
@@ -153,7 +162,7 @@ const ProductDetails = ()=>{
             <hr />
             <div className='flex justify-between p-3'>
                 <div className="condition min-w-[200px]">
-                    Product Condition : 
+                    Product Condition :
                 </div>
                 <div className="id">
                     New
@@ -162,7 +171,7 @@ const ProductDetails = ()=>{
             <hr />
             <div className='flex justify-between p-3'>
                 <div className="category min-w-[200px]">
-                    Product Condition : 
+                    Product Condition :
                 </div>
                 <div className="id">
                     New
@@ -172,7 +181,86 @@ const ProductDetails = ()=>{
         </div>
     )
 }
-const ProductReviews = ()=>{
+
+const SellerProfile = () => {
+    return (
+        <div className={`${styles.SellerProfileArea}`}>
+            <div className={styles.ProfileDetails}>
+                <div className={styles.ProfileImageArea}>
+                    <img src="/dashboardassets/d.jpg" alt="star" />
+                </div>
+                <div className="ProfileNames flex flex-col justify-center">
+                    <div className="font-bold max-w-[340px] m-4 mb-0">
+                        MR WHITE HERROLD!
+                    </div>
+                    <div className='text-sm text-center pt-1 p-5 '>
+                        <div className='font-bold'>Member Since</div>  
+                        <div className='font-light'> 12/10/20 </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div className="verified text-xl flex justify-between px-5 py-2">
+                <div className='min-w-[200px] flex items-center'>
+                    <img className='w-[20px] h-[20px]'  src="/dashboardassets/verified.png" alt="fb" />
+                    <div className='px-1'>
+                        Verified Seller : 
+                    </div>
+                </div>
+                <div>
+                    Yes
+                </div>
+            </div>
+            <hr />
+            <div className="super text-xl flex justify-between px-5 py-2">
+                <div className='min-w-[200px] flex items-center'>
+                    <img className='w-[20px] h-[20px]'  src="/dashboardassets/super.png" alt="fb" />
+                    <div className='px-1'>
+                        Super Seller : 
+                    </div>
+                </div>
+                <div>
+                    Yes
+                </div>
+            </div>
+            <hr />
+            <div className="total text-xl flex justify-between px-5 py-2">
+                <div className='min-w-[200px] flex items-center'>
+                    <img className='w-[20px] h-[20px]'  src="/dashboardassets/box.png" alt="fb" />
+                    <div className='px-1'>
+                        Total Products : 
+                    </div>
+                </div>
+                <div>
+                    1250
+                </div>
+            </div>
+            <hr />
+
+            <div className="social flex justify-end p-5">
+                <div className='facebook m-2'>
+                    <a href="#">
+                        <img className='w-[50px]' src="/dashboardassets/facebook.png" alt="fb" />
+                    </a>
+                </div>
+                <div className='twitter m-2'>
+                    <a href="#">
+                        <img className='w-[50px]' src="/dashboardassets/twitter.png" alt="twitter" />
+                    </a>
+                </div>
+                <div className='twitter m-2'>
+                    <a href="#">
+                        <img className='w-[50px]' src="/dashboardassets/telegram.png" alt="twitter" />
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    )
+}
+
+
+const ProductReviews = () => {
     return (
         <div className={`${styles.ProductReviewsArea}`}>
             <Review />
@@ -192,16 +280,16 @@ const ProductReviews = ()=>{
     )
 }
 
-const Review = ()=>{
-    return(
+const Review = () => {
+    return (
         <div className={styles.review}>
-            <div className={styles.ProfileDetails}>
-                <div className={styles.ProfileImageArea}>
+            <div className={styles.ReviewProfileDetails}>
+                <div className={styles.ReviewProfileImageArea}>
                     <img src="/dashboardassets/d.jpg" alt="star" />
                 </div>
                 <div className="ProfileNames flex flex-col justify-center">
                     <div className="font-bold max-w-[400px]">
-                        Lorem ipsum dolor sit amet asdasdasdasdasdsadasd asdasdasd!
+                        Lorem ipsum dolor sit !
                     </div>
                     <div className='flex font-bold text-xl items-center'>
                         <div>5</div>
@@ -221,9 +309,10 @@ const Review = ()=>{
 
 
 const BuyNowProductBuyArea = () => {
-
+    const [total, setTotal] = useState(0.00)
+    const [logged, setLogged] = useState(true)
     return (
-        <div className={styles.BuyNowProductBuyArea}>
+        <div className={`${styles.BuyNowProductBuyArea} ${logged ? "max-h-[450px]" : "max-h-[250px]"}`}>
 
             <div className={`${styles.ProductPrice}`}>
 
@@ -240,13 +329,27 @@ const BuyNowProductBuyArea = () => {
                 </div>
             </div>
 
-            <div className="btnArea p-5 flex flex-wrap justify-center">
-                {/* <div className="btn btn-primary min-w-[320px]">Login</div> */}
+            <div className={`${styles.BuyNowBtnArea} p-5 `}>
+                <Link to='/login' className={`btn btn-primary min-w-[320px] ${logged ? "hidden" : ""}`}>Login</Link>
 
-                <input type="text" className='input input-bordered rounded-none m-5 min-w-[300px]' />
-                <div className="btn btn-success min-w-[300px] mt-5">Buy Now</div>
+                <input onChange={event => setTotal(event.target.value * 4.5)} placeholder='Quantity' type="text" className={`input grow input-bordered rounded-none ${logged ? '' : 'hidden'}`} />
+                <div className={`btn btn-success grow ${logged ? "" : "hidden"}`}>Buy Now</div>
             </div>
 
+            <div className={`${styles.ProductPrice} ${logged ? "" : "hidden"}`}>
+
+                <div className={`text-center text-xl font-light p-2 flex items-center justify-center `}>
+                    <img className='w-[25px]' src="/dashboardassets/money.png" alt="" />
+                    <div className='ml-2'>
+                        Total Price
+                    </div>
+                </div>
+                <div className={`text-center font-light flex items-center justify-center`}>
+                    <div className='text-4xl text-info overflow-hidden'>
+                        ${total.toFixed(2)}
+                    </div>
+                </div>
+            </div>
         </div>
     )
 
