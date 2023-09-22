@@ -57,8 +57,6 @@ const DashboardOption = (props) => {
                 <RecentSoldItem/>
             </div>
             
-
-
         </div>
     )
   }
