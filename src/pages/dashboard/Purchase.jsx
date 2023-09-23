@@ -155,13 +155,6 @@ const BalanceHistory = () => {
         <div className={styles.BalanceHistory}>
             <div className='flex items-center justify-between pr-5'>
                 <h1 className="text-2xl p-5">Balance History</h1>
-                <select className="select select-bordered rounded-none">
-                    <option selected disabled>Filter</option>
-                    <option>Pending</option>
-                    <option>Completed</option>
-                    <option>Failed</option>
-               
-                </select>
             </div>
             <div className={styles.BalanceHistoryArea}>
 
@@ -194,41 +187,14 @@ const BalanceHistory = () => {
 }
 
 const BalanceCard = (props) => {
-    
-    const pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
-    const complete = <div className='bg-success text-sm text-white w-[100px] rounded text-center'> Complete </div>
-    const failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'> Failed </div>
-    
-    const escrow_pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
-    const escrow_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'>Complete </div>
-    const escrow_failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'>Failed </div>
-    
-    const review_pending = <div className=''> - </div>
-    const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> 5* </div>
-    const review_failed = <div className=''> - </div>
-    
-    let status = pending
-    let escrow = escrow_pending
-    let review = review_pending
-
-    if (props.status === "failed") {
-        status = failed
-        escrow = escrow_failed
-        review = review_failed
-    } else if (props.status === "complete") {
-        status = complete
-        escrow = escrow_complete
-        review = review_complete
-    }
-
     return (
         <>
             <li className={`${styles.Balance} p-5 pt-0 pb-0 font-light`}>
                     <div className="w-[100px] min-w-[100px]">2</div>
                     <div className="w-[100px] min-w-[100px]">5</div> 
                     <div className="w-[100px] min-w-[100px]">Marketplace</div>
-                    <div className="w-[100px] min-w-[100px]">300.00</div>
-                    <div className="w-[100px] min-w-[100px]">5000.00</div>
+                    <div className="w-[100px] min-w-[100px] text-error">-300.00</div>
+                    <div className="w-[100px] min-w-[100px] text-error">5000.00</div>
             </li>
             
         </>
