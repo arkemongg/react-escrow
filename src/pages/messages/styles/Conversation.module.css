@@ -1,5 +1,4 @@
 .ConverSationSection{
-    min-height: 1450px;
     background: #F1F2F7;
 }
 .ConversationWrapper{
@@ -32,9 +31,9 @@
 
 /* Message Box */
 .MessageBoxArea{
-    max-width: 760px;
+    max-width: 600px;
     min-width: 400px;
-    min-height: 500px;
+    height: 700px;
     background: white;
     margin: 10px;
     flex-grow: 10;
@@ -44,4 +43,21 @@
     flex-direction: column;
     justify-content: flex-end;
     padding: 5px;
+}
+
+.MessageTexteArea{
+    height: 63%;
+    overflow: auto;
+}
+
+
+@media screen and (max-width:1047px) {
+    .MessageBoxArea{
+        max-width: 760px;
+    }
+}
+@media screen and (max-width:400px) {
+    .MessageBoxArea{
+        min-width: 300px;
+    }
 }

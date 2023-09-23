@@ -63,6 +63,69 @@
     margin: 10px;
     background: white;
 }
+/* Balance */
+.SalesBalanceHistory{
+    max-width: 1140px;
+    min-height: 200px;
+    padding-bottom: 20px;
+    margin: auto;
+    width: 95%;
+    position: relative;
+    background: white;
+    top: 20px;
+}
+.BalanceHistoryArea{
+    max-width: 1140px;
+    min-height: 200px;
+    margin: auto;
+    width: 95%;
+    background: white;
+    position: relative;
+    top: 10px;
+}
+
+
+.BalanceHistory{
+    max-width: 1140px;
+    min-height: 400px;
+    margin: auto;
+    background: white;
+    overflow: hidden;
+}
+.BalanceList{
+    overflow-x: auto;
+    min-height: 350px;
+}
+.Balance{
+    display: flex;
+    min-width:600px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    align-items: center;
+}
+.Balance div{
+    margin: 5px;
+    flex-grow: 1;
+}
+
+.BalanceDetailsArea{
+    max-width: 1160px;
+    min-height: 200px;
+    margin: auto;
+    position: relative;
+    top: 10px;
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.BalanceDetailsArea > * {
+    min-width: 200px;
+    min-height: 150px;
+    max-height: 350px;
+    flex-grow: 1;
+    margin: 10px;
+    background: white;
+}
 
 
 @media screen and (max-width: 1020px){

@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import styles from './styles/Conversation.module.css'
+import { useEffect } from 'react';
 const Conversation = () => {
     return (
         <>
@@ -22,7 +24,8 @@ const ConversationsHeads = () => {
                 <ConversationComponent />
                 <ConversationComponent />
                 <ConversationComponent />
-                <div className={`${data<=5?'hidden':''} ConversationPage flex justify-center`}>
+                <ConversationComponent />
+                <div className={`${data <= 5 ? 'hidden' : ''} ConversationPage flex justify-center`}>
                     <div className="btn btn-primary w-[150px] m-2 ">Previous</div>
                     <div className="btn btn-primary w-[150px] m-2 ">Next</div>
                 </div>
@@ -59,8 +62,74 @@ const ConversationComponent = () => {
 }
 
 const MessageBox = () => {
+    const scrollRef = useRef(null)
+    useEffect(() => {
+      const scrollDiv = scrollRef.current;
+      scrollDiv.scrollTop = scrollDiv.scrollHeight;
+    }, []);
+
+    const img = '/dashboardassets/d.jpg'
     return (
         <div className={`${styles.MessageBoxArea} `}>
+            <div className='flex justify-between items-center p-5'>
+                <div className="text-2xl">
+                    Seller Name
+                </div>
+                <div className="btn btn-primary ">Load More</div>
+            </div>
+            <hr />
+            <div ref={scrollRef} className={styles.MessageTexteArea}>
+                <div  className={`${styles.MessageText}`}>
+                    <div className="chat chat-start">
+                        <div className="chat-image avatar">
+                            <div className="w-10 rounded-full">
+                                <img src={img} />
+                            </div>
+                        </div>
+                        <div className="chat-bubble">It was said that you would, destroy the Sith, not join them. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam nam in nesciunt impedit esse corrupti quas maiores magni perferendis dolores aliquam voluptate nostrum amet repudiandae molestiae, ad beatae. Deleniti praesentium, possimus consequuntur blanditiis quas molestiae quidem commodi eius quasi voluptatem dolor, aut repudiandae harum earum cumque aspernatur explicabo ipsam? Corporis.</div>
+                    </div>
+                    <div className="chat chat-end">
+                        <div className="chat-image avatar">
+                            <div className="w-10 rounded-full">
+                                <img src={img} />
+                            </div>
+                        </div>
+                        <div className="chat-bubble bg-primary">It was you who would bring balance to the Force</div>
+                    </div>
+                    <div className="chat chat-end">
+                        <div className="chat-image avatar">
+                            <div className="w-10 rounded-full">
+                                <img src={img} />
+                            </div>
+                        </div>
+                        <div className="chat-bubble bg-primary">Not leave it in Darkness</div>
+                    </div>
+                    <div className="chat chat-end">
+                        <div className="chat-image avatar">
+                            <div className="w-10 rounded-full">
+                                <img src={img} />
+                            </div>
+                        </div>
+                        <div className="chat-bubble bg-primary">It was said that you would, destroy the Sith, not join them. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam nam in nesciunt impedit esse corrupti quas maiores magni perferendis dolores aliquam voluptate nostrum amet repudiandae molestiae, ad beatae. Deleniti praesentium, possimus consequuntur blanditiis quas molestiae quidem commodi eius quasi voluptatem dolor, aut repudiandae harum earum cumque aspernatur explicabo ipsam? Corporis.</div>
+                    </div>
+                    <div className="chat chat-start">
+                        <div className="chat-image avatar">
+                            <div className="w-10 rounded-full">
+                                <img src={img} />
+                            </div>
+                        </div>
+                        <div className="chat-bubble">It was you who would bring balance to the Force</div>
+                    </div>
+                    <div className="chat chat-end">
+                        <div className="chat-image avatar">
+                            <div className="w-10 rounded-full">
+                                <img src={img} />
+                            </div>
+                        </div>
+                        <div className="chat-bubble bg-primary">Not leave it in Darkness</div>
+                    </div>
+                </div>
+            </div>
             <div className={styles.MessageSenderArea}>
                 <div className={`${styles.MessageSender}`}>
                     <input type="text" placeholder="Message" className="h-[100px] input input-bordered w-full rounded-none " />

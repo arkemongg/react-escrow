@@ -68,7 +68,6 @@ const DashboardOption = (props) => {
                 <div className={styles.imageArea}>
                     <img src="/dashboardassets/d.jpg" alt="" />
                 </div>
-
                 <div>
                     <p className='text-sm font-bold'> Lorem ipsum dolor sit amet.</p>
                     <p className='text-sm text-center text-primary'> $60</p>
@@ -78,10 +77,19 @@ const DashboardOption = (props) => {
         </>
     )
   }
+  const RecentBlanceTransaction = ()=>{
+    return(
+        <>
+            <div className={`${styles.RecentBlanceTransaction} p-2`}>
+                
+            </div>
+        </>
+    )
+  }
 
   const PopularProducts = ()=>{
     return(
-        <div className={`${styles.RecentSoldItemsArea}`}>
+        <div className={`${styles.PopularProductsArea}`}>
             <div className="text-2xl p-5">
                 Popular Items
             </div>

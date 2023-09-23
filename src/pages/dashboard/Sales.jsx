@@ -28,11 +28,19 @@ const Sales = (props) => {
                 <div className={styles.SalesHistoryArea}>
                     <SalesHistory />
                 </div>
+                <div className={styles.SalesBalanceHistory}>
+                    <BalanceHistory />
+                </div>
 
             </section>
         </>
     )
 };
+
+
+
+
+export default memo(Sales);
 
 const SalesHistory = () => {
     return (
@@ -81,9 +89,6 @@ const SalesHistory = () => {
         </div>
     )
 }
-
-
-export default memo(Sales);
 
 
 const SalesCard = (props) => {
@@ -137,6 +142,92 @@ const SalesCard = (props) => {
                         <div className=" w-[100px] min-w-[120px]">
                         <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Click to see details </button>
                         </div>
+            </li>
+            
+        </>
+    )
+}
+
+
+const BalanceHistory = () => {
+    return (
+        <div className={styles.BalanceHistory}>
+            <div className='flex items-center justify-between pr-5'>
+                <h1 className="text-2xl p-5">Balance History</h1>
+                <select className="select select-bordered rounded-none">
+                    <option selected disabled>Filter</option>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                    <option>Failed</option>
+               
+                </select>
+            </div>
+            <div className={styles.BalanceHistoryArea}>
+
+                <ul className={styles.BalanceList}>
+                    <li className={`${styles.Balance} p-5 pb-0`}>
+                        <div className="font-bold w-[100px] min-w-[100px]">Transfer ID</div>
+                        <div className="font-bold w-[100px] min-w-[100px]">Order ID</div> 
+                        <div className="font-bold w-[100px] min-w-[100px]">Type</div>
+                        <div className="font-bold w-[100px] min-w-[100px]">Amount</div>
+                        <div className="font-bold w-[100px] min-w-[100px]">Last Blance</div>
+                    </li>
+                    <hr />
+                    <BalanceCard status={"failed"} />
+                    <BalanceCard status={"complete"}  />
+                    <BalanceCard status={"failed"} />
+                    <BalanceCard status={"pending"}  />
+                    <BalanceCard status={"failed"} />
+                    <BalanceCard status={"complete"} />
+                    <BalanceCard status={"failed"} />
+                    <BalanceCard status={"pending"} />
+                </ul>
+                <div className="SalesHistoryBtn flex justify-center p-5">
+                    <button className='btn btn-primary w-[150px]'>Previous</button>
+                    <button className='btn btn-primary w-[150px] ml-5'>Next</button>
+                </div>
+            </div>
+
+        </div>
+    )
+}
+
+const BalanceCard = (props) => {
+    
+    const pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
+    const complete = <div className='bg-success text-sm text-white w-[100px] rounded text-center'> Complete </div>
+    const failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'> Failed </div>
+    
+    const escrow_pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
+    const escrow_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'>Complete </div>
+    const escrow_failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'>Failed </div>
+    
+    const review_pending = <div className=''> - </div>
+    const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> 5* </div>
+    const review_failed = <div className=''> - </div>
+    
+    let status = pending
+    let escrow = escrow_pending
+    let review = review_pending
+
+    if (props.status === "failed") {
+        status = failed
+        escrow = escrow_failed
+        review = review_failed
+    } else if (props.status === "complete") {
+        status = complete
+        escrow = escrow_complete
+        review = review_complete
+    }
+
+    return (
+        <>
+            <li className={`${styles.Balance} p-5 pt-0 pb-0 font-light`}>
+                    <div className="w-[100px] min-w-[100px]">2</div>
+                    <div className="w-[100px] min-w-[100px]">5</div> 
+                    <div className="w-[100px] min-w-[100px]">Marketplace</div>
+                    <div className="w-[100px] min-w-[100px]">300.00</div>
+                    <div className="w-[100px] min-w-[100px]">5000.00</div>
             </li>
             
         </>
