@@ -89,7 +89,7 @@ const DashboardOption = (props) => {
 
   const PopularProducts = ()=>{
     return(
-        <div className={`${styles.PopularProductsArea}`}>
+        <div className={`${styles.RecentSoldItemsArea}`}>
             <div className="text-2xl p-5">
                 Popular Items
             </div>

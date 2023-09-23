@@ -35,7 +35,6 @@
     margin: auto;
     margin-top: 10px;
     flex-wrap: wrap;
-    
 }
 .recentSoldItemsWrapper , .PopularProductWrapper{
     display: flex;
