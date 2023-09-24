@@ -22,7 +22,7 @@ export const FeaturedProductsCard = () => {
 
                 <div className={styles.productSeller}>
                     <div className={styles.sellerLogo}>
-                        M
+                        <img src="/dashboardassets/featuredSeller.png" alt="" />
                     </div>
                     <div className={`${styles.sellerFirstName} text-xl flex`}>
                         Mr White 
@@ -64,11 +64,11 @@ export const Product = (props) => {
 
                 <div className={styles.productSeller}>
                     <div className={styles.sellerLogo}>
-                        M
+                        <img src="/dashboardassets/user.png" alt="seller" />
                     </div>
                     
                     <div className={`${styles.sellerFirstName} text-xl flex `}>
-                        Mr White
+                        {props.seller_name}
                         <img className={`w-[20px] h-[20px] m-1 ${props.verified?"":"hidden"}`} title='Verified'  src={verifeid} alt="verified" /> 
                         <img className={`w-[20px] h-[20px] m-1 ${props.super?"":"hidden"}`} title='Super Seller'  src={superseller} alt="super" />
                     </div>
@@ -85,7 +85,7 @@ export const Product = (props) => {
                     <div className={`${styles.sellerRating} text-primary text-sm text-center`}>
                         Seller Review
                         <br />
-                        <span className='flex text-xl items-center justify-center'>5.00 <img className={styles.star} src={star} alt="star" /></span>
+                        <span className='flex text-xl items-center justify-center'>{props.seller_review===null ? "0.00":props.seller_review.toFixed(2)} <img className={styles.star} src={star} alt="star" /> <span className='text-sm font-light m-1 mt-2'> ({props.seller_review_count})</span> </span>
                     </div>
                 </div>
             </Link>

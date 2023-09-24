@@ -94,6 +94,9 @@ const NewProducts = () => {
                             verified = {product.is_verified}
                             super = {product.super_seller}
                             category = {product.category.title}
+                            seller_name = {product.seller_name}
+                            seller_review = {product.seller_review.rating}
+                            seller_review_count = {product.seller_review.total_feedback}
                             key={product.id}/>
                         })
                     ):(
