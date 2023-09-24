@@ -11,3 +11,15 @@ export const Error = (props) => {
         </>
     )
 }
+
+export const EmptyMessage = (props) => {
+    return (
+        <>
+            <div className={styles.Error}>
+                <div className="alert alert-error min-w-[330px]">
+                    <div className="text-center">{props.message}</div>
+                </div>
+            </div>
+        </>
+    )
+}

@@ -3,7 +3,7 @@ import { FeaturedProductsCard, LoadingProductsCard, Product } from './templates/
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-import { Error } from './templates/Error';
+import { Error,EmptyMessage } from './templates/Error';
 import { CategoryData } from '../../CategoryContext';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 
@@ -12,52 +12,58 @@ import { axiosInstance } from '../AxiosHeaders';
 const NewProducts = () => {
     const category = CategoryData()
 
-    const categoryCounter = useRef(0)
-
-    useEffect(()=>{
-        categoryCounter.current +=1;
-    },[category])
-
     const [data,setData] = useState([])
     const [err,setErr] = useState(false)
     const [errMessage,setErrMessage] = useState("404")
     const [fetched,setFetched] = useState(false)
 
     const [categoryData,setCategoryData] = useState([])
-
+    const [selectedCategory,setSelectedCategory] = useState(0)
+    
     useEffect(()=>{
-        if(categoryCounter.current >= 2){
+        if(category.category.length>0){
             setCategoryData(category.category[0])
+            setSelectedCategory(category.category[0][0].id)
         }
     },[category])
-    console.log(categoryData != undefined ? categoryData[0]:"");
-    async function getProducts() {
-        try {
-          const response = await axiosInstance.get(`/api/products?category=`);
-          return response
-        } catch (error) {
-          return error
-        }
-      }
-
 
     useEffect(() => {
-        setTimeout(() => {
-            const response =  getProducts()
+        if(categoryData.length > 0){
             
-            response.then(data=>{
-                console.log(data);
-                if(data.status===200){
-                    data = data.data.results
-                    setData([...data])
-                    setFetched(true)  
-                }else if(data.request.status===0){
-                    // setErr(true)
-                    // setErrMessage(data.message)
+            async function getProducts() {
+                try {
+                  const response = await axiosInstance.get(`/api/products?category=${selectedCategory}`);
+                  return response
+                } catch (error) {
+                  return error
                 }
-            })
-        }, 2000);
-      },[]);
+            }
+    
+            setTimeout(() => {
+                const response =  getProducts()
+                
+                response.then(data=>{
+                    console.log(data);
+                    if(data.status===200){
+                        data = data.data.results
+                        setData([...data])
+                        setFetched(true)  
+                    }else if(data.request.status===0){
+                        // setErr(true)
+                        // setErrMessage(data.message)
+                    }
+                })
+            }, 2000);
+        }
+      },[selectedCategory]);
+
+      const handleCategory = (event)=>{
+        if(event.target.getAttribute("value")===selectedCategory){
+            return;
+        }
+        setSelectedCategory(event.target.getAttribute("value"))
+        setFetched(false)  
+      }
 
     return (
         <>
@@ -69,9 +75,9 @@ const NewProducts = () => {
                     Check out our newest listed products
                 </div>
                 <div className={styles.categoryArea}>
-                    {fetched?(
+                    {categoryData.length > 0?(
                         categoryData.map(category=>{
-                           return <div key={category.id} className="btn btn-info text-white">{category.title}</div>
+                           return <div onClick={handleCategory} key={category.id} value = {category.id} className="btn btn-info text-white">{category.title}</div>
                         })
                     ):<LoadingArea />}
                 </div>
@@ -93,6 +99,7 @@ const NewProducts = () => {
                     ):(
                        err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}
+                    {fetched&&data.length === 0 ? <EmptyMessage message={"No products found."} /> :console.log("no") }
                 </div>
                 <div className="btnArea flex justify-center w-full mt-5">
                     <Link to='/products' className='btn btn-info text-white'>More New Products</Link>

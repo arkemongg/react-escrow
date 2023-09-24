@@ -1,16 +1,19 @@
 import styles from './styles/AllProducts.module.css'
 import { FeaturedProductsCard, LoadingProductsCard, Product } from '../home/templates/ProductCards';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams,useHref,useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Error } from '../home/templates/Error';
-
+import { CategoryData } from '../../CategoryContext';
 
 const AllProducts = () => {
     const [data,setData] = useState([])
     const [err,setErr] = useState(false)
     const [errMessage,setErrMessage] = useState("404")
     const [fetched,setFetched] = useState(false)
+
+
+
     async function getProducts() {
         try {
           const response = await axios.get('http://127.0.0.1:8000/api/products/');
@@ -82,6 +85,26 @@ export default AllProducts;
 
 
 const SearchPrdoucts = ()=>{
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const cat = searchParams.get('category');
+    const navigate = useNavigate()
+
+    const [selectedCategory,setSelectedCategory] = useState(cat!=null?cat:0)
+    const category = CategoryData()
+    const [categoryData,setCategoryData] = useState([])
+    
+    useEffect(()=>{
+        if(category.category.length>0){
+            setCategoryData(category.category[0])
+        }
+    },[category])
+    
+    const handleCategory = (event)=>{
+        setSelectedCategory(event.target.value)
+        // navigate(`/products?category=${event.target.value}`)
+    }
+
     return (
         <>
             <section className={`${styles.SearchProductsSection} `}>
@@ -90,11 +113,11 @@ const SearchPrdoucts = ()=>{
                 <div className={`${styles.searchProducts} flex flex-col justify-center items-center`} >
                     <div className={`${styles.searchArea} p-5 pb-0`}>
                         <input type="text" placeholder="Product Name" className={`${styles.searchInput} input rounded-none input-bordered`} />
-                        <select className={`select rounded-none select-bordered ${styles.select} lg:max-w-[360px]`} defaultValue="disabled" >
-                            <option value="disabled" disabled>Category</option>
-                            <option value="largeApple">Large Apple</option>
-                            <option value="largeOrange">Large Orange</option>
-                            <option value="largeTomato">Large Tomato</option>
+                        <select onChange={handleCategory} value={selectedCategory} className={`select rounded-none select-bordered ${styles.select} lg:max-w-[360px]`} >
+                            <option value={0} disabled>Category</option>
+                            {categoryData.length>0&&categoryData.map(category=>{
+                            return <option key = {category.id} value={category.id}>{category.title}</option>
+                            })}
                         </select>
                     </div>
                     <div className={`${styles.FilterArea}  p-5 pt-0 items-center`}>
