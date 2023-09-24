@@ -24,10 +24,8 @@
     align-items: center;
     flex-wrap: wrap;
     margin: auto;
-    
 }
 .categoryArea > * {
     margin: 10px;
     padding: 10px;
-    color: white;
 }

@@ -46,7 +46,7 @@ const AllProducts = () => {
                 <div className={styles.AllProductsArea}>
                     {fetched?(
                         data.map(product=>{
-                            console.log(product);
+                            
                             return <Product 
                             title = {product.title}
                             price = {product.price}

@@ -2,18 +2,38 @@ import styles from './styles/NewestProducts.module.css'
 import { FeaturedProductsCard, LoadingProductsCard, Product } from './templates/ProductCards';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Error } from './templates/Error';
+import { CategoryData } from '../../CategoryContext';
+import LoadingArea from '../GlobalTemplates/LoadingArea';
 
+import { axiosInstance } from '../AxiosHeaders';
 
 const NewProducts = () => {
+    const category = CategoryData()
+
+    const categoryCounter = useRef(0)
+
+    useEffect(()=>{
+        categoryCounter.current +=1;
+    },[category])
+
     const [data,setData] = useState([])
     const [err,setErr] = useState(false)
     const [errMessage,setErrMessage] = useState("404")
     const [fetched,setFetched] = useState(false)
+
+    const [categoryData,setCategoryData] = useState([])
+
+    useEffect(()=>{
+        if(categoryCounter.current >= 2){
+            setCategoryData(category.category[0])
+        }
+    },[category])
+    console.log(categoryData != undefined ? categoryData[0]:"");
     async function getProducts() {
         try {
-          const response = await axios.get('http://127.0.0.1:8000/api/products/');
+          const response = await axiosInstance.get(`/api/products?category=`);
           return response
         } catch (error) {
           return error
@@ -24,7 +44,9 @@ const NewProducts = () => {
     useEffect(() => {
         setTimeout(() => {
             const response =  getProducts()
+            
             response.then(data=>{
+                console.log(data);
                 if(data.status===200){
                     data = data.data.results
                     setData([...data])
@@ -37,7 +59,6 @@ const NewProducts = () => {
         }, 2000);
       },[]);
 
-
     return (
         <>
             <section className={`${styles.NewProductsSection}`}>
@@ -48,22 +69,16 @@ const NewProducts = () => {
                     Check out our newest listed products
                 </div>
                 <div className={styles.categoryArea}>
-                    <div className="btn btn-info">Gaming</div>
-                    <div className="btn btn-info">Gaming Cards</div>
-                    <div className="btn btn-info">Electronics</div>
-                    <div className="btn btn-info">Electronics</div>
-                    <div className="btn btn-info">Electronics</div>
-                    <div className="btn btn-info">Gaming</div>
-                    <div className="btn btn-info">Gaming Cards</div>
-                    <div className="btn btn-info">Electronics</div>
-                    <div className="btn btn-info">Electronics</div>
-                    <div className="btn btn-info">Electronics</div>
+                    {fetched?(
+                        categoryData.map(category=>{
+                           return <div key={category.id} className="btn btn-info text-white">{category.title}</div>
+                        })
+                    ):<LoadingArea />}
                 </div>
                 
                 <div className={styles.newProductsArea}>
                     {fetched?(
                         data.map(product=>{
-                            console.log(product);
                             return <Product 
                             id = {product.id}
                             title = {product.title}

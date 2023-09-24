@@ -103,8 +103,6 @@ const DashboardOption = (props) => {
                 <PopularProduct />
                 <PopularProduct />
             </div>
-
-
         </div>
     )
   }

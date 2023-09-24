@@ -216,7 +216,7 @@ const NavWithLogin = () => {
 
 const Navigation = () => {
     const { isLogged, login, logout } = useAuth();
-    console.log(isLogged);
+    // console.log(isLogged);
     if (isLogged) {
         return <NavWithLogin />
     } else {

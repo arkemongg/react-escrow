@@ -2,7 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 
 import { AuthProvider } from './AuthContext';
-import { BrowserRouter,Routes,Route } from 'react-router-dom';
+import { CategoryProvider } from './CategoryContext';
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './ScrollToTop';
 
 import Navigation from './Nav';
@@ -20,29 +22,30 @@ import Messages from './pages/Messages';
 function App() {
   return (
 
-    <AuthProvider>
-      <BrowserRouter>
-        <ScrollToTop>
-          <Routes>
-            <Route path="/" element={<Navigation />}>
-              <Route index element={<Home />} />
-              <Route path='products' element={<Products />} />
-              <Route path="buynow/:id/:slug" element={<BuyNow />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="resetpassword" element={<ResetPassword />} />
+    <CategoryProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <ScrollToTop>
+            <Routes>
+              <Route path="/" element={<Navigation />}>
+                <Route index element={<Home />} />
+                <Route path='products' element={<Products />} />
+                <Route path="buynow/:id/:slug" element={<BuyNow />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route path="resetpassword" element={<ResetPassword />} />
 
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="messages" element={<Messages />} />
-              
-              <Route path="contact" element={<Contact />} />
-              <Route path="*" element={<NoPage />} />
-            </Route>
-          </Routes>
-        </ScrollToTop>
-      </BrowserRouter>
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="messages" element={<Messages />} />
 
-    </AuthProvider>
+                <Route path="contact" element={<Contact />} />
+                <Route path="*" element={<NoPage />} />
+              </Route>
+            </Routes>
+          </ScrollToTop>
+        </BrowserRouter>
+      </AuthProvider>
+    </CategoryProvider>
 
 
   );

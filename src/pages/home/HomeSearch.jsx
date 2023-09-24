@@ -1,6 +1,9 @@
 import styles from './styles/HomeSearch.module.css'
+import { CategoryData } from '../../CategoryContext';
 
 const HomeSearch = () => {
+    const category = CategoryData()
+    const data = category.category
     return (
         <>
             <section className={`${styles.homeSearchSection} flex flex-col justify-center items-center`}>
@@ -13,10 +16,10 @@ const HomeSearch = () => {
                 <div className={`${styles.searchArea}`}>
                     <input type="text" placeholder="Type here" className={`${styles.searchInput} input rounded-none input-bordered`} />
                     <select className={`select rounded-none select-bordered ${styles.select}`} defaultValue="disabled" >
-                        <option value="disabled" disabled>Large</option>
-                        <option value="largeApple">Large Apple</option>
-                        <option value="largeOrange">Large Orange</option>
-                        <option value="largeTomato">Large Tomato</option>
+                        <option value="disabled" disabled>Category</option>
+                        {data.length > 0 &&data[0].map(category=>{
+                            return (<option key={category.id} value={category.title}>{category.title}</option>)
+                        })}
                     </select>
                     <button className={`${styles.homeSearchBtn} btn btn-primary`}>Search</button>
                 </div>
@@ -24,5 +27,5 @@ const HomeSearch = () => {
         </>
     )
   };
-  
+
   export default HomeSearch;

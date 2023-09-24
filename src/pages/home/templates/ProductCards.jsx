@@ -51,7 +51,7 @@ export const FeaturedProductsCard = () => {
 }
 
 export const Product = (props) => {
-    console.log(props.verified);
+    
     return (
         <>
             <Link to={`/buynow/${props.id}/${props.slug}`} className={styles.Product}>

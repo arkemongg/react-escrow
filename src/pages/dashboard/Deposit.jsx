@@ -1,6 +1,9 @@
 import { memo, useState } from 'react';
 import styles from './styles/Deposit.module.css'
 
+import axios from 'axios';
+import {axiosInstance,axiosInstanceJWT} from '../AxiosHeaders.js';
+
 const Deposit = (props) => {
     const [amount, setAmount] = useState(0)
     const handleAmount = (event, amount) => {
@@ -38,6 +41,18 @@ const Deposit = (props) => {
 };
 
 const DepositHistory = () => {
+    const [transactions,setTransactions] = useState([])
+    
+    // async function getTransactions() {
+    //     try {
+    //       const response = await axiosInstance.get('/api/products/');
+    //       console.log(response);
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   }
+    // getTransactions()
+
     return (
         <div className={styles.DepositHistory}>
             <div className={styles.DepositHistoryArea}>
