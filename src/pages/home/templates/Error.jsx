@@ -35,7 +35,6 @@ export const FloatingError = (props) => {
         const timer = setTimeout(() => {
             setHidden(true);
         }, 10000);
-    
         return () => clearTimeout(timer); 
     }, []);
     return (
