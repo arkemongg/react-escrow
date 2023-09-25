@@ -1,8 +1,9 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styles from './styles/Deposit.module.css'
 
 import axios from 'axios';
-import {axiosInstance,axiosInstanceJWT} from '../AxiosHeaders.js';
+import {axiosInstance,axiosInstanceJWT, convertDatetimeToDate} from '../AxiosHeaders.js';
+import LoadingArea from '../GlobalTemplates/LoadingArea';
 
 const Deposit = (props) => {
     const [amount, setAmount] = useState(0)
@@ -42,22 +43,33 @@ const Deposit = (props) => {
 
 const DepositHistory = () => {
     const [transactions,setTransactions] = useState([])
-    
-    // async function getTransactions() {
-    //     try {
-    //       const response = await axiosInstance.get('/api/products/');
-    //       console.log(response);
-    //     } catch (error) {
-    //       console.error(error);
-    //     }
-    //   }
-    // getTransactions()
+    const [totalTransactions,setTotalTransactions] = useState(0)
+    useEffect(()=>{
+        const timer =setTimeout(() => {
+            const getTransactions = async ()=>{
+                try{
+                    const response = axiosInstanceJWT('/api/transactions/?transaction_direction=IN')
+                    return response
+                }catch(error){
+                    return error
+                }
+            }
+            const data = getTransactions()
+            data.then(data=>{
+                if(data.status === 200){
+                    setTotalTransactions(data.data.count)
+                    setTransactions(data.data.results);
+                }
+            })
+        }, 2000);
+
+        return (()=>clearTimeout(timer))
+    },[])
 
     return (
         <div className={styles.DepositHistory}>
             <div className={styles.DepositHistoryArea}>
-
-                <ul className={styles.DepositsList}>
+                <ul className={`${styles.DepositsList}`}>
 
                     <li className={`${styles.Deposits} p-5 pb-0`}>
                         <div className="text-xl w-[100px] min-w-[100px]">Date</div>
@@ -68,16 +80,20 @@ const DepositHistory = () => {
                         <div className="text-xl w-[100px] min-w-[100px]">TX ID</div>
                     </li>
                     
-                    <Transaction status={"failed"} />
-                    <Transaction status={"complete"} paymenturl={"-"} />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"pending"} paymenturl={"-"} />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"complete"} />
-                    <Transaction status={"failed"} paymenturl={"-"}/>
-                    <Transaction status={"pending"} />
+                    {transactions.length > 0 ? (
+                        transactions.map(transaction=>{
+                            return <Transaction 
+                                key = {transaction.id}
+                                date = {transaction.created_at}
+                                id = {transaction.id}
+                                status = {transaction.status}
+                                //paymenturl = {}
+                            />
+                        })
+                    ):<LoadingArea />}
+                    
                 </ul>
-                <div className="DepositHistoryBtn flex justify-center p-5">
+                <div  className={`DepositHistoryBtn flex justify-center p-5 ${totalTransactions > 8 ?"":"hidden"}`}>
                     <button className='btn btn-primary w-[150px]'>Previous</button>
                     <button className='btn btn-primary w-[150px] ml-5'>Next</button>
                 </div>
@@ -98,17 +114,17 @@ const Transaction = (props) => {
 
     let status = pending
 
-    if (props.status === "failed") {
+    if (props.status === "F") {
         status = failed
-    } else if (props.status === "complete") {
+    } else if (props.status === "C") {
         status = complete
     }
 
     return (
         <>
             <li className={`${styles.Deposits} p-5 pt-0 pb-0 font-light text-xl`}>
-                <div className="w-[100px] min-w-[100px]">12/25/20</div>
-                <div className="w-[150px] min-w-[150px]">2</div>
+                <div className="w-[100px] min-w-[100px]">{convertDatetimeToDate(props.date)}</div>
+                <div className="w-[150px] min-w-[150px]">{props.id}</div>
                 <div className="w-[180px] min-w-[180px]">
                     {status}
                 </div>

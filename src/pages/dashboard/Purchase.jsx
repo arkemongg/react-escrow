@@ -1,25 +1,52 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styles from './styles/Purchase.module.css'
+import { axiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
+import LoadingArea from '../GlobalTemplates/LoadingArea';
 
 const Purchase = (props) => {
+    const [purchaseData,setPurchaseData] = useState([])
+
+    useEffect(()=>{
+        const timer = setTimeout(() => {
+            const getPurchaseData = async ()=>{
+                try {
+                    const response = await axiosInstanceJWT.get(`/api/orders-dashboard/`);
+                    return response
+                  } catch (error) {
+                    return error
+                  }
+               }
+               const data = getPurchaseData()
+        
+               data.then(data=>{
+                    if(data.status === 200){
+                        setPurchaseData(data.data)
+                    }
+               })
+        }, 2000);
+
+        return (()=>clearTimeout(timer))
+    },[])
     return (
         <>
             <section className={`${styles.PurchaseHistorySection} `}>
             <div className={styles.PurchaseDetailsArea}>
                     <div className="balance flex flex-col items-center text-primary justify-center">
-                        <h1 className='text-4xl'>$0000</h1>
+                        <h1 className='text-4xl'>{purchaseData.total_purchased===undefined?<LoadingArea /> : `$${convertToFourDigits(purchaseData.total_purchased)}`}</h1>
                         <div className="text-lg">Total Spent</div>
                     </div>
                     <div className="escrowBalance flex flex-col items-center text-info justify-center">
-                        <h1 className='text-4xl'>0000</h1>
+                        <h1 className='text-4xl'>{purchaseData.pending_orders===undefined?<LoadingArea /> : `${convertToFourDigits(purchaseData.pending_orders)}`}</h1>
                         <div className="text-lg">Pending Purchases</div>
                     </div>
                     <div className="totalDeposit flex flex-col items-center text-success justify-center">
-                        <h1 className='text-4xl'>0000</h1>
+
+                        <h1 className='text-4xl'>{purchaseData.complete_orders===undefined?<LoadingArea /> : `${convertToFourDigits(purchaseData.complete_orders)}`}</h1>
                         <div className="text-lg">Complete Purchases</div>
                     </div>
                     <div className="totalPurchase flex flex-col items-center text-error justify-center">
-                        <h1 className='text-4xl'>0000</h1>
+
+                        <h1 className='text-4xl'>{purchaseData.failed_orders===undefined?<LoadingArea /> : `${convertToFourDigits(purchaseData.failed_orders)}`}</h1>
                         <div className="text-lg">Failed Purchases</div>
                     </div>
                 </div>

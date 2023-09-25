@@ -20,7 +20,6 @@ export const CategoryProvider = ({children})=>{
               }
               
             } catch (error) {
-
                 setCategoryError(error)
             }
           }

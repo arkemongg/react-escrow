@@ -83,7 +83,7 @@ const NewProducts = () => {
                     Check out our newest listed products
                 </div>
                 <div className={styles.categoryArea}>
-                    {categoryData.length > 0 &&fetched?(
+                    {categoryData.length > 0 ?(
                         categoryData.map(category=>{
                            return <div onClick={handleCategory} key={category.id} value = {category.id} className="btn btn-info text-white">{category.title}</div>
                         })

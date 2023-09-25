@@ -1,26 +1,56 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styles from './styles/Sales.module.css'
+import { axiosInstanceJWT,convertToFourDigits } from '../AxiosHeaders';
+import LoadingArea from '../GlobalTemplates/LoadingArea';
+
+
 
 const Sales = (props) => {
+    const [salesData,setSalesData] = useState([])
+
+    useEffect(()=>{
+        const timer = setTimeout(() => {
+            const getSalesData = async ()=>{
+                try {
+                    const response = await axiosInstanceJWT.get(`/api/sales-dashboard/`);
+                    return response
+                  } catch (error) {
+                    return error
+                  }
+               }
+               const data = getSalesData()
+        
+               data.then(data=>{
+                    if(data.status === 200){
+                        setSalesData(data.data)
+                    }
+               })
+        }, 2000);
+
+        return (()=>clearTimeout(timer))
+    },[])
+    
     return (
         <>
             <section className={`${styles.SalesHistorySection} `}>
                 
                 <div className={styles.SalesDetailsArea}>
                     <div className="balance flex flex-col items-center text-primary justify-center">
-                        <h1 className='text-4xl'>$0000</h1>
+                        <h1 className='text-4xl'>{salesData.total_earnings===undefined?<LoadingArea /> : `$${convertToFourDigits(salesData.total_earnings)}`}</h1>
                         <div className="text-lg">Total Earnings</div>
                     </div>
                     <div className="escrowBalance flex flex-col items-center text-info justify-center">
-                        <h1 className='text-4xl'>0000</h1>
+                        <h1 className='text-4xl'>{salesData.pending_sales===undefined?<LoadingArea /> : `${convertToFourDigits(salesData.pending_sales)}`}</h1>
                         <div className="text-lg">Pending Sales</div>
                     </div>
                     <div className="totalDeposit flex flex-col items-center text-success justify-center">
-                        <h1 className='text-4xl'>0000</h1>
+                        
+                        <h1 className='text-4xl'>{salesData.complete_sales===undefined?<LoadingArea /> : `${convertToFourDigits(salesData.complete_sales)}`}</h1>
                         <div className="text-lg">Complete Sales</div>
                     </div>
                     <div className="totalPurchase flex flex-col items-center text-error justify-center">
-                        <h1 className='text-4xl'>0000</h1>
+                        
+                        <h1 className='text-4xl'>{salesData.failed_sales===undefined?<LoadingArea /> : `${convertToFourDigits(salesData.failed_sales)}`}</h1>
                         <div className="text-lg">Failed Sales</div>
                     </div>
                 </div>
@@ -48,10 +78,10 @@ const SalesHistory = () => {
             <div className='flex items-center justify-between pr-5'>
                 <h1 className="text-2xl p-5">Sales History</h1>
                 <select className="select select-bordered rounded-none">
-                    <option selected disabled>Filter</option>
-                    <option>Pending</option>
-                    <option>Completed</option>
-                    <option>Failed</option>
+                    <option defaultValue={"Filter"} disabled>Filter</option>
+                    <option value={"pending"}>Pending</option>
+                    <option value={"Completed"} >Completed</option>
+                    <option value={"Failed"}>Failed</option>
                
                 </select>
             </div>
