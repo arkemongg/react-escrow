@@ -3,22 +3,17 @@ import { FeaturedProductsCard, LoadingProductsCard, Product } from './templates/
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-import { Error,EmptyMessage } from './templates/Error';
+import { Error,EmptyMessage, FloatingError } from './templates/Error';
 import { CategoryData } from '../../CategoryContext';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 
 import { axiosInstance } from '../AxiosHeaders';
 
 const NewProducts = () => {
-    const category = CategoryData()
-    
+    const {category,categoryError} = CategoryData()
     const [data,setData] = useState([])
     
-
     const [err,setErr] = useState(false)
-
-    const [categoryerr,setCategoryErr] = useState(false)
-
 
 
     const [errMessage,setErrMessage] = useState("404")
@@ -29,9 +24,9 @@ const NewProducts = () => {
     const [selectedCategory,setSelectedCategory] = useState(0)
     
     useEffect(()=>{
-        if(category.category.length>0){
-            setCategoryData(category.category[0])
-            setSelectedCategory(category.category[0][0].id)
+        if(category.length>0){
+            setCategoryData(category[0])
+            setSelectedCategory(category[0][0].id)
         }
     },[category])
 
@@ -72,13 +67,12 @@ const NewProducts = () => {
         setSelectedCategory(event.target.getAttribute("value"))
         setFetched(false)  
       }
+      useEffect(()=>{
+        if(categoryError!=null){
+            // setFetched(true)
+        }
+      },[categoryError])
 
-    //   useEffect(()=>{
-    //     if(category.category.message != undefined){
-    //         setCategoryErr(true)
-    //         setFetched(true)
-    //     }
-    // },[category.category])
     return (
         <>
             <section className={`${styles.NewProductsSection}`}>
@@ -89,11 +83,11 @@ const NewProducts = () => {
                     Check out our newest listed products
                 </div>
                 <div className={styles.categoryArea}>
-                    {categoryData.length > 0?(
+                    {categoryData.length > 0 &&fetched?(
                         categoryData.map(category=>{
                            return <div onClick={handleCategory} key={category.id} value = {category.id} className="btn btn-info text-white">{category.title}</div>
                         })
-                    ):<LoadingArea />}
+                    ): <LoadingArea />}
                 </div>
                 
                 <div className={styles.newProductsArea}>
@@ -116,8 +110,12 @@ const NewProducts = () => {
                     ):(
                        err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}
-                    {fetched&&data.length === 0 ? <EmptyMessage message={"No products found."} /> :"" }
-                    {/* {categoryerr ? <Error error={"errMessage"} /> :console.log(category.category.message) } */}
+                    {fetched&&data.length === 0 &&categoryError===null ? <EmptyMessage message={"No products found."} /> :"" }
+                    {categoryError!==null ? (
+                        <>
+                            <FloatingError message={categoryError.message} />
+                        </>
+                    )  :"" }
                 </div>
                 <div className="btnArea flex justify-center w-full mt-5">
                     <Link to='/products' className='btn btn-info text-white'>More New Products</Link>

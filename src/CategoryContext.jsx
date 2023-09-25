@@ -7,25 +7,28 @@ const CategoryContext = createContext()
 
 export const CategoryProvider = ({children})=>{
     const [category,setCategory] = useState([])
+    const [categoryError, setCategoryError] = useState(null);
 
     useEffect(()=>{
         async function getCategory() {
             try {
               const response = await axiosInstance.get('/api/category/');
-              setCategory([response.data])
-            } catch (error) {
-              
-              if(error.request.status === 0){
-                setCategory(error)
-                // alert(error.message)
+              if(response.status === 200){
+                setCategory([response.data])
+              }else{
+                console.log(response);
               }
+              
+            } catch (error) {
+
+                setCategoryError(error)
             }
           }
           getCategory()
     },[])
     
     return (
-        <CategoryContext.Provider value = {{category}}>
+        <CategoryContext.Provider value = {{category,categoryError}}>
             {children}
         </CategoryContext.Provider>
     )
