@@ -4,48 +4,65 @@ import styles from './styles/Deposit.module.css'
 import axios from 'axios';
 import {axiosInstance,axiosInstanceJWT, convertDatetimeToDate} from '../AxiosHeaders.js';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
-import { FloatingError } from '../home/templates/Error';
+import { EmptyMessage, FloatingError } from '../home/templates/Error';
+import {FlaotingErrorCustom} from '../GlobalTemplates/FloatingErrorCustom'
+import Modal from '../GlobalTemplates/Modal';
 
 const Deposit = (props) => {
     const [amount, setAmount] = useState(0)
     const [depositError,setDepositError] = useState("")
     const [err,setErr] = useState(false)
+    const [clicked,setClicked] = useState(false)
+
+    const [depositData,setDepositData] = useState([])
+    const [depositSuccess,setDepositSuccess] = useState(false)
 
     const handleAmount = (event, amount) => {
         setAmount(amount)
     }
 
     const handleDeposit = (event)=>{
+
         setErr(false)
-        if(amount<10){
+        if(amount<10 || amount>5000){
             setErr(true)
-            setDepositError(`Ensure this value (${amount}) is greater than or equal to $10.`)
+            if(amount<10){
+                setDepositError(`Ensure the amount is greater than or equal to $10.`)
+            }else{
+                setDepositError(`Ensure the amount is smaller than or equal to $5000.`)
+            }
             return;
         }
-        const postDeposit = async ()=>{
-            try{
-                const response =  axiosInstanceJWT.post('/api/deposit/',{
-                    amount:amount
-                })
-                return response
-            }catch(error){
-                return error
+        setClicked(true)
+        setTimeout(() => {
+            const Amount = parseFloat(amount).toFixed(2)
+            const postDeposit = async ()=>{
+                try{
+                    const response =  axiosInstanceJWT.post('/api/deposit/',{
+                        amount:Amount
+                    })
+                    return response
+                }catch(error){
+                    console.log(error);
+                    return error
+                }
             }
-        }
-        const data = postDeposit()
-        data.then(data=>{
-            if(data.status===201){
-                console.log(data);
-            }
-        }).catch(err=>{
-            if(err.response.status===400){
-                setErr(true)
-                setDepositError(err.response.data.error)
-            }
-        })
+            const data = postDeposit()
+            data.then(data=>{
+                if(data.status===201){
+                    setDepositData(data.data)
+                    setDepositSuccess(true)
+                }
+            }).catch(err=>{
+                    setErr(true)
+                    setDepositError(err.response.data.error)
+            })
+            setClicked(false)
+        }, 2000);
     }
     return (
         <>  
+            {err?<FlaotingErrorCustom err={err} setErr={setErr} message = {depositError}/>:""}
             <section className={`${styles.DepositSection} `}>
                 <div className={styles.DepositArea}>
                     <h1 className="text-4xl p-5">Deposit</h1>
@@ -64,12 +81,14 @@ const Deposit = (props) => {
                         <p className="text-2xl pb-5">Enter custom amount</p>
                         <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={amount} type="text" className='input input-bordered rounded-none md:w-[80%] w-[100%] bg-[#EFF1F5]' />
                     </div>
-                    <p className={`text-error px-5 py-0 ${err?"":"hidden"}`}>{depositError}</p>
+                    <DepositModal hidden = {depositSuccess} setHidden={setDepositSuccess} data = {depositData} />
+                    {/* <p className={`text-error px-5 py-0 ${err?"":"hidden"}`}>{depositError}</p> */}
                     <div className="div flex px-5 py-2">
-                        <button onClick={handleDeposit} className='btn btn-primary w-[330px] '>Deposit</button>
+                        <button onClick={handleDeposit} className='btn btn-primary w-[320px]'>
+                            {clicked ? <span className="loading loading-dots loading-md"></span> : "Deposit"}
+                        </button>
                     </div>
                 </div>
-
                 <DepositHistory />
             </section>
         </>
@@ -83,7 +102,8 @@ const DepositHistory = () => {
     const [nextUrl,setNextUrl] = useState(null)
     
     const [transactions,setTransactions] = useState([])
-    const [totalTransactions,setTotalTransactions] = useState(0)
+    const [totalTransactions,setTotalTransactions] = useState(-1)
+    const [fetched,setFetched] = useState(false)
 
     const handlePrevBtn = (event)=>{
         if(prevUrl===null){
@@ -104,6 +124,7 @@ const DepositHistory = () => {
     
 
     useEffect(()=>{
+        setFetched(false)
         const timer =setTimeout(() => {
             const getTransactions = async ()=>{
                 try{
@@ -120,6 +141,11 @@ const DepositHistory = () => {
                     setTransactions(data.data.results);
                     setPrevUrl(data.data.previous)
                     setNextUrl(data.data.next)
+                    setFetched(true)
+                }
+            }).catch(err=>{
+                if(err.response.status===401){
+                    console.log("Authentication Error.");
                 }
             })
         }, 2000);
@@ -140,7 +166,8 @@ const DepositHistory = () => {
                         <div className="text-xl w-[100px] min-w-[100px]">TX ID</div>
                     </li>
                     
-                    {transactions.length > 0 ? (
+                    {fetched ? (
+                        transactions.length > 0 ?
                         transactions.map(transaction=>{
                             return <Transaction 
                                 key = {transaction.id}
@@ -150,10 +177,10 @@ const DepositHistory = () => {
                                 amount = {transaction.amount}
                                 paymenturl = {transaction.payment_url}
                             />
-                        })
+                        }):<EmptyMessage message = {"No transactions found."}/>
                     ):<LoadingArea />}
-                    
                 </ul>
+                
                 <div  className={`DepositHistoryBtn flex justify-center p-5 ${totalTransactions > 8 ?"":"hidden"}`}>
                     <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl===null?"pointer-events-none":""}`}>Previous</button>
                     <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl===null?"pointer-events-none":""}`}>Next</button>
@@ -196,6 +223,40 @@ const Transaction = (props) => {
                 <div className="w-[100px] min-w-[100px]">-</div>
             </li>
             
+        </>
+    )
+}
+
+
+const DepositModal = (props)=>{
+    
+    const handleHideBtn = ()=>{
+        props.setHidden(false)
+    }
+    return(
+        <>
+            <div className={`${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.hidden?'':"hidden"}` }>
+                <div className={styles.ModalArea}>
+                    <button onClick={handleHideBtn} className={styles.closeModal}>
+                        <img src="/dashboardassets/delete.png" alt="" />
+                    </button>
+                    <div className='text-center text-2xl font-bold'>
+                        Transaction Has been Created....
+                    </div>
+                    <br />
+                    <div className='text-center text-sm font-light p-2'>
+                        Amount = ${props.data.amount}
+                    </div>
+                    <div className="btnArea flex justify-center">
+                        <a href={props.data.payment_url} target='_blank' className="btn btn-neutral">Pay with Crypto 
+                            <img style={{width:'25px'}} src="/dashboardassets/cryptocurrency.png" alt="crypto" />
+                        </a>
+                    </div>
+                    <div className='text-sm font-light text-info p-5 text-center'>
+                            You can pay within an hour. Please check email or transactions history for details.
+                    </div>
+                </div>
+            </div>
         </>
     )
 }
