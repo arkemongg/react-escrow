@@ -14,7 +14,11 @@ export const CategoryProvider = ({children})=>{
               const response = await axiosInstance.get('/api/category/');
               setCategory([response.data])
             } catch (error) {
-              console.error(error);
+              
+              if(error.request.status === 0){
+                setCategory(error)
+                // alert(error.message)
+              }
             }
           }
           getCategory()

@@ -11,10 +11,18 @@ import { axiosInstance } from '../AxiosHeaders';
 
 const NewProducts = () => {
     const category = CategoryData()
-
+    
     const [data,setData] = useState([])
+    
+
     const [err,setErr] = useState(false)
+
+    const [categoryerr,setCategoryErr] = useState(false)
+
+
+
     const [errMessage,setErrMessage] = useState("404")
+
     const [fetched,setFetched] = useState(false)
 
     const [categoryData,setCategoryData] = useState([])
@@ -65,6 +73,12 @@ const NewProducts = () => {
         setFetched(false)  
       }
 
+    //   useEffect(()=>{
+    //     if(category.category.message != undefined){
+    //         setCategoryErr(true)
+    //         setFetched(true)
+    //     }
+    // },[category.category])
     return (
         <>
             <section className={`${styles.NewProductsSection}`}>
@@ -102,7 +116,8 @@ const NewProducts = () => {
                     ):(
                        err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}
-                    {fetched&&data.length === 0 ? <EmptyMessage message={"No products found."} /> :console.log("no") }
+                    {fetched&&data.length === 0 ? <EmptyMessage message={"No products found."} /> :"" }
+                    {/* {categoryerr ? <Error error={"errMessage"} /> :console.log(category.category.message) } */}
                 </div>
                 <div className="btnArea flex justify-center w-full mt-5">
                     <Link to='/products' className='btn btn-info text-white'>More New Products</Link>
