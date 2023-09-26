@@ -1,5 +1,8 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styles from './styles/Withdrawals.module.css'
+import { axiosInstanceJWT } from '../AxiosHeaders';
+import { EmptyMessage } from '../home/templates/Error';
+import LoadingArea from '../GlobalTemplates/LoadingArea';
 
 const Withdrawals = (props) => {
     const [amount, setAmount] = useState(0)
@@ -25,6 +28,62 @@ const Withdrawals = (props) => {
 };
 
 const WithdrawalsHistory = () => {
+    const [url,setUrl] = useState("/api/transactions/?transaction_direction=OUT")
+    
+    const [prevUrl,setPrevUrl] = useState(null)
+    const [nextUrl,setNextUrl] = useState(null)
+    
+    const [transactions,setTransactions] = useState([])
+    const [totalTransactions,setTotalTransactions] = useState(-1)
+    const [fetched,setFetched] = useState(false)
+
+    const handlePrevBtn = (event)=>{
+        if(prevUrl===null){
+            return
+        }
+        setTransactions([])
+        setUrl(prevUrl)
+
+    }
+    const handleNextBtn = (event)=>{
+        if(nextUrl===null){
+            return
+        }
+        setTransactions([])
+        setUrl(nextUrl)
+    }
+
+    
+
+    useEffect(()=>{
+        setFetched(false)
+        const timer =setTimeout(() => {
+            const getTransactions = async ()=>{
+                try{
+                    const response = axiosInstanceJWT(url)
+                    return response
+                }catch(error){
+                    return error
+                }
+            }
+            const data = getTransactions()
+            data.then(data=>{
+                if(data.status === 200){
+                    setTotalTransactions(data.data.count)
+                    setTransactions(data.data.results);
+                    setPrevUrl(data.data.previous)
+                    setNextUrl(data.data.next)
+                    setFetched(true)
+                }
+            }).catch(err=>{
+                if(err.response.status===401){
+                    console.log("Authentication Error.");
+                }
+            })
+        }, 2000);
+        return (()=>clearTimeout(timer))
+    },[url])
+
     return (
         <div className={styles.WithdrawalsHistory}>
             <div className={styles.WithdrawalsHistoryArea}>
@@ -39,18 +98,23 @@ const WithdrawalsHistory = () => {
                         <div className="text-xl w-[100px] min-w-[100px]">TX ID</div>
                     </li>
                     <hr />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"complete"}  />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"pending"}  />
-                    <Transaction status={"failed"} />
-                    <Transaction status={"complete"} />
-                    <Transaction status={"failed"}/>
-                    <Transaction status={"pending"} />
+                    {fetched ? (
+                        transactions.length > 0 ?
+                        transactions.map(transaction=>{
+                            return <Transaction 
+                                key = {transaction.id}
+                                date = {transaction.created_at}
+                                id = {transaction.id}
+                                status = {transaction.status}
+                                amount = {transaction.amount}
+                                paymenturl = {transaction.payment_url}
+                            />
+                        }):<EmptyMessage message = {"No transactions found."}/>
+                    ):<LoadingArea />}
                 </ul>
-                <div className="DepositHistoryBtn flex justify-center p-5">
-                    <button className='btn btn-primary w-[150px]'>Previous</button>
-                    <button className='btn btn-primary w-[150px] ml-5'>Next</button>
+                <div className={`flex justify-center p-5 ${totalTransactions > 8 ?"":"hidden"}`}>
+                    <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl===null?"pointer-events-none":""}`}>Previous</button>
+                    <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl===null?"pointer-events-none":""}`}>Next</button>
                 </div>
             </div>
 
