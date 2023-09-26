@@ -179,7 +179,7 @@ const PurchaseCard = (props) => {
 }
 
 const BalanceHistory = () => {
-    const [url,setUrl] = useState("/api/balancehistory/?transaction_direction=IN")
+    const [url,setUrl] = useState("/api/balancehistory/?transaction_direction=OUT")
 
     const [prevUrl,setPrevUrl] = useState(null)
     const [nextUrl,setNextUrl] = useState(null)

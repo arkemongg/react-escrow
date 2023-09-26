@@ -2,6 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import styles from './styles/Sales.module.css'
 import { axiosInstanceJWT,convertToFourDigits } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
+import { EmptyMessage } from '../home/templates/Error';
 
 
 
@@ -180,6 +181,58 @@ const SalesCard = (props) => {
 
 
 const BalanceHistory = () => {
+    const [url,setUrl] = useState("/api/balancehistory/?transaction_direction=IN")
+
+    const [prevUrl,setPrevUrl] = useState(null)
+    const [nextUrl,setNextUrl] = useState(null)
+
+    const [transactions,setTransactions] = useState([])
+    const [totalTransactions,setTotalTransactions] = useState(-1)
+    const [fetched,setFetched] = useState(false)
+
+    const handlePrevBtn = (event)=>{
+        if(prevUrl===null){
+            return
+        }
+        setTransactions([])
+        setUrl(prevUrl)
+    }
+    const handleNextBtn = (event)=>{
+        if(nextUrl===null){
+            return
+        }
+        setTransactions([])
+        setUrl(nextUrl)
+    }
+    useEffect(()=>{
+        setFetched(false)
+        const timer =setTimeout(() => {
+            const getTransactions = async ()=>{
+                try{
+                    const response = axiosInstanceJWT(url)
+                    return response
+                }catch(error){
+                    return error
+                }
+            }
+            const data = getTransactions()
+            data.then(data=>{
+                if(data.status === 200){
+                    setTotalTransactions(data.data.count)
+                    setTransactions(data.data.results);
+                    setPrevUrl(data.data.previous)
+                    setNextUrl(data.data.next)
+                    setFetched(true)
+                }
+            }).catch(err=>{
+                if(err.response.status===401){
+                    console.log("Authentication Error.");
+                }
+            })
+        }, 2000);
+        return (()=>clearTimeout(timer))
+    },[url])
+
     return (
         <div className={styles.BalanceHistory}>
             <div className='flex items-center justify-between pr-5'>
@@ -190,24 +243,28 @@ const BalanceHistory = () => {
                 <ul className={styles.BalanceList}>
                     <li className={`${styles.Balance} p-5 pb-0`}>
                         <div className="font-bold w-[100px] min-w-[100px]">Transfer ID</div>
-                        <div className="font-bold w-[100px] min-w-[100px]">Order ID</div> 
+                        <div className="font-bold w-[100px] min-w-[100px]">Sales ID</div> 
                         <div className="font-bold w-[100px] min-w-[100px]">Type</div>
                         <div className="font-bold w-[100px] min-w-[100px]">Amount</div>
                         <div className="font-bold w-[100px] min-w-[100px]">Last Blance</div>
                     </li>
                     <hr />
-                    <BalanceCard status={"failed"} />
-                    <BalanceCard status={"complete"}  />
-                    <BalanceCard status={"failed"} />
-                    <BalanceCard status={"pending"}  />
-                    <BalanceCard status={"failed"} />
-                    <BalanceCard status={"complete"} />
-                    <BalanceCard status={"failed"} />
-                    <BalanceCard status={"pending"} />
+                    {fetched ? (
+                        transactions.length > 0 ?
+                        transactions.map(transaction=>{
+                            return <BalanceCard
+                                key = {transaction.id}
+                                id = {transaction.id}
+                                order = {transaction.order}
+                                amount = {transaction.amount}
+                                last_balance = {transaction.last_balance}
+                            />
+                        }):<EmptyMessage message = {"No transactions found."}/>
+                    ):<LoadingArea />}
                 </ul>
-                <div className="SalesHistoryBtn flex justify-center p-5">
-                    <button className='btn btn-primary w-[150px]'>Previous</button>
-                    <button className='btn btn-primary w-[150px] ml-5'>Next</button>
+                <div className={`flex justify-center p-5 ${totalTransactions > 8 ?"":"hidden"}`}>
+                    <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl===null?"pointer-events-none":""}`}>Previous</button>
+                    <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl===null?"pointer-events-none":""}`}>Next</button>
                 </div>
             </div>
 
@@ -220,11 +277,11 @@ const BalanceCard = (props) => {
     return (
         <>
             <li className={`${styles.Balance} p-5 pt-0 pb-0 font-light`}>
-                    <div className="w-[100px] min-w-[100px]">2</div>
-                    <div className="w-[100px] min-w-[100px]">5</div> 
+                    <div className="w-[100px] min-w-[100px]">{props.id}</div>
+                    <div className="w-[100px] min-w-[100px]">{props.order}</div> 
                     <div className="w-[100px] min-w-[100px]">Marketplace</div>
-                    <div className="w-[100px] min-w-[100px] text-success">+300.00</div>
-                    <div className="w-[100px] min-w-[100px] text-success">5000.00</div>
+                    <div className="w-[100px] min-w-[100px] text-success">+{props.amount}</div>
+                    <div className="w-[100px] min-w-[100px] text-success">${props.last_balance}</div>
             </li>
             
         </>

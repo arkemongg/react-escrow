@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Withdrawals.module.css'
-import { axiosInstanceJWT } from '../AxiosHeaders';
+import { axiosInstanceJWT, convertDatetimeToDate } from '../AxiosHeaders';
 import { EmptyMessage } from '../home/templates/Error';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 
@@ -133,21 +133,21 @@ const Transaction = (props) => {
 
     let status = pending
 
-    if (props.status === "failed") {
+    if (props.status === "F") {
         status = failed
-    } else if (props.status === "complete") {
+    } else if (props.status === "C") {
         status = complete
     }
 
     return (
         <>
             <li className={`${styles.Withdrawals} p-5 pt-0 pb-0 font-light text-xl`}>
-                <div className="w-[100px] min-w-[100px]">12/25/20</div>
-                <div className="w-[150px] min-w-[150px]">2</div>
+                <div className="w-[100px] min-w-[100px]">{convertDatetimeToDate(props.date)}</div>
+                <div className="w-[150px] min-w-[150px]">{props.id}</div>
                 <div className="w-[180px] min-w-[180px]">
                     {status}
                 </div>
-                <div className="w-[100px] min-w-[100px]">20</div>
+                <div className="w-[100px] min-w-[100px]">${(props.amount).toFixed(2)}</div>
                 <div className="w-[100px] min-w-[100px]">-</div>
             </li>
             <hr />
