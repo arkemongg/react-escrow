@@ -249,7 +249,7 @@ const BalanceHistory = () => {
                         <div className="font-bold w-[100px] min-w-[100px]">Sales ID</div> 
                         <div className="font-bold w-[100px] min-w-[100px]">Type</div>
                         <div className="font-bold w-[100px] min-w-[100px]">Amount</div>
-                        <div className="font-bold w-[100px] min-w-[100px]">Last Blance</div>
+                        {/* <div className="font-bold w-[100px] min-w-[100px]">Last Blance</div> */}
                     </li>
                     <hr />
                     {fetched ? (
@@ -284,7 +284,7 @@ const BalanceCard = (props) => {
                     <div className="w-[100px] min-w-[100px]">{props.order}</div> 
                     <div className="w-[100px] min-w-[100px]">Marketplace</div>
                     <div className="w-[100px] min-w-[100px] text-success">+{props.amount}</div>
-                    <div className="w-[100px] min-w-[100px] text-success">${props.last_balance}</div>
+                    {/* <div className="w-[100px] min-w-[100px] text-success">${props.last_balance}</div> */}
             </li>
             
         </>
