@@ -1,12 +1,14 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Sales.module.css'
-import { axiosInstanceJWT,convertToFourDigits } from '../AxiosHeaders';
+import { AxiosInstanceJWT,convertToFourDigits } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { EmptyMessage } from '../home/templates/Error';
 
 
 
 const Sales = (props) => {
+    const axiosInstanceJWT = AxiosInstanceJWT()
+
     const [salesData,setSalesData] = useState([])
 
     useEffect(()=>{
@@ -181,6 +183,7 @@ const SalesCard = (props) => {
 
 
 const BalanceHistory = () => {
+    const axiosInstanceJWT = AxiosInstanceJWT()
     const [url,setUrl] = useState("/api/balancehistory/?transaction_direction=IN")
 
     const [prevUrl,setPrevUrl] = useState(null)

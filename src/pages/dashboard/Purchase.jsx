@@ -1,11 +1,12 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Purchase.module.css'
-import { axiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
+import { AxiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { EmptyMessage } from '../home/templates/Error';
 
 const Purchase = (props) => {
     const [purchaseData,setPurchaseData] = useState([])
+    const axiosInstanceJWT = AxiosInstanceJWT()
 
     useEffect(()=>{
         const timer = setTimeout(() => {
@@ -181,6 +182,7 @@ const PurchaseCard = (props) => {
 }
 
 const BalanceHistory = () => {
+    const axiosInstanceJWT = AxiosInstanceJWT()
     const [url,setUrl] = useState("/api/balancehistory/?transaction_direction=OUT")
 
     const [prevUrl,setPrevUrl] = useState(null)

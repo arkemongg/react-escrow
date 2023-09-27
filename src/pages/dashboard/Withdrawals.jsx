@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Withdrawals.module.css'
-import { axiosInstanceJWT, convertDatetimeToDate } from '../AxiosHeaders';
+import { AxiosInstanceJWT, convertDatetimeToDate } from '../AxiosHeaders';
 import { EmptyMessage } from '../home/templates/Error';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 
@@ -28,6 +28,7 @@ const Withdrawals = (props) => {
 };
 
 const WithdrawalsHistory = () => {
+    const axiosInstanceJWT = AxiosInstanceJWT()
     const [url,setUrl] = useState("/api/transactions/?transaction_direction=OUT")
     
     const [prevUrl,setPrevUrl] = useState(null)

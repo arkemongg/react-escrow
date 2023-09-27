@@ -1,14 +1,29 @@
+import { useState } from 'react';
 import {apiUrl} from './Urls.js'
 import axios from 'axios';
     //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk1NzY5ODAzLCJpYXQiOjE2OTU2ODM0MDMsImp0aSI6IjEyODY4MWUwMWJhNzRiOTQ5MmRlYWNiZDgwNjc2Y2IzIiwidXNlcl9pZCI6NH0.SsrYlmZ29NDMyZJwdCHVXo6zvc9LpmMNyU4oRwaoYvk
-    const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk1ODYwMTM0LCJpYXQiOjE2OTU3NzM3MzQsImp0aSI6IjdlYmUxZDcwMTVjNzRlNWRhNDA4MDUwZmJiMTM4YTdjIiwidXNlcl9pZCI6Mn0.FhK5Dnws-j493CNc3QC9vB4c1iS18zuKv3ZV7FwM4Mw"
-    export const axiosInstanceJWT = axios.create({
-        baseURL: apiUrl, 
-        headers: {
-            'Authorization': `JWT ${jwtToken}`,
-            'Content-Type': 'application/json'
-          }
-    });
+    
+    export function AxiosInstanceJWT() {
+      const jwtToken = getCookie("token");
+  
+      return axios.create({
+          baseURL: apiUrl, 
+          headers: {
+              'Authorization': `JWT ${jwtToken}`,
+              'Content-Type': 'application/json'
+            }
+      });
+    }
+    
+    // const jwtToken = getCookie("token")
+    
+    // export const axiosInstanceJWT = axios.create({
+    //     baseURL: apiUrl, 
+    //     headers: {
+    //         'Authorization': `JWT ${jwtToken}`,
+    //         'Content-Type': 'application/json'
+    //       }
+    // });
 
 
    export const axiosInstance = axios.create({
@@ -34,6 +49,7 @@ export function convertDatetimeToDate(datetimeString) {
 
   return `${day}-${month}-${year}`;
 }
+
 
 // Handle Cookies
 

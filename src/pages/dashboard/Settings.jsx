@@ -106,7 +106,7 @@ const ShippingDetails = ()=>{
                     <label  className='text-2xl block pb-2' htmlFor="shippingEmail">
                         Shipping Email
                     </label>
-                    <input type="text" id='lastname' placeholder="Shipping Email" className="input input-bordered w-full rounded-none " /> 
+                    <input type="text" id='shippingemail' placeholder="Shipping Email" className="input input-bordered w-full rounded-none " /> 
                 </div>
                  <div className="inptGroup flex flex-col p-5">
                         <label className='text-2xl pb-2' htmlFor="firstname ">Shipping Details</label>

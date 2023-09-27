@@ -1,12 +1,14 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Deposit.module.css'
-import {axiosInstance,axiosInstanceJWT, convertDatetimeToDate} from '../AxiosHeaders.js';
+import {AxiosInstanceJWT, convertDatetimeToDate} from '../AxiosHeaders.js';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { EmptyMessage, FloatingError } from '../home/templates/Error';
 import {FlaotingErrorCustom} from '../GlobalTemplates/FloatingErrorCustom'
 import Modal from '../GlobalTemplates/Modal';
 
 const Deposit = (props) => {
+    const axiosInstanceJWT = AxiosInstanceJWT()
+    
     const [amount, setAmount] = useState(0)
     const [depositError,setDepositError] = useState("")
     const [err,setErr] = useState(false)
@@ -94,7 +96,7 @@ const Deposit = (props) => {
 
 const DepositHistory = () => {
     const [url,setUrl] = useState("/api/transactions/?transaction_direction=IN")
-    
+    const axiosInstanceJWT = AxiosInstanceJWT()
     const [prevUrl,setPrevUrl] = useState(null)
     const [nextUrl,setNextUrl] = useState(null)
     

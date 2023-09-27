@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styles from './styles/DashboardOption.module.css'
-import { axiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
+import { AxiosInstanceJWT, axiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 
 const DashboardOption = (props) => {
@@ -22,7 +22,7 @@ const DashboardOption = (props) => {
 
   const BalanceDetails = ()=>{
     const [balanceData,setBalanceData] = useState([])
-
+    const axiosInstanceJWT = AxiosInstanceJWT()
     useEffect(()=>{
         const timer = setTimeout(() => {
             const getBalanceData = async ()=>{
@@ -30,7 +30,7 @@ const DashboardOption = (props) => {
                     const response = await axiosInstanceJWT.get(`/api/balance/`);
                     return response
                   } catch (error) {
-                    return error
+                    throw error
                   }
                }
                const data = getBalanceData()
@@ -39,6 +39,8 @@ const DashboardOption = (props) => {
                     if(data.status === 200){
                         setBalanceData(data.data[0])
                     }
+               }).catch(err=>{
+                console.log("BalanceError");
                })
         }, 2000);
 

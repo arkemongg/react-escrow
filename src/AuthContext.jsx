@@ -34,8 +34,8 @@ export const AuthProvider = ({ children }) => {
     }
   },[])
   console.log(isLogged);
-  const login = (props) => {
-    setCookie(props.jwt)
+  const login = (jwt) => {
+    setCookie(jwt)
     setIsLogged(true);
   }
 
