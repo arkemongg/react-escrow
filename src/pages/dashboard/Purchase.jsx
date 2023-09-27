@@ -5,6 +5,7 @@ import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { EmptyMessage, FloatingError } from '../home/templates/Error';
 import { useAuth } from '../../AuthContext';
 import { apiUrl } from '../Urls';
+import { Link } from 'react-router-dom';
 
 const Purchase = (props) => {
     const [purchaseData, setPurchaseData] = useState([])
@@ -189,12 +190,12 @@ const PurchaseHistory = () => {
                                     feedback={order.feedback}
                                     seller_id={order.seller}
                                 />
-                            }) : <EmptyMessage message={"No transactions found."} />
+                            }) : <EmptyMessage message={"No orders found."} />
                     ) : <LoadingArea />}
                 </ul>
-                <div className="DepositHistoryBtn flex justify-center p-5">
-                    <button className='btn btn-primary w-[150px]'>Previous</button>
-                    <button className='btn btn-primary w-[150px] ml-5'>Next</button>
+                <div className={`flex justify-center p-5 ${totalOrders > 8 ? "" : "hidden"}`}>
+                        <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl === null ? "pointer-events-none" : ""}`}>Previous</button>
+                        <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl === null ? "pointer-events-none" : ""}`}>Next</button>
                 </div>
             </div>
 
@@ -210,26 +211,37 @@ export default memo(Purchase);
 
 const PurchaseCard = (props) => {
     const [hidden, setHidden] = useState(false);
+    const [reviewHidden, setReviewHidden] = useState(false);
     const [visible, setVisible] = useState(false);
-    const handleReview = (event) => {
+    const handleComplete = (event) => {
         setHidden(true)
+    }
+    const handleReview = (event) => {
+        setReviewHidden(true)
     }
 
     const pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
     const complete = <div className='bg-success text-sm text-white w-[100px] rounded text-center'> Complete </div>
     const failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'> Failed </div>
 
-    const escrow_pending = <button onClick={handleReview} className='bg-primary text-xs py-2 text-white w-[110px] rounded'> Mark As Complete </button>
+    const escrow_pending = <button onClick={handleComplete} className='bg-primary text-xs py-2 text-white w-[110px] rounded'> Mark As Complete </button>
     const escrow_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'>Complete </div>
     const escrow_failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'>Failed </div>
 
-    const review_pending = <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Write A Review </button>
-    const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> - </div>
+    const review_pending = <button onClick={handleReview} className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Write A Review </button>
+    const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> {props.feedback!==null ? props.feedback.id:"-"} </div>
     const review_failed = <div className=''> - </div>
 
     let status = pending
     let escrow = escrow_pending
-    let review = review_pending
+    let review = review_failed
+    if(props.feedback!==null){
+        if(props.feedback.completed===true){
+            review = review_complete
+        }else{
+            review = review_pending
+        }
+    }
 
     if (props.status === "F") {
         status = failed
@@ -238,16 +250,20 @@ const PurchaseCard = (props) => {
     } else if (props.status === "C") {
         status = complete
         escrow = escrow_complete
-        review = review_complete
     }
+
+
 
     return (
         <>  
             < ConfirmedModal visible = {visible} setVisible = {setVisible} />
             < CompleteEscrowModal setVisible = {setVisible} id={props.id} escrow_id={props.escrow_id} hidden={hidden} setHidden={setHidden} />
+            
+            < CompleteReview hidden={reviewHidden} setHidden={setReviewHidden} id={props.id} review_id = {props.feedback!=null? props.feedback.id:""} />
+            
             <li className={`${styles.Purchase} p-5 pt-0 pb-0 font-light`}>
                 <div className="w-[100px] min-w-[70px]">{props.id}</div>
-                <div className='w-[120px] min-w-[120px]'>{props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title}</div>
+                <Link to={`/buynow/${props.id}/order_id=${props.id}/`} className='w-[120px] min-w-[120px] text-info'>{props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title}</Link>
                 <div className="w-[100px] min-w-[100px]">{convertDatetimeToDate(props.date)}</div>
                 <div className="w-[100px] min-w-[100px] max-h-[80px]">
                     <img src={apiUrl + props.img} alt="productimg" />
@@ -329,13 +345,14 @@ const CompleteEscrowModal = (props) => {
             <div className={`${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.hidden ? '' : "hidden"}`}>
                 <div className={styles.ModalArea}>
                     <div className="relative ">
-                        <div className="absolute top-3 m-2  rounded  inset-0 flex items-center justify-center">
-                            <span className='bg-info p-1 rounded'>ID : {props.id}</span>
+                        <div className="absolute m-8 rounded  inset-0 flex items-center justify-center">
+                            <span className='btn btn-info  min-w-[150px]'>ID : {props.id}</span>
                         </div>
                     </div>
                     <button onClick={handleHideBtn} className={styles.closeModal}>
                         <img src="/dashboardassets/delete.png" alt="" />
                     </button>
+                    <br />
                     <div className='text-center text-2xl font-bold'>
                         Do you want to confirm the order as received?
                     </div>
@@ -376,6 +393,107 @@ const ConfirmedModal = (props) => {
         </>
     )
 }
+const CompleteReview = (props) => {
+    const [errorMessage,setErrorMessage] = useState(null)
+    const [clicked,setClicked] = useState(false)
+    const axiosInstanceJWT = AxiosInstanceJWT()
+    const { logout } = useAuth();
+
+    const [rating,setRating] = useState(0)
+    const [comment,setComment] = useState("")
+    const [success,setSuccess] = useState(null)
+
+    const handleEscrowConfrimation = ()=>{
+        
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            setErrorMessage(`Rating must be a number between 1 and 5.`);
+            return;
+        }
+        setClicked(true)
+        setTimeout(() => {
+            const putdata = {
+                    rating: rating,
+                    comment: comment
+                }
+            
+            const getReviewData = async ()=>{
+                try{
+                    const response = await axiosInstanceJWT.put(`/api/myfeedback/${props.review_id}/`, putdata);
+                    return response
+                }catch(error){
+                    throw error
+                }
+            }
+    
+            const confirmation = getReviewData()
+    
+            confirmation.then(data=>{
+                if(data.status === 200){
+                    setErrorMessage(null)
+                    setSuccess("Review for your order has been added successfully.");
+                }
+            }).catch(err=>{
+                setSuccess(null)
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout()
+                    } else {
+                        if(err.response.data.error){
+                            setErrorMessage(err.response.data.error);
+                        }else{
+                            alert("Unexpected error.");
+                        }
+                    }
+                } else {
+                    alert("No response received from the server.");
+                }
+                
+            })
+            setClicked(false)
+        }, 2000);
+    }
+    const handleHideBtn = () => {
+        props.setHidden(false)
+    }
+
+    return (
+        <>
+            <div className={`${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.hidden ? '' : "hidden"}`}>
+                <div className={styles.ReviewModalArea}>
+                    <button onClick={handleHideBtn} className={styles.closeModal}>
+                        <img src="/dashboardassets/delete.png" alt="" />
+                    </button>
+                    <div className='text-center text-xl font-bold'>
+                       Please write your review about the order {props.id}.
+                    </div>
+                    <br />
+                    <div className='flex flex-col justify-center w-[90%] m-auto p-1'>
+                        <div className=' text-sm'>
+                            How many stars do you want to give?
+                        </div>
+                        <input onChange={event=>setRating(event.target.value)} type="text" placeholder="1-5" className="input input-bordered w-[100%]" />
+                    </div>
+                    <div className='flex flex-col justify-center w-[90%] m-auto p-1'>
+                        <textarea onChange={event=>setComment(event.target.value)} className="textarea textarea-bordered my-2" placeholder="Comment"></textarea>
+                    </div>
+                    
+
+                    <p className="text-error text-center">{errorMessage!==null?errorMessage:""}</p>
+                    <p className="text-success text-center">{success!==null?success:""}</p>
+                    
+                    
+                    <div className="btnArea flex justify-center">
+                       <div onClick={handleEscrowConfrimation} className="btn btn-success w-[150px]">
+                        {clicked?<span className="loading loading-dots loading-md"></span>:"Confirm"}
+                       </div>
+                       <div onClick={handleHideBtn} className="btn btn-error w-[150px] ml-1">Close</div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
 
 const BalanceHistory = () => {
     const [floatMessage, setFloatMessage] = useState(null)
@@ -426,6 +544,7 @@ const BalanceHistory = () => {
                     setFetched(true)
                 }
             }).catch(err => {
+                
                 if (err.response) {
                     if (err.response.status === 401) {
                         logout()
