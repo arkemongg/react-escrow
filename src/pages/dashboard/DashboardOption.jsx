@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import styles from './styles/DashboardOption.module.css'
 import { AxiosInstanceJWT, axiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
+import { useAuth } from '../../AuthContext';
+import { FloatingError } from '../home/templates/Error';
 
 const DashboardOption = (props) => {
 
@@ -21,7 +23,11 @@ const DashboardOption = (props) => {
   export default DashboardOption;
 
   const BalanceDetails = ()=>{
+    const [floatMessage,setFloatMessage] = useState(null)
+
+    const { logout } = useAuth();
     const [balanceData,setBalanceData] = useState([])
+
     const axiosInstanceJWT = AxiosInstanceJWT()
     useEffect(()=>{
         const timer = setTimeout(() => {
@@ -40,13 +46,25 @@ const DashboardOption = (props) => {
                         setBalanceData(data.data[0])
                     }
                }).catch(err=>{
-                console.log("BalanceError");
+                    if (err.response) {
+                        if (err.response.status === 401) {
+                            logout()
+                        } else if(err.response.status === 429)  {
+                            setFloatMessage("Too many requests.")
+                        }else{
+                            console.log("Unexpected error with status code: ", err.response.status);
+                        }
+                    } else {
+                        alert("No response received from the server.");
+                    }
                })
         }, 2000);
 
         return (()=>clearTimeout(timer))
     },[])
     return(
+        <>
+        {floatMessage!=null?<FloatingError message = {floatMessage} />:""}
         <div className={styles.BalanceDetailsArea}>
             <div className="balance flex flex-col items-center text-primary justify-center">
                 <h1 className='text-4xl'>{balanceData.balance===undefined?<LoadingArea /> : `$${convertToFourDigits(balanceData.balance)}`}</h1>
@@ -68,6 +86,7 @@ const DashboardOption = (props) => {
 
             </div>
         </div>
+        </>
     )
   }
 

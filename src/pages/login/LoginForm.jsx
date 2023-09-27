@@ -1,10 +1,9 @@
 import styles from './styles/Login.module.css'
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext.jsx"
-import { useNavigate } from "react-router-dom";
 import LoadingArea  from '../GlobalTemplates/LoadingArea';
-import { axiosInstance } from '../AxiosHeaders';
+import { axiosInstance, validatePassword } from '../AxiosHeaders';
 const LoginArea = () => {
     
     const [hidden , setHidden]= useState(true)
@@ -18,6 +17,17 @@ const LoginArea = () => {
 
     const handleLogin = (event)=>{
         event.preventDefault()
+
+        const pass = validatePassword(password)
+        if(!pass){
+            setErrorMessage("Invalid password.")
+            return;
+        }
+        if(username.trim()==="" || username.length<4){
+            setErrorMessage("Invalid username.")
+            return;
+        }
+
         setHidden(false)
         setTimeout(() => {
             const getJWT = async ()=>{
@@ -35,7 +45,7 @@ const LoginArea = () => {
             data.then(data=>{
                 if(data.status===200){
                    login(data.data.access)
-                   // navigate('/')
+                   Navigate('/dashboard')
                 }
             }).catch(err=>{
                 setHidden(true)

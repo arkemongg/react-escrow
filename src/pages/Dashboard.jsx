@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageLocation } from "./GlobalTemplates/PageLocation";
 
 import DashboardMenu from "./dashboard/DashboardMenu";
@@ -11,8 +11,17 @@ import Purchase from "./dashboard/Purchase";
 import Sellitems from "./dashboard/SellItems";
 import Sales from "./dashboard/Sales";
 import ManageItems from "./dashboard/ManageItems";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 const Dashboard = () => {
+    const { isLogged, login, logout } = useAuth();
+    const navigate = useNavigate()
+    useEffect(()=>{
+        if(!isLogged){
+            navigate('/')
+        }
+    },[])
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
