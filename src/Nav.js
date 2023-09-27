@@ -196,10 +196,10 @@ const NavWithLogin = () => {
                         <Link to="/messages">Messages</Link>
                     </li>
                     <li>
-                        <Link onClick={handleLogout}>Logout</Link>
+                        <Link to="/contact">Contact Us</Link>
                     </li>
                     <li>
-                        <Link to="/contact">Contact Us</Link>
+                        <Link onClick={handleLogout}>Logout</Link>
                     </li>
                 </ul>
             </div>

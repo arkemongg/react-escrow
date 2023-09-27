@@ -64,7 +64,7 @@ const DashboardOption = (props) => {
     },[])
     return(
         <>
-        {floatMessage!=null?<FloatingError message = {floatMessage} />:""}
+        {floatMessage!==null?<FloatingError message = {floatMessage} />:""}
         <div className={styles.BalanceDetailsArea}>
             <div className="balance flex flex-col items-center text-primary justify-center">
                 <h1 className='text-4xl'>{balanceData.balance===undefined?<LoadingArea /> : `$${convertToFourDigits(balanceData.balance)}`}</h1>

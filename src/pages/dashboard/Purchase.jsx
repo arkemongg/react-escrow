@@ -1,60 +1,62 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Purchase.module.css'
-import { AxiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
+import { AxiosInstanceJWT, convertDatetimeToDate, convertToFourDigits } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
-import { EmptyMessage } from '../home/templates/Error';
+import { EmptyMessage, FloatingError } from '../home/templates/Error';
+import { useAuth } from '../../AuthContext';
+import { apiUrl } from '../Urls';
 
 const Purchase = (props) => {
-    const [purchaseData,setPurchaseData] = useState([])
+    const [purchaseData, setPurchaseData] = useState([])
     const axiosInstanceJWT = AxiosInstanceJWT()
 
-    useEffect(()=>{
+    useEffect(() => {
         const timer = setTimeout(() => {
-            const getPurchaseData = async ()=>{
+            const getPurchaseData = async () => {
                 try {
                     const response = await axiosInstanceJWT.get(`/api/orders-dashboard/`);
                     return response
-                  } catch (error) {
+                } catch (error) {
                     throw error
-                  }
-               }
-               const data = getPurchaseData()
-        
-               data.then(data=>{
-                    if(data.status === 200){
-                        setPurchaseData(data.data)
-                    }
-               }).catch(err=>{
+                }
+            }
+            const data = getPurchaseData()
+
+            data.then(data => {
+                if (data.status === 200) {
+                    setPurchaseData(data.data)
+                }
+            }).catch(err => {
                 console.log(err);
-               })
+            })
         }, 2000);
 
-        return (()=>clearTimeout(timer))
-    },[])
+        return (() => clearTimeout(timer))
+    }, [])
     return (
         <>
             <section className={`${styles.PurchaseHistorySection} `}>
-            <div className={styles.PurchaseDetailsArea}>
+                <div className={styles.PurchaseDetailsArea}>
                     <div className="balance flex flex-col items-center text-primary justify-center">
-                        <h1 className='text-4xl'>{purchaseData.total_purchased===undefined?<LoadingArea /> : `$${convertToFourDigits(purchaseData.total_purchased)}`}</h1>
+                        <h1 className='text-4xl'>{purchaseData.total_purchased === undefined ? <LoadingArea /> : `$${convertToFourDigits(purchaseData.total_purchased)}`}</h1>
                         <div className="text-lg">Total Spent</div>
                     </div>
                     <div className="escrowBalance flex flex-col items-center text-info justify-center">
-                        <h1 className='text-4xl'>{purchaseData.pending_orders===undefined?<LoadingArea /> : `${convertToFourDigits(purchaseData.pending_orders)}`}</h1>
+                        <h1 className='text-4xl'>{purchaseData.pending_orders === undefined ? <LoadingArea /> : `${convertToFourDigits(purchaseData.pending_orders)}`}</h1>
                         <div className="text-lg">Pending Purchases</div>
                     </div>
                     <div className="totalDeposit flex flex-col items-center text-success justify-center">
 
-                        <h1 className='text-4xl'>{purchaseData.complete_orders===undefined?<LoadingArea /> : `${convertToFourDigits(purchaseData.complete_orders)}`}</h1>
+                        <h1 className='text-4xl'>{purchaseData.complete_orders === undefined ? <LoadingArea /> : `${convertToFourDigits(purchaseData.complete_orders)}`}</h1>
                         <div className="text-lg">Complete Purchases</div>
                     </div>
                     <div className="totalPurchase flex flex-col items-center text-error justify-center">
 
-                        <h1 className='text-4xl'>{purchaseData.failed_orders===undefined?<LoadingArea /> : `${convertToFourDigits(purchaseData.failed_orders)}`}</h1>
+                        <h1 className='text-4xl'>{purchaseData.failed_orders === undefined ? <LoadingArea /> : `${convertToFourDigits(purchaseData.failed_orders)}`}</h1>
                         <div className="text-lg">Failed Purchases</div>
                     </div>
                 </div>
-                
+
                 <div className={styles.PurchaseHistoryArea}>
                     <PurchaseHistory />
                 </div>
@@ -68,30 +70,101 @@ const Purchase = (props) => {
 };
 
 const PurchaseHistory = () => {
+
+    const { logout } = useAuth();
+    const axiosInstanceJWT = AxiosInstanceJWT()
+    const [url, setUrl] = useState("/api/order/")
+
+    const [prevUrl, setPrevUrl] = useState(null)
+    const [nextUrl, setNextUrl] = useState(null)
+
+    const [orders, setOrders] = useState([])
+    const [totalOrders, setTotalOrders] = useState(-1)
+    const [fetched, setFetched] = useState(false)
+
+    const handlePrevBtn = (event) => {
+        if (prevUrl === null) {
+            return
+        }
+        setOrders([])
+        setUrl(prevUrl)
+    }
+    const handleFilter = (event)=>{
+        
+        if(event.target.value==="none"){
+            setUrl("/api/order/")
+        }else{
+            setUrl(`/api/order/?order_status=${event.target.value}`)
+        }
+        
+    }
+    const handleNextBtn = (event) => {
+        if (nextUrl === null) {
+            return
+        }
+        setOrders([])
+        setUrl(nextUrl)
+    }
+    useEffect(() => {
+        setFetched(false)
+        const timer = setTimeout(() => {
+            const getPurchasecHistory = async () => {
+                try {
+                    const response = await axiosInstanceJWT(url)
+                    return response
+                } catch (error) {
+                    throw error
+                }
+            }
+            const data = getPurchasecHistory()
+            data.then(data => {
+                console.log(data);
+                if (data.status === 200) {
+                    setTotalOrders(data.data.count)
+                    setOrders(data.data.results);
+                    setPrevUrl(data.data.previous)
+                    setNextUrl(data.data.next)
+                    setFetched(true)
+                }
+            }).catch(err => {
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout()
+                    } else {
+                        alert("Unexpected error : ", err.response.status);
+                    }
+                } else {
+                    alert("No response received from the server.");
+                }
+            })
+        }, 2000);
+        return (() => clearTimeout(timer))
+    }, [url])
+
     return (
 
         <div className={styles.PurchaseHistory}>
             <div className='flex items-center justify-between pr-5'>
                 <h1 className="text-2xl p-5">Purchase History</h1>
-                <select className="select select-bordered rounded-none">
-                    <option selected disabled>Filter</option>
-                    <option>Pending</option>
-                    <option>Completed</option>
-                    <option>Failed</option>
-               
+                <select onChange={handleFilter} defaultValue={"filter"} className="select select-bordered rounded-none">
+                    <option value="filter" disabled>Filter</option>
+                    <option value="none">Clear Filter</option>
+                    <option value="P">Pending</option>
+                    <option value="C">Complete</option>
+                    <option value="F">Failed</option>
                 </select>
             </div>
             <hr />
-            
+
             <div className={styles.PurchaseHistoryArea}>
 
                 <ul className={styles.PurchaseList}>
                     <li className={`${styles.Purchase} p-5 pb-0`}>
-                    <div className="font-bold w-[100px] min-w-[70px]">ID</div> 
+                        <div className="font-bold w-[100px] min-w-[70px]">ID</div>
                         <div className='font-bold w-[120px] min-w-[120px]'>Title</div>
-                        <div className="font-bold w-[100px] min-w-[80px]">Date</div>
+                        <div className="font-bold w-[100px] min-w-[100px]">Date</div>
                         <div className="font-bold w-[100px] min-w-[100px]">Product</div>
-                        <div className="font-bold w-[100px] min-w-[50px]">QTY</div> 
+                        <div className="font-bold w-[100px] min-w-[50px]">QTY</div>
                         <div className="font-bold w-[120px] min-w-[120px]">Price</div>
                         <div className="font-bold w-[180px] min-w-[120px]">Escrow Status</div>
                         <div className="font-bold w-[100px] min-w-[80px]">Total</div>
@@ -99,14 +172,25 @@ const PurchaseHistory = () => {
                         <div className="font-bold w-[100px] min-w-[120px]">Seller Details</div>
                     </li>
                     <hr />
-                    <PurchaseCard status={"failed"} props={["ark","emon"]} />
-                    <PurchaseCard status={"complete"} paymenturl={"-"} />
-                    <PurchaseCard status={"failed"} />
-                    <PurchaseCard status={"pending"} paymenturl={"-"} />
-                    <PurchaseCard status={"failed"} />
-                    <PurchaseCard status={"complete"} />
-                    <PurchaseCard status={"failed"} paymenturl={"-"}/>
-                    <PurchaseCard status={"pending"} />
+                    {fetched ? (
+                        orders.length > 0 ?
+                            orders.map(order => {
+                                return <PurchaseCard
+                                    key={order.id}
+                                    id={order.id}
+                                    status={order.order_status}
+                                    title={order.orderitems[0].product_title}
+                                    date={order.created_at}
+                                    img={order.orderitems[0].product_img}
+                                    price={order.orderitems[0].unit_price}
+                                    quantity={order.orderitems[0].quantity}
+                                    total={order.total}
+                                    escrow_id={order.escrow_id}
+                                    feedback={order.feedback}
+                                    seller_id={order.seller}
+                                />
+                            }) : <EmptyMessage message={"No transactions found."} />
+                    ) : <LoadingArea />}
                 </ul>
                 <div className="DepositHistoryBtn flex justify-center p-5">
                     <button className='btn btn-primary w-[150px]'>Previous</button>
@@ -116,7 +200,7 @@ const PurchaseHistory = () => {
 
         </div>
 
-   
+
     )
 }
 
@@ -125,159 +209,278 @@ export default memo(Purchase);
 
 
 const PurchaseCard = (props) => {
-    
+    const [hidden, setHidden] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const handleReview = (event) => {
+        setHidden(true)
+    }
+
     const pending = <div className='bg-warning text-sm text-white w-[100px] rounded text-center'> Pending </div>
     const complete = <div className='bg-success text-sm text-white w-[100px] rounded text-center'> Complete </div>
     const failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'> Failed </div>
-    
-    const escrow_pending = <button className='bg-primary text-xs py-2 text-white w-[110px] rounded'> Mark As Complete </button>
+
+    const escrow_pending = <button onClick={handleReview} className='bg-primary text-xs py-2 text-white w-[110px] rounded'> Mark As Complete </button>
     const escrow_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'>Complete </div>
     const escrow_failed = <div className='bg-error text-sm text-white w-[100px] rounded text-center'>Failed </div>
-    
+
     const review_pending = <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Write A Review </button>
-    const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> 5* </div>
+    const review_complete = <div className='bg-success text-sm text-white w-[100px]  rounded text-center'> - </div>
     const review_failed = <div className=''> - </div>
-    
+
     let status = pending
     let escrow = escrow_pending
     let review = review_pending
 
-    if (props.status === "failed") {
+    if (props.status === "F") {
         status = failed
         escrow = escrow_failed
         review = review_failed
-    } else if (props.status === "complete") {
+    } else if (props.status === "C") {
         status = complete
         escrow = escrow_complete
         review = review_complete
     }
 
     return (
-        <>
+        <>  
+            < ConfirmedModal visible = {visible} setVisible = {setVisible} />
+            < CompleteEscrowModal setVisible = {setVisible} id={props.id} escrow_id={props.escrow_id} hidden={hidden} setHidden={setHidden} />
             <li className={`${styles.Purchase} p-5 pt-0 pb-0 font-light`}>
-                        <div className="w-[100px] min-w-[70px]">100000</div>
-                        <div className='w-[120px] min-w-[120px]'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero, id?</div>
-                        <div className="w-[100px] min-w-[80px]">12/10/15</div> 
-                        <div className="w-[100px] min-w-[100px] max-h-[80px]">
-                            <img src="/dashboardassets/d.jpg" alt="" />
-                        </div>
-                        <div className=" w-[100px] min-w-[50px]">5000</div> 
-                        <div className=" w-[120px] min-w-[120px]">
-                            $10000000.99
-                        </div>
-                        <div className=" w-[180px] min-w-[120px]">
-                            {escrow}
-                        </div>
-                        <div className=" w-[100px] min-w-[80px]">$50000.00</div>
-                        <div className=" w-[100px] min-w-[120px]">
-                        {review}
-                        </div>
-                        <div className=" w-[100px] min-w-[120px]">
-                            <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Contact Seller </button>
-                        </div>
+                <div className="w-[100px] min-w-[70px]">{props.id}</div>
+                <div className='w-[120px] min-w-[120px]'>{props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title}</div>
+                <div className="w-[100px] min-w-[100px]">{convertDatetimeToDate(props.date)}</div>
+                <div className="w-[100px] min-w-[100px] max-h-[80px]">
+                    <img src={apiUrl + props.img} alt="productimg" />
+                </div>
+                <div className=" w-[100px] min-w-[50px]">{props.quantity}</div>
+                <div className=" w-[120px] text-primary min-w-[120px]">
+                    ${props.price}
+                </div>
+                <div className=" w-[180px] min-w-[120px]">
+                    {escrow}
+                </div>
+                <div className=" w-[100px] min-w-[80px] text-primary">${props.total}</div>
+                <div className=" w-[100px] min-w-[120px]">
+                    {review}
+                </div>
+                <div className=" w-[100px] min-w-[120px]">
+                    <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Contact Seller </button>
+                </div>
             </li>
-            
+
         </>
     )
 }
 
-const BalanceHistory = () => {
+const CompleteEscrowModal = (props) => {
+    const [errorMessage,setErrorMessage] = useState(null)
+    const [clicked,setClicked] = useState(false)
     const axiosInstanceJWT = AxiosInstanceJWT()
-    const [url,setUrl] = useState("/api/balancehistory/?transaction_direction=OUT")
-
-    const [prevUrl,setPrevUrl] = useState(null)
-    const [nextUrl,setNextUrl] = useState(null)
-
-    const [transactions,setTransactions] = useState([])
-    const [totalTransactions,setTotalTransactions] = useState(-1)
-    const [fetched,setFetched] = useState(false)
-
-    const handlePrevBtn = (event)=>{
-        if(prevUrl===null){
-            return
-        }
-        setTransactions([])
-        setUrl(prevUrl)
-    }
-    const handleNextBtn = (event)=>{
-        if(nextUrl===null){
-            return
-        }
-        setTransactions([])
-        setUrl(nextUrl)
-    }
-    useEffect(()=>{
-        setFetched(false)
-        const timer =setTimeout(() => {
-            const getTransactions = async ()=>{
+    const { logout } = useAuth();
+    const handleEscrowConfrimation = ()=>{
+        setClicked(true)
+        setTimeout(() => {
+            const putdata = {
+                escrow_status: "RECEIVED"
+            }
+            const getConfirmationData = async ()=>{
                 try{
-                    const response = await axiosInstanceJWT(url)
+                    const response = await axiosInstanceJWT.put(`/api/order/${props.id}/escrow/${props.escrow_id}/`, putdata);
                     return response
                 }catch(error){
                     throw error
                 }
             }
-            const data = getTransactions()
-            data.then(data=>{
-                console.log(data);
+    
+            const confirmation = getConfirmationData()
+    
+            confirmation.then(data=>{
                 if(data.status === 200){
+                    props.setVisible(true)
+                    props.setHidden(false)
+                    setClicked(false)
+                }
+            }).catch(err=>{
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout()
+                    } else {
+                        if(err.response.data.error){
+                            setErrorMessage(err.response.data.error);
+                        }else{
+                            alert("Unexpected error.");
+                        }
+                        
+                    }
+                } else {
+                    alert("No response received from the server.");
+                }
+                setClicked(false)
+            })
+
+        }, 2000);
+    }
+    const handleHideBtn = () => {
+        props.setHidden(false)
+    }
+
+    return (
+        <>
+            <div className={`${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.hidden ? '' : "hidden"}`}>
+                <div className={styles.ModalArea}>
+                    <div className="relative ">
+                        <div className="absolute top-3 m-2  rounded  inset-0 flex items-center justify-center">
+                            <span className='bg-info p-1 rounded'>ID : {props.id}</span>
+                        </div>
+                    </div>
+                    <button onClick={handleHideBtn} className={styles.closeModal}>
+                        <img src="/dashboardassets/delete.png" alt="" />
+                    </button>
+                    <div className='text-center text-2xl font-bold'>
+                        Do you want to confirm the order as received?
+                    </div>
+                    <br />
+                    <p className="text-error text-center">{errorMessage!==null?errorMessage:""}</p>
+                    <div className="btnArea flex justify-center">
+                       <div onClick={handleEscrowConfrimation} className="btn btn-success w-[150px]">
+                        {clicked?<span className="loading loading-dots loading-md"></span>:"Confirm"}
+                       </div>
+                       <div onClick={handleHideBtn} className="btn btn-error w-[150px] ml-1">Close</div>
+                    </div>
+                    <div className='text-sm font-bold text-error p-5 text-center'>
+                        ***You can't change the escrow status after you confirm it.
+                        Please check the ID before confirming.
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+const ConfirmedModal = (props) => {
+    const handle = (event) => {
+        props.setVisible(false)
+    }
+    return (
+        <>
+            <div className={`${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.visible ? "" : "hidden"} `}>
+                <div className={styles.ModalArea}>
+                    <button onClick={handle} className={styles.closeModal}>
+                        <img src="/dashboardassets/delete.png" alt="" />
+                    </button>
+                    <div className='text-xl font-bold flex justify-center items-center h-[200px]'>
+                    <img className='m-1' style={{width:"25px"}} src="/dashboardassets/success.png" alt="" /> Order successfully completed. 
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+const BalanceHistory = () => {
+    const [floatMessage, setFloatMessage] = useState(null)
+    const { logout } = useAuth();
+
+    const axiosInstanceJWT = AxiosInstanceJWT()
+    const [url, setUrl] = useState("/api/balancehistory/?transaction_direction=OUT")
+
+    const [prevUrl, setPrevUrl] = useState(null)
+    const [nextUrl, setNextUrl] = useState(null)
+
+    const [transactions, setTransactions] = useState([])
+    const [totalTransactions, setTotalTransactions] = useState(-1)
+    const [fetched, setFetched] = useState(false)
+
+    const handlePrevBtn = (event) => {
+        if (prevUrl === null) {
+            return
+        }
+        setTransactions([])
+        setUrl(prevUrl)
+    }
+    const handleNextBtn = (event) => {
+        if (nextUrl === null) {
+            return
+        }
+        setTransactions([])
+        setUrl(nextUrl)
+    }
+    useEffect(() => {
+        setFetched(false)
+        const timer = setTimeout(() => {
+            const getTransactions = async () => {
+                try {
+                    const response = await axiosInstanceJWT(url)
+                    return response
+                } catch (error) {
+                    throw error
+                }
+            }
+            const data = getTransactions()
+            data.then(data => {
+                if (data.status === 200) {
                     setTotalTransactions(data.data.count)
                     setTransactions(data.data.results);
                     setPrevUrl(data.data.previous)
                     setNextUrl(data.data.next)
                     setFetched(true)
                 }
-            }).catch(err=>{
+            }).catch(err => {
                 if (err.response) {
                     if (err.response.status === 401) {
-                        console.log("Authentication Error.");
+                        logout()
+                    } else if (err.response.status === 429) {
+                        setFloatMessage("Too many requests.")
                     } else {
                         console.log("Unexpected error with status code: ", err.response.status);
                     }
                 } else {
-                    console.log("No response received from the server.");
+                    alert("No response received from the server.");
                 }
             })
         }, 2000);
-        return (()=>clearTimeout(timer))
-    },[url])
+        return (() => clearTimeout(timer))
+    }, [url])
 
     return (
-        <div className={styles.BalanceHistory}>
-            <div className='flex items-center justify-between pr-5'>
-                <h1 className="text-2xl p-5">Balance History</h1>
-            </div>
-            <div className={styles.BalanceHistoryArea}>
-
-                <ul className={styles.BalanceList}>
-                    <li className={`${styles.Balance} p-5 pb-0`}>
-                        <div className="font-bold w-[100px] min-w-[100px]">Transfer ID</div>
-                        <div className="font-bold w-[100px] min-w-[100px]">Order ID</div> 
-                        <div className="font-bold w-[100px] min-w-[100px]">Type</div>
-                        <div className="font-bold w-[100px] min-w-[100px]">Amount</div>
-                        <div className="font-bold w-[100px] min-w-[100px]">Last Blance</div>
-                    </li>
-                    <hr />
-                    {fetched ? (
-                        transactions.length > 0 ?
-                        transactions.map(transaction=>{
-                            return <BalanceCard
-                                key = {transaction.id}
-                                id = {transaction.id}
-                                order = {transaction.order}
-                                amount = {transaction.amount}
-                                last_balance = {transaction.last_balance}
-                            />
-                        }):<EmptyMessage message = {"No transactions found."}/>
-                    ):<LoadingArea />}
-                </ul>
-                <div className={`flex justify-center p-5 ${totalTransactions > 8 ?"":"hidden"}`}>
-                    <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl===null?"pointer-events-none":""}`}>Previous</button>
-                    <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl===null?"pointer-events-none":""}`}>Next</button>
+        <>
+            {floatMessage !== null ? <FloatingError message={floatMessage} /> : ""}
+            <div className={styles.BalanceHistory}>
+                <div className='flex items-center justify-between pr-5'>
+                    <h1 className="text-2xl p-5">Balance History</h1>
                 </div>
-            </div>
+                <div className={styles.BalanceHistoryArea}>
 
-        </div>
+                    <ul className={styles.BalanceList}>
+                        <li className={`${styles.Balance} p-5 pb-0`}>
+                            <div className="font-bold w-[100px] min-w-[100px]">Transfer ID</div>
+                            <div className="font-bold w-[100px] min-w-[100px]">Order ID</div>
+                            <div className="font-bold w-[100px] min-w-[100px]">Type</div>
+                            <div className="font-bold w-[100px] min-w-[100px]">Amount</div>
+                            {/* <div className="font-bold w-[100px] min-w-[100px]">Last Blance</div> */}
+                        </li>
+                        <hr />
+                        {fetched ? (
+                            transactions.length > 0 ?
+                                transactions.map(transaction => {
+                                    return <BalanceCard
+                                        key={transaction.id}
+                                        id={transaction.id}
+                                        order={transaction.order}
+                                        amount={transaction.amount}
+                                        last_balance={transaction.last_balance}
+                                    />
+                                }) : <EmptyMessage message={"No transactions found."} />
+                        ) : <LoadingArea />}
+                    </ul>
+                    <div className={`flex justify-center p-5 ${totalTransactions > 8 ? "" : "hidden"}`}>
+                        <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl === null ? "pointer-events-none" : ""}`}>Previous</button>
+                        <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl === null ? "pointer-events-none" : ""}`}>Next</button>
+                    </div>
+                </div>
+
+            </div>
+        </>
     )
 }
 
@@ -285,16 +488,19 @@ const BalanceCard = (props) => {
     return (
         <>
             <li className={`${styles.Balance} p-5 pt-0 pb-0 font-light`}>
-                    <div className="w-[100px] min-w-[100px]">{props.id}</div>
-                    <div className="w-[100px] min-w-[100px]">{props.order}</div> 
-                    <div className="w-[100px] min-w-[100px]">Marketplace</div>
-                    <div className="w-[100px] min-w-[100px] text-error">-{props.amount}$</div>
-                    <div className="w-[100px] min-w-[100px] text-error">${props.last_balance}</div>
+                <div className="w-[100px] min-w-[100px]">{props.id}</div>
+                <div className="w-[100px] min-w-[100px]">{props.order}</div>
+                <div className="w-[100px] min-w-[100px]">Marketplace</div>
+                <div className="w-[100px] min-w-[100px] text-error">-{props.amount}$</div>
+                {/* <div className="w-[100px] min-w-[100px] text-error">${props.last_balance}</div> */}
             </li>
-            
+
         </>
     )
 }
+
+
+
 
 {/*const PurchaseHistory = () => {
     return (
