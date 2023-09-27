@@ -1,7 +1,5 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Deposit.module.css'
-
-import axios from 'axios';
 import {axiosInstance,axiosInstanceJWT, convertDatetimeToDate} from '../AxiosHeaders.js';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { EmptyMessage, FloatingError } from '../home/templates/Error';
@@ -38,13 +36,12 @@ const Deposit = (props) => {
             const Amount = parseFloat(amount).toFixed(2)
             const postDeposit = async ()=>{
                 try{
-                    const response =  axiosInstanceJWT.post('/api/deposit/',{
+                    const response =  await axiosInstanceJWT.post('/api/deposit/',{
                         amount:Amount
                     })
                     return response
                 }catch(error){
-                    console.log(error);
-                    return error
+                    throw error
                 }
             }
             const data = postDeposit()
@@ -128,10 +125,10 @@ const DepositHistory = () => {
         const timer =setTimeout(() => {
             const getTransactions = async ()=>{
                 try{
-                    const response = axiosInstanceJWT(url)
+                    const response =await axiosInstanceJWT(url)
                     return response
                 }catch(error){
-                    return error
+                    throw error
                 }
             }
             const data = getTransactions()
@@ -144,8 +141,14 @@ const DepositHistory = () => {
                     setFetched(true)
                 }
             }).catch(err=>{
-                if(err.response.status===401){
-                    console.log("Authentication Error.");
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        console.log("Authentication Error.");
+                    } else {
+                        console.log("Unexpected error with status code: ", err.response.status);
+                    }
+                } else {
+                    console.log("No response received from the server.");
                 }
             })
         }, 2000);

@@ -14,7 +14,7 @@ const Purchase = (props) => {
                     const response = await axiosInstanceJWT.get(`/api/orders-dashboard/`);
                     return response
                   } catch (error) {
-                    return error
+                    throw error
                   }
                }
                const data = getPurchaseData()
@@ -23,6 +23,8 @@ const Purchase = (props) => {
                     if(data.status === 200){
                         setPurchaseData(data.data)
                     }
+               }).catch(err=>{
+                console.log(err);
                })
         }, 2000);
 
@@ -207,14 +209,15 @@ const BalanceHistory = () => {
         const timer =setTimeout(() => {
             const getTransactions = async ()=>{
                 try{
-                    const response = axiosInstanceJWT(url)
+                    const response = await axiosInstanceJWT(url)
                     return response
                 }catch(error){
-                    return error
+                    throw error
                 }
             }
             const data = getTransactions()
             data.then(data=>{
+                console.log(data);
                 if(data.status === 200){
                     setTotalTransactions(data.data.count)
                     setTransactions(data.data.results);
@@ -223,8 +226,14 @@ const BalanceHistory = () => {
                     setFetched(true)
                 }
             }).catch(err=>{
-                if(err.response.status===401){
-                    console.log("Authentication Error.");
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        console.log("Authentication Error.");
+                    } else {
+                        console.log("Unexpected error with status code: ", err.response.status);
+                    }
+                } else {
+                    console.log("No response received from the server.");
                 }
             })
         }, 2000);

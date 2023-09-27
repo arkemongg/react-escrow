@@ -31,6 +31,7 @@ const NewProducts = () => {
     },[category])
 
     useEffect(() => {
+        setErr(false)
         if(categoryData.length > 0){
             
             async function getProducts() {
@@ -38,7 +39,7 @@ const NewProducts = () => {
                   const response = await axiosInstance.get(`/api/products?category=${selectedCategory}`);
                   return response
                 } catch (error) {
-                  return error
+                    throw error;
                 }
             }
     
@@ -51,11 +52,14 @@ const NewProducts = () => {
                         data = data.data.results
                         setData([...data])
                         setFetched(true)  
-                    }else if(data.request.status===0){
-                        // setErr(true)
-                        // setErrMessage(data.message)
+                    }else if(data.request.status===404){
+                        setErr(true)
+                        setErrMessage(data.message)
                     }
+                }).catch(err=>{
+                    console.log(err);
                 })
+
             }, 2000);
         }
       },[selectedCategory]);

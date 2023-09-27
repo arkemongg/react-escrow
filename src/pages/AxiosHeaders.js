@@ -1,7 +1,7 @@
 import {apiUrl} from './Urls.js'
 import axios from 'axios';
     //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk1NzY5ODAzLCJpYXQiOjE2OTU2ODM0MDMsImp0aSI6IjEyODY4MWUwMWJhNzRiOTQ5MmRlYWNiZDgwNjc2Y2IzIiwidXNlcl9pZCI6NH0.SsrYlmZ29NDMyZJwdCHVXo6zvc9LpmMNyU4oRwaoYvk
-    const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk1NzUxMDcxLCJpYXQiOjE2OTU2NjQ2NzEsImp0aSI6ImY1N2EwNTZhMzgyNDQ1MzY4MTJjZTVmZThkYzA5ODZjIiwidXNlcl9pZCI6Mn0.jl_OhIkEJgRKoifsMV6wbbA4IiTFaGQc5LWFrpZjtQ8"
+    const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk1ODYwMTM0LCJpYXQiOjE2OTU3NzM3MzQsImp0aSI6IjdlYmUxZDcwMTVjNzRlNWRhNDA4MDUwZmJiMTM4YTdjIiwidXNlcl9pZCI6Mn0.FhK5Dnws-j493CNc3QC9vB4c1iS18zuKv3ZV7FwM4Mw"
     export const axiosInstanceJWT = axios.create({
         baseURL: apiUrl, 
         headers: {
@@ -33,4 +33,34 @@ export function convertDatetimeToDate(datetimeString) {
   const day = String(dateObject.getDate()).padStart(2, '0');
 
   return `${day}-${month}-${year}`;
+}
+
+// Handle Cookies
+
+export function getCookie(name) {
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    if (cookie.startsWith(name + '=')) {
+      return cookie.substring(name.length + 1);
+    }
+  }
+}
+
+export function validatePassword(password) {
+  // Regular expressions to check for uppercase, lowercase, and number
+  const uppercaseRegex = /[A-Z]/;
+  const lowercaseRegex = /[a-z]/;
+  const numberRegex = /[0-9]/;
+
+  // Check if the password meets all the requirements
+  const hasUppercase = uppercaseRegex.test(password);
+  const hasLowercase = lowercaseRegex.test(password);
+  const hasNumber = numberRegex.test(password);
+  
+  // Check if the password length is between 8 and 20 characters
+  const isValidLength = password.length >= 8 && password.length <= 20;
+
+  // Return true if all conditions are met
+  return hasUppercase && hasLowercase && hasNumber && isValidLength;
 }
