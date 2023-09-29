@@ -3,10 +3,12 @@ import styles from './styles/Sales.module.css'
 import { AxiosInstanceJWT,convertToFourDigits } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { EmptyMessage } from '../home/templates/Error';
+import { useAuth } from '../../AuthContext';
 
 
 
 const Sales = (props) => {
+    const { logout } = useAuth();
     const axiosInstanceJWT = AxiosInstanceJWT()
 
     const [salesData,setSalesData] = useState([])
@@ -18,7 +20,7 @@ const Sales = (props) => {
                     const response = await axiosInstanceJWT.get(`/api/sales-dashboard/`);
                     return response
                   } catch (error) {
-                    return error
+                    throw error
                   }
                }
                const data = getSalesData()
@@ -27,6 +29,12 @@ const Sales = (props) => {
                     if(data.status === 200){
                         setSalesData(data.data)
                     }
+               }).catch(err=>{
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout();
+                    }
+                }
                })
         }, 2000);
 
@@ -183,6 +191,7 @@ const SalesCard = (props) => {
 
 
 const BalanceHistory = () => {
+    const { logout } = useAuth();
     const axiosInstanceJWT = AxiosInstanceJWT()
     const [url,setUrl] = useState("/api/balancehistory/?transaction_direction=IN")
 
@@ -212,10 +221,10 @@ const BalanceHistory = () => {
         const timer =setTimeout(() => {
             const getTransactions = async ()=>{
                 try{
-                    const response = axiosInstanceJWT(url)
+                    const response = await axiosInstanceJWT(url)
                     return response
                 }catch(error){
-                    return error
+                    throw error
                 }
             }
             const data = getTransactions()
@@ -228,8 +237,16 @@ const BalanceHistory = () => {
                     setFetched(true)
                 }
             }).catch(err=>{
-                if(err.response.status===401){
-                    console.log("Authentication Error.");
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout();
+                    }else if (err.response.status === 429) {
+                        alert("Too many requests.");
+                    }else {
+                        alert("Unexpected error with status code: ", err.response.status);
+                    }
+                } else {
+                    alert("No response received from the server.");
                 }
             })
         }, 2000);

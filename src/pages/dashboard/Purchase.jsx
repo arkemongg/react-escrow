@@ -131,12 +131,8 @@ const PurchaseHistory = () => {
                 if (err.response) {
                     if (err.response.status === 401) {
                         logout()
-                    } else {
-                        alert("Unexpected error : ", err.response.status);
                     }
-                } else {
-                    alert("No response received from the server.");
-                }
+                } 
             })
         }, 2000);
         return (() => clearTimeout(timer))

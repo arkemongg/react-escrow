@@ -3,12 +3,13 @@ import styles from './styles/Withdrawals.module.css'
 import { AxiosInstanceJWT, convertDatetimeToDate } from '../AxiosHeaders';
 import { EmptyMessage } from '../home/templates/Error';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
+import { useAuth } from '../../AuthContext';
 
 const Withdrawals = (props) => {
     const [amount, setAmount] = useState(0)
     const [address, setAddress] = useState(null)
     const [method, setMethod] = useState(null)
-    console.log(method);
+    
     return (
         <>
             <section className={`${styles.WithdrawalsSection} `}>
@@ -43,6 +44,7 @@ const Withdrawals = (props) => {
 };
 
 const WithdrawalsHistory = () => {
+    const {logout} = useAuth()
     const axiosInstanceJWT = AxiosInstanceJWT()
     const [url, setUrl] = useState("/api/transactions/?transaction_direction=OUT")
 
@@ -92,8 +94,16 @@ const WithdrawalsHistory = () => {
                     setFetched(true)
                 }
             }).catch(err => {
-                if (err.response.status === 401) {
-                    console.log("Authentication Error.");
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout();
+                    }else if (err.response.status === 429) {
+                        alert("Too many requests.");
+                    } else {
+                        alert("Unexpected error with status code: ", err.response.status);
+                    }
+                } else {
+                    alert("No response received from the server.");
                 }
             })
         }, 2000);

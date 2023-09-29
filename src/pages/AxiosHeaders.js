@@ -14,7 +14,18 @@ import axios from 'axios';
             }
       });
     }
-    
+    export function AxiosInstanceImageJWT() {
+      const jwtToken = getCookie("token");
+  
+      return axios.create({
+          baseURL: apiUrl, 
+          headers: {
+              'Authorization': `JWT ${jwtToken}`,
+              'Content-Type': 'multipart/form-data'
+            }
+      });
+    }
+ 
     // const jwtToken = getCookie("token")
     
     // export const axiosInstanceJWT = axios.create({
@@ -79,4 +90,22 @@ export function validatePassword(password) {
 
   // Return true if all conditions are met
   return hasUppercase && hasLowercase && hasNumber && isValidLength;
+}
+
+export const post = async (url,data)=>{
+  try{
+      const response =  await axiosInstance.post(url,data)
+      return response
+  }catch(error){
+      throw error
+  }
+}
+const axiosInstanceJWT = AxiosInstanceJWT()
+export const postJWT = async (url,data)=>{
+  try{
+      const response =  await axiosInstanceJWT.post(url,data)
+      return response
+  }catch(error){
+      throw error
+  }
 }

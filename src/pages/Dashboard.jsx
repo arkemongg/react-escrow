@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { PageLocation } from "./GlobalTemplates/PageLocation";
 
 import DashboardMenu from "./dashboard/DashboardMenu";
@@ -25,7 +25,7 @@ const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
-    const [active,setActive] = useState("Withdrawals")
+    const [active,setActive] = useState("Sell Items")
     return (
       <>
         <PageLocation head={head} tail={`Home / ${tail}`}/>
@@ -36,7 +36,7 @@ const Dashboard = () => {
         {active === 'Deposit' && <Deposit />}
         {active === 'Sales' && <Sales />}
       
-        {active === 'Sell Items' && <Sellitems />}
+        {active === 'Sell Items' && <Sellitems setActive={setActive}/>}
         {active === 'Withdrawals' && <Withdrawals />}
         {active === 'Manage Items' && <ManageItems />}
 
@@ -45,4 +45,4 @@ const Dashboard = () => {
     );
   };
   
-  export default Dashboard;
+  export default memo(Dashboard)

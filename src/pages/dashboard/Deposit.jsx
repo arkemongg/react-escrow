@@ -5,9 +5,11 @@ import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { EmptyMessage, FloatingError } from '../home/templates/Error';
 import {FlaotingErrorCustom} from '../GlobalTemplates/FloatingErrorCustom'
 import Modal from '../GlobalTemplates/Modal';
+import { useAuth } from '../../AuthContext';
 
 const Deposit = (props) => {
     const axiosInstanceJWT = AxiosInstanceJWT()
+    const { logout } = useAuth();
     
     const [amount, setAmount] = useState(0)
     const [depositError,setDepositError] = useState("")
@@ -54,7 +56,17 @@ const Deposit = (props) => {
                 }
             }).catch(err=>{
                     setErr(true)
-                    setDepositError(err.response.data.error)
+                    if (err.response) {
+                        if (err.response.status === 401) {
+                            logout();
+                        }else if (err.response.status === 429) {
+                            alert("Too many requests.");
+                        } else {
+                            setDepositError("Unexpected error with status code: ", err.response.status);
+                        }
+                    } else {
+                        setDepositError("No response received from the server.");
+                    }
             })
             setClicked(false)
         }, 2000);
@@ -95,6 +107,7 @@ const Deposit = (props) => {
 };
 
 const DepositHistory = () => {
+    const { logout } = useAuth();
     const [url,setUrl] = useState("/api/transactions/?transaction_direction=IN")
     const axiosInstanceJWT = AxiosInstanceJWT()
     const [prevUrl,setPrevUrl] = useState(null)
@@ -145,12 +158,12 @@ const DepositHistory = () => {
             }).catch(err=>{
                 if (err.response) {
                     if (err.response.status === 401) {
-                        console.log("Authentication Error.");
+                        logout();
                     } else {
-                        console.log("Unexpected error with status code: ", err.response.status);
+                        alert("Unexpected error with status code: ", err.response.status);
                     }
                 } else {
-                    console.log("No response received from the server.");
+                    alert("No response received from the server.");
                 }
             })
         }, 2000);
