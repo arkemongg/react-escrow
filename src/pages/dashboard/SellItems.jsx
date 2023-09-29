@@ -28,13 +28,13 @@ const Sellitems = (props) => {
             "inventory": inventory,
             "condition": condition,
         }
-        const formData = new FormData();
-        formData.append('image', img);
-        for (const key in postData) {
-            formData.append(key, postData[key]);
-        }
+        // const formData = new FormData();
+        // formData.append('image', img);
+        // for (const key in postData) {
+        //     formData.append(key, postData[key]);
+        // }
         
-        const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
+        // const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
         
     }
 

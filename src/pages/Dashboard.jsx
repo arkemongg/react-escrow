@@ -22,10 +22,18 @@ const Dashboard = () => {
             navigate('/')
         }
     },[])
+
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
     const [active,setActive] = useState("Sell Items")
+    useEffect(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+    }, [active]);
     return (
       <>
         <PageLocation head={head} tail={`Home / ${tail}`}/>
