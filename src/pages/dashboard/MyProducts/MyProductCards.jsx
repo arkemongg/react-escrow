@@ -11,11 +11,11 @@ export const Product = (props) => {
     }
     const handleEdit= ()=>{
             setTimeout(() => {
-                const editItemsSection = document.getElementById('editItemsSection');
+                const editItemsSection = document.getElementById('edit');
                 if (editItemsSection) {
                   editItemsSection.scrollIntoView({ behavior: 'smooth' });
                 }
-            },500);
+            },1000);
             props.setData(
                 [data]
             )

@@ -19,6 +19,7 @@ const RegisterArea = () => {
     const [confirmPassword,setConfirmPassword] = useState("")
     const url = "/auth/users/"
     const handleSignUp = (event)=>{
+        event.preventDefault()
         if(username.trim()===""||email.trim()===""
             ||password.trim()===""||confirmPassword.trim()==="")
         {
@@ -26,13 +27,24 @@ const RegisterArea = () => {
             setMessage("Please recheck the registration fields.")
             return 0
         }
+        if(validateUsername(username)===false||validateEmail(email)===false
+            ||validatePassword(password)===false||password!=confirmPassword)
+        {
+            setErr(true)
+            setMessage("Please recheck the registration fields.")
+            return 0
+        }
+
         const postData = {
             email: email,
             username: username,
             password: password,
             re_password: confirmPassword
         }
-        event.preventDefault()
+
+
+
+        
         setHidden(false)
 
         setTimeout(() => {
@@ -56,7 +68,7 @@ const RegisterArea = () => {
                     }
                     
                 }else{
-                    alert("Unexpected error with status code: ", err.response.status);
+                    alert("Unexpected error.");
                 }
             })
             setHidden(true)

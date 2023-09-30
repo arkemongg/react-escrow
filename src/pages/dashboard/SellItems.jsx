@@ -2,6 +2,7 @@ import { memo, useState } from 'react';
 import styles from './styles/Sellitems.module.css'
 import { CategoryData } from '../../CategoryContext';
 import { AxiosInstanceImageJWT } from '../AxiosHeaders';
+import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
 
 const Sellitems = (props) => {
     const axiosInstanceImageJWT = AxiosInstanceImageJWT()
@@ -9,17 +10,21 @@ const Sellitems = (props) => {
     const categorydata = CategoryData()
     const data = categorydata.category
 
-    const [title,setTitle] = useState()
-    const [description,setDescription] = useState()
-    const [price,setPrice] = useState()
-    const [category,setCategory] = useState()
-    const [inventory,setInventory] = useState()
-    const [condition,setCondition] = useState()
+    const [title,setTitle] = useState("")
+    const [description,setDescription] = useState("")
+    const [price,setPrice] = useState(0)
+    const [category,setCategory] = useState(0)
+    const [inventory,setInventory] = useState(0)
+    const [condition,setCondition] = useState("")
     const [img,setImg] = useState(null)
     const [productImg,setProductImg] = useState("/dashboardassets/d.jpg")
     
+    const [clicked, setClicked] = useState(false)
+    const [err, setErr] = useState(false)
+    const [message, setMessage] = useState("")
+
     const handleClick = (event)=>{
-        props.setActive("Manage Items")
+        
         const postData = {
             "title": title,
             "description": description,
@@ -28,14 +33,45 @@ const Sellitems = (props) => {
             "inventory": inventory,
             "condition": condition,
         }
-        // const formData = new FormData();
-        // formData.append('image', img);
-        // for (const key in postData) {
-        //     formData.append(key, postData[key]);
-        // }
         
+        if(title.trim()===""||category===0 || description.trim()==="" || price<=0 || price>50000 || inventory<0 || inventory>32000 || img ===null || img.size/1024 >2048 || condition === ""){
+            setErr(true)
+            if(title.trim()===""){
+                setMessage("Please give the product a title.")
+                return
+            }else if (category===0){
+                setMessage("Please select a category.")
+                return
+            }else if (description.trim()===""){
+                setMessage("Please give your product a description.")
+                return
+            }else if(inventory<0 || inventory>32000){
+                setMessage("Inventory should be  0 or smaller than 32000")
+                return
+            }else if (condition===""){
+                setMessage("Please select a product condition.")
+                return
+            }else if (img===null || img.size/1024 > 2048){
+                setMessage("Please upload an image (max 2mb.).")
+                return
+            }else if(price<=0 || price>50000.0){
+                setMessage("Price should be greater than 0 or smaller than 50000")
+                return
+            }
+
+
+            setMessage("Please recheck the form for empty fields.")
+            return
+        }
+        
+        const formData = new FormData();
+        formData.append('image', img);
+        for (const key in postData) {
+            formData.append(key, postData[key]);
+        }
+        setClicked(true)
         // const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
-        
+        // props.setActive("Manage Items")
     }
 
     const handleImageUpload = (event) => {
@@ -54,6 +90,8 @@ const Sellitems = (props) => {
 
     return (
         <>
+            {err ? <FlaotingErrorCustom err={err} setErr={setErr} message={message} /> : ""}
+
             <section className={`${styles.SellItemsSection} `}>
 
                     <div className={styles.formArea}>
@@ -94,7 +132,7 @@ const Sellitems = (props) => {
                                 <div className='text-2xl'>
                                     Inventory
                                 </div>
-                                <input onChange={e=>setInventory(e.target.value)} id='ListProductInventory' type="text" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
+                                <input onChange={e=>setInventory(e.target.value)} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
                                 
                             </div>
 
@@ -102,8 +140,8 @@ const Sellitems = (props) => {
                                 <div className='text-2xl'>
                                     Condition
                                 </div>
-                                <select onChange={e=>setCondition(e.target.value)} defaultValue={"c"} className="select select-bordered rounded-none  w-full max-w-xl">
-                                    <option value={"c"} disabled>Choose Products Condition</option>
+                                <select onChange={e=>setCondition(e.target.value)} defaultValue={"none"} className="select select-bordered rounded-none  w-full max-w-xl">
+                                    <option value={"none"} disabled>Choose Products Condition</option>
                                     <option value={"BRAND NEW"}>Brand New</option>
                                     <option value={"USED"}>Used</option>
                                     <option value={"DEFFECT"}>Deffect</option>
@@ -133,8 +171,8 @@ const Sellitems = (props) => {
                         <div className="PriceSaveArea p-5">
                             <label className='block text-2xl' htmlFor="price">Price</label>
                             <div className="btnArea flex grow">
-                                <input onChange={e=>setPrice(e.target.value)} id='price' type="text" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
-                                <div onClick={handleClick} className="btn btn-success ml-5">List Product</div>
+                                <input onChange={e=>setPrice(e.target.value)} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
+                                <div onClick={handleClick} className="btn btn-success ml-5 min-w-[200px]">{clicked?<span className="loading loading-dots loading-md"></span>:"List Product"}</div>
                             </div>
                         </div>
                     </div>

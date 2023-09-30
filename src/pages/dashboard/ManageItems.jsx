@@ -1,6 +1,9 @@
 import { memo, useState } from 'react';
 import { LoadingProductsCard, Product } from './MyProducts/MyProductCards'
 import styles from './styles/ManageItems.module.css'
+import { AxiosInstanceImageJWT } from '../AxiosHeaders';
+import { CategoryData } from '../../CategoryContext';
+import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
 
 
 const ManageItems = ()=>{
@@ -48,12 +51,78 @@ export default ManageItems;
 
 
 const Edititems = (props) => {
-    const data = props.data[0]
+    const axiosInstanceImageJWT = AxiosInstanceImageJWT()
+
+    const categorydata = CategoryData()
+    const data = categorydata.category
+
+    const [title,setTitle] = useState("")
+    const [description,setDescription] = useState("")
+    const [price,setPrice] = useState(0)
+    const [category,setCategory] = useState(0)
+    const [inventory,setInventory] = useState(0)
+    const [condition,setCondition] = useState("")
+    const [img,setImg] = useState(null)
     const [productImg,setProductImg] = useState("/dashboardassets/d.jpg")
     
+    const [clicked, setClicked] = useState(false)
+    const [err, setErr] = useState(false)
+    const [message, setMessage] = useState("")
+
+    const handleClick = (event)=>{
+        
+        const postData = {
+            "title": title,
+            "description": description,
+            "price": price,
+            "category": category,
+            "inventory": inventory,
+            "condition": condition,
+        }
+        
+        if(title.trim()===""||category===0 || description.trim()==="" || price<=0 || price>50000 || inventory<0 || inventory>32000 || img ===null || img.size/1024 >2048 || condition === ""){
+            setErr(true)
+            if(title.trim()===""){
+                setMessage("Please give the product a title.")
+                return
+            }else if (category===0){
+                setMessage("Please select a category.")
+                return
+            }else if (description.trim()===""){
+                setMessage("Please give your product a description.")
+                return
+            }else if(inventory<0 || inventory>32000){
+                setMessage("Inventory should be  0 or smaller than 32000")
+                return
+            }else if (condition===""){
+                setMessage("Please select a product condition.")
+                return
+            }else if (img===null || img.size/1024 > 2048){
+                setMessage("Please upload an image (max 2mb.).")
+                return
+            }else if(price<=0 || price>50000.0){
+                setMessage("Price should be greater than 0 or smaller than 50000")
+                return
+            }
+
+
+            setMessage("Please recheck the form for empty fields.")
+            return
+        }
+        
+        const formData = new FormData();
+        formData.append('image', img);
+        for (const key in postData) {
+            formData.append(key, postData[key]);
+        }
+        setClicked(true)
+        // const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
+        // props.setActive("Manage Items")
+    }
+
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
-    
+        setImg(file)
         if (file) {
           const reader = new FileReader();
     
@@ -67,11 +136,13 @@ const Edititems = (props) => {
 
     return (
         <>
-            <section id="editItemsSection" className={`${styles.EditItemsSection} `}>
+            {err ? <FlaotingErrorCustom err={err} setErr={setErr} message={message} /> : ""}
+
+            <section id = {'edit'}  className={`${styles.EditItemsSection} `}>
 
                     <div className={styles.formArea}>
                         <h1 className="text-2xl p-3">
-                           Edit Product  
+                            Edit Product
                         </h1>
                         <hr />
 
@@ -81,32 +152,33 @@ const Edititems = (props) => {
                                 <div className='text-2xl'>
                                     Title 
                                 </div>
-                                <input value={data.title} id='ListProductTitle' type="text" placeholder="Product Title" className="input input-bordered rounded-none w-full max-w-xl" />
+                                <input onChange={e=>setTitle(e.target.value)} id='ListProductTitle' type="text" placeholder="Product Title" className="input input-bordered rounded-none w-full max-w-xl" />
                             </div>
 
                             <div className="ListCategory">
                                 <div className='text-2xl'>
                                     Category
                                 </div>
-                                <select className="select select-bordered rounded-none  w-full max-w-xl">
-                                    <option disabled selected>Who shot first?</option>
-                                    <option>Han Solo</option>
-                                    <option>Greedo</option>
+                                <select onChange={e=>setCategory(e.target.value)} defaultValue={"disabled"} className="select select-bordered rounded-none  w-full max-w-xl">
+                                    <option value="disabled" disabled>Category</option>
+                                    {data.length > 0 &&data[0].map(category=>{
+                                        return (<option key={category.id} value={category.id}>{category.title}</option>)
+                                    })}
                                 </select>
                             </div>
                         </div>
                         <label className='text-2xl p-5'>
-                        Product Description
+                            Product Description
                         </label>
                         <div className="ListProductsDescription p-5 flex grow">
-                            <textarea placeholder="Product Description" className="textarea textarea-bordered textarea-lg w-full h-[180px]" ></textarea>
+                            <textarea onChange={e=>setDescription(e.target.value)}  placeholder="Product Description" className="textarea textarea-bordered textarea-lg w-full h-[180px]" ></textarea>
                         </div>
                         <div className={`${styles.InventoryCondition} p-5`}>
                             <div className="ListInventory">
                                 <div className='text-2xl'>
-                                    Inventory <span className='text-sm font-light'>(Set 0 to Unpublish)</span>
+                                    Inventory
                                 </div>
-                                <input id='ListProductInventory' type="text" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
+                                <input onChange={e=>setInventory(e.target.value)} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
                                 
                             </div>
 
@@ -114,12 +186,12 @@ const Edititems = (props) => {
                                 <div className='text-2xl'>
                                     Condition
                                 </div>
-                                <select className="select select-bordered rounded-none  w-full max-w-xl">
-                                    <option disabled selected>Choose Products Condition</option>
-                                    <option>Brand New</option>
-                                    <option>Used</option>
-                                    <option>Deffect</option>
-                                    <option>Check Description</option>
+                                <select onChange={e=>setCondition(e.target.value)} defaultValue={"none"} className="select select-bordered rounded-none  w-full max-w-xl">
+                                    <option value={"none"} disabled>Choose Products Condition</option>
+                                    <option value={"BRAND NEW"}>Brand New</option>
+                                    <option value={"USED"}>Used</option>
+                                    <option value={"DEFFECT"}>Deffect</option>
+                                    <option value={"CHECK DESCRIPTION"}>Check Description</option>
                                 </select>
                             </div>
                         </div>
@@ -145,8 +217,8 @@ const Edititems = (props) => {
                         <div className="PriceSaveArea p-5">
                             <label className='block text-2xl' htmlFor="price">Price</label>
                             <div className="btnArea flex grow">
-                                <input id='price' type="text" placeholder="Procut Price" className="input input-bordered rounded-none w-full"/>
-                                <div className="btn btn-success ml-5">Save Product</div>
+                                <input onChange={e=>setPrice(e.target.value)} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
+                                <div onClick={handleClick} className="btn btn-success ml-5 min-w-[200px]">{clicked?<span className="loading loading-dots loading-md"></span>:"List Product"}</div>
                             </div>
                         </div>
                     </div>
