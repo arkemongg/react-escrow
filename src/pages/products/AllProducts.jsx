@@ -14,30 +14,36 @@ const AllProducts = () => {
 
 
 
-    async function getProducts() {
-        try {
-          const response = await axios.get('http://127.0.0.1:8000/api/products/');
-          return response
-        } catch (error) {
-          return error
-        }
-      }
+
 
 
     useEffect(() => {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
+            async function getProducts() {
+                try {
+                  const response = await axios.get('http://127.0.0.1:8000/api/products/');
+                  return response
+                } catch (error) {
+                  throw error
+                }
+              }
             const response =  getProducts()
             response.then(data=>{
                 if(data.status===200){
                     data = data.data.results
                     setData([...data])
                     setFetched(true)  
-                }else if(data.request.status===0){
+                }else {
+                    alert("Unexpected error.")
+                }
+            }).catch(err=>{
+                if(data.request.status===0){
                     // setErr(true)
                     // setErrMessage(data.message)
                 }
             })
         }, 2000);
+        return () => clearTimeout(timeout);
       },[]);
 
 
@@ -48,9 +54,24 @@ const AllProducts = () => {
                 
                 <div className={styles.AllProductsArea}>
                     {fetched?(
-                        data.map(product=>{
-                            
-                            return <Product 
+                        data.map(product=>{                            
+                            return product.featured?(
+                            <FeaturedProductsCard 
+                                id = {product.id}
+                                title = {product.title}
+                                slug = {product.slug}
+                                price = {product.price}
+                                img = {product.image}
+                                verified = {product.is_verified}
+                                super = {product.super_seller}
+                                category = {product.category.title}
+                                seller_name = {product.seller_name}
+                                seller_review = {product.seller_review.rating}
+                                seller_review_count = {product.seller_review.total_feedback}
+                                key={product.id}
+                            />
+                            ):(
+                            <Product 
                             id = {product.id}
                             title = {product.title}
                             slug = {product.slug}
@@ -62,7 +83,9 @@ const AllProducts = () => {
                             seller_name = {product.seller_name}
                             seller_review = {product.seller_review.rating}
                             seller_review_count = {product.seller_review.total_feedback}
-                            key={product.id}/>
+                            key={product.id}
+                            />
+                            )
                         })
                     ):(
                        err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
@@ -130,8 +153,9 @@ const SearchPrdoucts = ()=>{
                         <input type="text" placeholder="Price less than" className={`${styles.searchInput} input rounded-none input-bordered `} />
                     </div>
                     
-                    <div className="btnArea pb-5 flex grow">
-                    <button className="btn btn-primary min-w-[300px] rounded-none">Search</button>
+                    <div className="btnArea pb-5 flex  flex-wrap justify-center">
+                    <button className="btn btn-primary min-w-[300px] max-w-[80%] rounded-none m-1 grow">Search</button>
+                    <button className="btn btn-error min-w-[300px] max-w-[80%] rounded-none m-1 grow">Clear Filter</button>
                     </div>
 
                 </div>

@@ -6,6 +6,7 @@ import NewProducts from "./home/NewestProducts";
 import Services from "./home/Services";
 import JoinUs from "./home/JoinUs";
 import Subscribe from "./home/Subscribe";
+import { memo } from "react";
 
 const Home = () => {
     return (

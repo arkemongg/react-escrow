@@ -4,9 +4,29 @@ import products from './assets/products.png'
 import sales from './assets/sales.png'
 import happy from './assets/happy.png'
 import users from './assets/users.png'
+import { memo, useEffect } from 'react'
+import { axiosInstance } from '../AxiosHeaders'
 
 const Counts = () => {
-    
+    useEffect(()=>{
+        const timeout = setTimeout(() => {
+            const getCounts = async () => {
+                try{
+                    const result = await axiosInstance.get('/api/home-dashboard/')
+                    return result
+                }catch(error){
+                    throw error
+                }
+            } 
+            const data = getCounts()
+            data.then(data=>{
+                console.log(data);
+            }).catch(err=>{
+                console.log(err);
+            })
+        }, 3000);
+        return () => clearTimeout(timeout);
+    },[])
     return (
         <>
             <section className={`${styles.CountsSection}`}>
@@ -57,4 +77,4 @@ const Counts = () => {
     )
 };
 
-export default Counts;
+export default memo(Counts);

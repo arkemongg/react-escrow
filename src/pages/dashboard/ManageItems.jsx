@@ -1,18 +1,32 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { LoadingProductsCard, Product } from './MyProducts/MyProductCards'
 import styles from './styles/ManageItems.module.css'
-import { AxiosInstanceImageJWT } from '../AxiosHeaders';
+import { AxiosInstanceImageJWT, AxiosInstanceJWT, getJWT } from '../AxiosHeaders';
 import { CategoryData } from '../../CategoryContext';
 import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
+import { apiUrl } from '../Urls';
 
 
 const ManageItems = ()=>{
-    const [data,setData] = useState(null)
+    
+    const [editData,setEditData] = useState(null)
+    const [edit,setEdit] = useState(false)
+    useEffect(()=>{
+        if(editData!==null){
+            setEdit(true)
+            setTimeout(() => {
+                const editItemsSection = document.getElementById('edit');
+                if (editItemsSection) {
+                    editItemsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+            }, 1000);
+        }
+    },[editData])
     return (
         <>
             <div className={styles.ManageItemsSection}>
-                <MyProducts setData = {setData}/>
-                {data!==null?<Edititems data = {data} />:""}
+                <MyProducts setEditData = {setEditData}/>
+                {edit?<Edititems editData = {editData} />:""}
             </div>
         </>
     )
@@ -20,6 +34,30 @@ const ManageItems = ()=>{
 
 
 const MyProducts = (props)=>{
+    
+    const [url,setUrl] = useState('/api/myproducts/')
+    const [data,setData] = useState([])
+    
+    const [fetched,setFetched] = useState(false)
+    const [err,setErr] = useState(false)
+
+    useEffect(()=>{
+
+        const timeout = setTimeout(() => {
+            const getData = getJWT(url)
+            getData.then(data=>{
+                if(data.status===200){
+                    setData(data.data.results)
+                    setFetched(true)
+                }
+            }).catch(err=>{
+                console.log(err);
+            })
+        }, 0);
+
+        return () => clearTimeout(timeout);
+    },[url])
+
     return (
         <div className={styles.MyProductsArea}>
             <h1 className='text-2xl p-5'>My Products</h1>
@@ -29,7 +67,13 @@ const MyProducts = (props)=>{
                     <button className={`max-w-[150px] ml-5 ${styles.homeSearchBtn} btn btn-primary`}>Search</button>
             </div>
             <div className={styles.MyProducts}>
-                {Array.from({ length: 6 }, (_, index) => <Product key={index} setData = {props.setData} index= {index} />)}
+                {fetched?data.map(product=>{
+                    return <Product
+                     key={product.id} 
+                     data = {product}
+                     setEditData = {props.setEditData}
+                     />
+                }):Array.from({ length: 6 }, (_, index) => <LoadingProductsCard  key={index}/>)}
             </div>
            
             <div className="myProductBtns flex justify-center pt-5">
@@ -51,11 +95,14 @@ export default ManageItems;
 
 
 const Edititems = (props) => {
+    
+
     const axiosInstanceImageJWT = AxiosInstanceImageJWT()
 
     const categorydata = CategoryData()
-    const data = categorydata.category
+    const categoryData = categorydata.category
 
+    const [id,setId] = useState("")
     const [title,setTitle] = useState("")
     const [description,setDescription] = useState("")
     const [price,setPrice] = useState(0)
@@ -65,10 +112,22 @@ const Edititems = (props) => {
     const [img,setImg] = useState(null)
     const [productImg,setProductImg] = useState("/dashboardassets/d.jpg")
     
+    const [success, setSuccess] = useState(false)
     const [clicked, setClicked] = useState(false)
     const [err, setErr] = useState(false)
     const [message, setMessage] = useState("")
 
+    useEffect(()=>{
+        setId(props.editData.id)
+        setTitle(props.editData.title)
+        setDescription(props.editData.description)
+        setPrice(props.editData.price)
+        setCategory(props.editData.category.id)
+        setInventory(props.editData.inventory)
+        setCondition(props.editData.condition)
+        setProductImg(props.editData.image!==null?props.editData.image:"dd")
+    },[props.editData])
+    
     const handleClick = (event)=>{
         
         const postData = {
@@ -80,7 +139,7 @@ const Edititems = (props) => {
             "condition": condition,
         }
         
-        if(title.trim()===""||category===0 || description.trim()==="" || price<=0 || price>50000 || inventory<0 || inventory>32000 || img ===null || img.size/1024 >2048 || condition === ""){
+        if(title.trim()===""||category===0 || description.trim()==="" || price<=0 || price>50000 || inventory<0 || inventory>32000 || (img!==null&&img.size/1024 >2048) || condition === ""){
             setErr(true)
             if(title.trim()===""){
                 setMessage("Please give the product a title.")
@@ -97,7 +156,7 @@ const Edititems = (props) => {
             }else if (condition===""){
                 setMessage("Please select a product condition.")
                 return
-            }else if (img===null || img.size/1024 > 2048){
+            }else if ((img!==null&&img.size/1024 >2048)){
                 setMessage("Please upload an image (max 2mb.).")
                 return
             }else if(price<=0 || price>50000.0){
@@ -116,8 +175,14 @@ const Edititems = (props) => {
             formData.append(key, postData[key]);
         }
         setClicked(true)
-        // const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
-        // props.setActive("Manage Items")
+        
+        const patchData = async ()=>{
+            const data = await axiosInstanceImageJWT.patch(`/api/myproducts/${id}/`,formData)
+            
+        }
+        
+
+        
     }
 
     const handleImageUpload = (event) => {
@@ -142,7 +207,7 @@ const Edititems = (props) => {
 
                     <div className={styles.formArea}>
                         <h1 className="text-2xl p-3">
-                            Edit Product
+                            Edit Product ID #{id}
                         </h1>
                         <hr />
 
@@ -152,16 +217,16 @@ const Edititems = (props) => {
                                 <div className='text-2xl'>
                                     Title 
                                 </div>
-                                <input onChange={e=>setTitle(e.target.value)} id='ListProductTitle' type="text" placeholder="Product Title" className="input input-bordered rounded-none w-full max-w-xl" />
+                                <input value={title} onChange={e=>setTitle(e.target.value)} id='ListProductTitle' type="text" placeholder="Product Title" className="input input-bordered rounded-none w-full max-w-xl" />
                             </div>
 
                             <div className="ListCategory">
                                 <div className='text-2xl'>
                                     Category
                                 </div>
-                                <select onChange={e=>setCategory(e.target.value)} defaultValue={"disabled"} className="select select-bordered rounded-none  w-full max-w-xl">
+                                <select onChange={e=>setCategory(e.target.value)} value={category} className="select select-bordered rounded-none  w-full max-w-xl">
                                     <option value="disabled" disabled>Category</option>
-                                    {data.length > 0 &&data[0].map(category=>{
+                                    {categoryData.length > 0 &&categoryData[0].map(category=>{
                                         return (<option key={category.id} value={category.id}>{category.title}</option>)
                                     })}
                                 </select>
@@ -171,14 +236,14 @@ const Edititems = (props) => {
                             Product Description
                         </label>
                         <div className="ListProductsDescription p-5 flex grow">
-                            <textarea onChange={e=>setDescription(e.target.value)}  placeholder="Product Description" className="textarea textarea-bordered textarea-lg w-full h-[180px]" ></textarea>
+                            <textarea value={description} onChange={e=>setDescription(e.target.value)}  placeholder="Product Description" className="textarea textarea-bordered textarea-lg w-full h-[180px]" ></textarea>
                         </div>
                         <div className={`${styles.InventoryCondition} p-5`}>
                             <div className="ListInventory">
                                 <div className='text-2xl'>
                                     Inventory
                                 </div>
-                                <input onChange={e=>setInventory(e.target.value)} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
+                                <input value={inventory} onChange={e=>setInventory(e.target.value)} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
                                 
                             </div>
 
@@ -186,7 +251,7 @@ const Edititems = (props) => {
                                 <div className='text-2xl'>
                                     Condition
                                 </div>
-                                <select onChange={e=>setCondition(e.target.value)} defaultValue={"none"} className="select select-bordered rounded-none  w-full max-w-xl">
+                                <select onChange={e=>setCondition(e.target.value)} defaultValue={condition} className="select select-bordered rounded-none  w-full max-w-xl">
                                     <option value={"none"} disabled>Choose Products Condition</option>
                                     <option value={"BRAND NEW"}>Brand New</option>
                                     <option value={"USED"}>Used</option>
@@ -204,7 +269,7 @@ const Edititems = (props) => {
                         <hr />
                         <div className={`${styles.EditProductImage} p-5`}>
                             <div className={styles.ImgWrapper}>
-                                <img src={productImg} alt="product-image" />
+                                <img src={productImg[0]==='/'?apiUrl+productImg:productImg} alt="product-image" />
                             </div>
                         </div>
                         <label className='text-2xl block px-5 pt-5'>
@@ -217,7 +282,7 @@ const Edititems = (props) => {
                         <div className="PriceSaveArea p-5">
                             <label className='block text-2xl' htmlFor="price">Price</label>
                             <div className="btnArea flex grow">
-                                <input onChange={e=>setPrice(e.target.value)} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
+                                <input value={price} onChange={e=>setPrice(e.target.value)} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
                                 <div onClick={handleClick} className="btn btn-success ml-5 min-w-[200px]">{clicked?<span className="loading loading-dots loading-md"></span>:"List Product"}</div>
                             </div>
                         </div>

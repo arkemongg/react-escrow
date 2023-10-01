@@ -228,6 +228,9 @@ const SuccessConfirm = (props) => {
             <div className={`card  max-w-[550px] m-auto top-[120px] bg-[#B3E140] shadow-xl ${props.success ? "" : "hidden"}`}>
                 <div className="card-body h-[200px]">
                     <h2 className="card-title">Your password reset has been completed Successfully!</h2>
+                    <div className="btnArea flex flex-col pt-[30px]">
+                        <Link to='/login' className="btn btn-primary min-w-[160px]">Login</Link>
+                    </div>
                 </div>
             </div>
         </>

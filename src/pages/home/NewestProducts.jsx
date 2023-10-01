@@ -43,7 +43,7 @@ const NewProducts = () => {
                 }
             }
     
-            setTimeout(() => {
+           const timeout =  setTimeout(() => {
                 const response =  getProducts()
                 
                 response.then(data=>{
@@ -61,6 +61,7 @@ const NewProducts = () => {
                 })
 
             }, 2000);
+            return () => clearTimeout(timeout);
         }
       },[selectedCategory]);
 

@@ -73,7 +73,15 @@ const Sellitems = (props) => {
         }
         setClicked(true)
         setTimeout(() => {
-            const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
+            const postProductData = async () => {
+                try {
+                    const response = await axiosInstanceImageJWT.post('/api/myproducts/',formData)
+                    return response
+                } catch (error) {
+                    throw error
+                }
+            }
+            const data = postProductData()
             data.then(data=>{
                 if(data.status===201){
                     setSuccess(true)

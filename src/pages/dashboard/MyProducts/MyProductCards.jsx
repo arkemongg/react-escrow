@@ -1,41 +1,30 @@
+import { apiUrl } from '../../Urls';
 import styles from './MyProductCards.module.css'
 
 import { Link } from 'react-router-dom'
 
 export const Product = (props) => {
-    const data = {
-        "title":props.index,
-        "value":"1",
-        "id":"1",
-        "none":"1",
-    }
+    const data = props.data
     const handleEdit= ()=>{
-            setTimeout(() => {
-                const editItemsSection = document.getElementById('edit');
-                if (editItemsSection) {
-                  editItemsSection.scrollIntoView({ behavior: 'smooth' });
-                }
-            },1000);
-            props.setData(
-                [data]
-            )
+            props.setEditData([])
+            props.setEditData(data)
     }
   
     return (
         <>
             <Link className={styles.Product}>
                 <div className={styles.productImg}>
-                    <img src="/dashboardassets/d.jpg"  alt="" />
+                    <img src={apiUrl+data.image}  alt="" />
                 </div>
                 <div className={styles.productTitle}>
-                    <div className="text-2xl font-bold">Lorem ipsum dolor sit amet.</div>
+                    <div className="text-2xl font-bold">{data.title}</div>
                 </div>
                 <div className={`${styles.productPrice} text-primary text-sm`}>
                      <div className="span">
-                        $ 20000
+                        $ {parseFloat(data.price).toFixed(2)}
                      </div>
-                     <span>120 Sales</span>
-                     <span>12000 items left</span>
+                     <span>{data.sales} Sales</span>
+                     <span>{data.inventory} items left</span>
                 </div>
                 
 

@@ -109,3 +109,12 @@ export const postJWT = async (url,data)=>{
       throw error
   }
 }
+
+export const getJWT = async (url)=>{
+  try{
+      const response =  await axiosInstanceJWT.get(url)
+      return response
+  }catch(error){
+      throw error
+  }
+}
