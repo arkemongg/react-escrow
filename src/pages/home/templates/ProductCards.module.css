@@ -53,10 +53,12 @@
 .productImg{
     height: 250px;
     overflow: hidden;
+    
 }
 .productImg img{
     width: 100%;
     max-height: 250px;
+    object-fit: cover;
 }
 .productTitle{
     height: 70px;

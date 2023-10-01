@@ -23,6 +23,8 @@ const Dashboard = () => {
         }
     },[])
 
+    const [index,setIndex] = useState(null)
+
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
@@ -37,14 +39,14 @@ const Dashboard = () => {
     return (
       <>
         <PageLocation head={head} tail={`Home / ${tail}`}/>
-        <DashboardMenu setHead={setHead} setTail={setTail} setActive = {setActive} />
+        <DashboardMenu index = {index} setHead={setHead} setTail={setTail} setActive = {setActive} />
         {active === 'Dashboard' && <DashboardOption />}
         {active === 'Settings' && <Settings />}
         {active === 'Purchase' && <Purchase />}
         {active === 'Deposit' && <Deposit />}
         {active === 'Sales' && <Sales />}
       
-        {active === 'Sell Items' && <Sellitems setActive={setActive}/>}
+        {active === 'Sell Items' && <Sellitems setHead ={setHead} setTail={setTail} setIndex={setIndex} setActive={setActive}/>}
         {active === 'Withdrawals' && <Withdrawals />}
         {active === 'Manage Items' && <ManageItems />}
 

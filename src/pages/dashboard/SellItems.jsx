@@ -3,8 +3,10 @@ import styles from './styles/Sellitems.module.css'
 import { CategoryData } from '../../CategoryContext';
 import { AxiosInstanceImageJWT } from '../AxiosHeaders';
 import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
+import { useAuth } from '../../AuthContext';
 
 const Sellitems = (props) => {
+    const {logout} = useAuth()
     const axiosInstanceImageJWT = AxiosInstanceImageJWT()
 
     const categorydata = CategoryData()
@@ -19,6 +21,7 @@ const Sellitems = (props) => {
     const [img,setImg] = useState(null)
     const [productImg,setProductImg] = useState("/dashboardassets/d.jpg")
     
+    const [success, setSuccess] = useState(false)
     const [clicked, setClicked] = useState(false)
     const [err, setErr] = useState(false)
     const [message, setMessage] = useState("")
@@ -59,7 +62,6 @@ const Sellitems = (props) => {
                 return
             }
 
-
             setMessage("Please recheck the form for empty fields.")
             return
         }
@@ -70,8 +72,40 @@ const Sellitems = (props) => {
             formData.append(key, postData[key]);
         }
         setClicked(true)
-        // const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
-        // props.setActive("Manage Items")
+        setTimeout(() => {
+            const data = axiosInstanceImageJWT.post('/api/myproducts/',formData)
+            data.then(data=>{
+                if(data.status===201){
+                    setSuccess(true)
+                    props.setIndex(6)
+                    setTimeout(() => {
+                        props.setActive("Manage Items")
+                        props.setHead("Manage Items")
+                        props.setTail(`Manage Items`)
+                    }, 3000);
+                }else{
+                    alert("Unexpected error.")
+                }
+            }).catch(err=>{
+                setErr(true)
+                if (err.response) {
+                    console.log(err);
+                    if (err.response.status === 401) {
+                        logout();
+                    }else if (err.response.status === 429) {
+                        alert("Too many requests.");
+                        setClicked(false)
+                    } else {
+                        setMessage("Unexpected error with status code: ", err.response.status);
+                        setClicked(false)
+                    }
+                } else {
+                    setMessage("No response received from the server.");
+                    setClicked(false)
+                }
+            })
+        }, 2000);
+        
     }
 
     const handleImageUpload = (event) => {
@@ -144,7 +178,7 @@ const Sellitems = (props) => {
                                     <option value={"none"} disabled>Choose Products Condition</option>
                                     <option value={"BRAND NEW"}>Brand New</option>
                                     <option value={"USED"}>Used</option>
-                                    <option value={"DEFFECT"}>Deffect</option>
+                                    <option value={"DEFECT"}>Defect</option>
                                     <option value={"CHECK DESCRIPTION"}>Check Description</option>
                                 </select>
                             </div>
@@ -171,15 +205,35 @@ const Sellitems = (props) => {
                         <div className="PriceSaveArea p-5">
                             <label className='block text-2xl' htmlFor="price">Price</label>
                             <div className="btnArea flex grow">
-                                <input onChange={e=>setPrice(e.target.value)} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
+                                <input onChange={e=>setPrice(parseFloat(e.target.value).toFixed(2))} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
                                 <div onClick={handleClick} className="btn btn-success ml-5 min-w-[200px]">{clicked?<span className="loading loading-dots loading-md"></span>:"List Product"}</div>
                             </div>
                         </div>
                     </div>
-                        
+                     {success?<ProductSuccess success ={success} /> :"" }
             </section>
         </>
     )
 };
 
 export default Sellitems
+
+
+const ProductSuccess = (props)=>{
+    
+    return(
+        <>
+            <div className={` ${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success?'':"hidden"}` }>
+                <div className={`${styles.ModalArea}`}>
+                    <div className='text-center text-2xl font-bold'>
+                        Product listed successflly.
+                    </div>
+                    <br />
+                    <div className='text-sm font-light text-primary p-5 text-center'>
+                            You will be redirected to the product section.
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}

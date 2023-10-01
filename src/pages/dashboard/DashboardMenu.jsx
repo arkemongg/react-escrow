@@ -1,10 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './styles/DashboardMenu.module.css'
 
 const DashboardMenu = (props) => {
 
     const [buttonIndex, setButtonIndex] = useState(0);
-    
+
+    useEffect(()=>{
+        if(props.index!==null){
+            setButtonIndex(props.index)
+            console.log(buttonIndex);
+            console.log(props.index);
+        }
+    },[props.index])
+
     const handleClick = (event,buttonIndex)=>{
         setButtonIndex(buttonIndex)
         const head = event.target.closest('button').textContent
