@@ -47,8 +47,8 @@ const Dashboard = () => {
         {active === 'Sales' && <Sales />}
       
         {active === 'Sell Items' && <Sellitems setHead ={setHead} setTail={setTail} setIndex={setIndex} setActive={setActive}/>}
-        {active === 'Withdrawals' && <Withdrawals />}
-        {active === 'Manage Items' && <ManageItems />}
+        {active === 'Withdrawals' && <Withdrawals  />}
+        {active === 'Manage Items' && <ManageItems setHead ={setHead} setTail={setTail} setIndex={setIndex} setActive={setActive} />}
 
         <Subscribe />
       </>

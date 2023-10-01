@@ -5,9 +5,12 @@ import { AxiosInstanceImageJWT, AxiosInstanceJWT, getJWT } from '../AxiosHeaders
 import { CategoryData } from '../../CategoryContext';
 import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
 import { apiUrl } from '../Urls';
+import { useAuth } from '../../AuthContext';
+import { EmptyMessage } from '../home/templates/Error';
+import { Link } from 'react-router-dom';
 
 
-const ManageItems = ()=>{
+const ManageItems = (props)=>{
     
     const [editData,setEditData] = useState(null)
     const [edit,setEdit] = useState(false)
@@ -25,7 +28,7 @@ const ManageItems = ()=>{
     return (
         <>
             <div className={styles.ManageItemsSection}>
-                <MyProducts setEditData = {setEditData}/>
+                <MyProducts setEditData = {setEditData} setHead ={props.setHead} setTail={props.setTail} setIndex={props.setIndex} setActive={props.setActive}/>
                 {edit?<Edititems editData = {editData} />:""}
             </div>
         </>
@@ -34,12 +37,19 @@ const ManageItems = ()=>{
 
 
 const MyProducts = (props)=>{
-    
+    const {logout} = useAuth()
+    const handleListProduct = ()=>{
+        props.setIndex(5)
+        props.setActive("Sell Items")
+        props.setHead("Sell Items")
+        props.setTail(`Sell Items`)
+    }
     const [url,setUrl] = useState('/api/myproducts/')
     const [data,setData] = useState([])
     
     const [fetched,setFetched] = useState(false)
     const [err,setErr] = useState(false)
+    const [message, setMessage] = useState("")
 
     useEffect(()=>{
 
@@ -51,7 +61,21 @@ const MyProducts = (props)=>{
                     setFetched(true)
                 }
             }).catch(err=>{
-                console.log(err);
+                setErr(true)
+                if (err.response) {
+                    console.log(err);
+                    if (err.response.status === 401) {
+                        logout();
+                    }else if (err.response.status === 429) {
+                        alert("Too many requests.");
+                        
+                    } else {
+                        setMessage("Unexpected error with status code: ", err.response.status);
+                        
+                    }
+                } else {
+                    setMessage("No response received from the server.");
+                }
             })
         }, 0);
 
@@ -67,16 +91,19 @@ const MyProducts = (props)=>{
                     <button className={`max-w-[150px] ml-5 ${styles.homeSearchBtn} btn btn-primary`}>Search</button>
             </div>
             <div className={styles.MyProducts}>
-                {fetched?data.map(product=>{
+                {fetched?data.length>0?data.map(product=>{
                     return <Product
                      key={product.id} 
                      data = {product}
                      setEditData = {props.setEditData}
                      />
-                }):Array.from({ length: 6 }, (_, index) => <LoadingProductsCard  key={index}/>)}
+                }):<>
+                    <button onClick={handleListProduct} className='btn btn-primary min-w-[350px]'>List A Product</button>
+                </>
+                    :Array.from({ length: 6 }, (_, index) => <LoadingProductsCard  key={index}/>)}
             </div>
            
-            <div className="myProductBtns flex justify-center pt-5">
+            <div className={`myProductBtns flex justify-center pt-5 ${data.length>6?"":"hidden"}`}>
                     <div className="btn  w-[160px] btn-primary mr-5">
                         Previous
                     </div>
@@ -95,7 +122,7 @@ export default ManageItems;
 
 
 const Edititems = (props) => {
-    
+    const {logout} = useAuth()
 
     const axiosInstanceImageJWT = AxiosInstanceImageJWT()
 
@@ -137,6 +164,7 @@ const Edititems = (props) => {
             "category": category,
             "inventory": inventory,
             "condition": condition,
+            "expired": false
         }
         
         if(title.trim()===""||category===0 || description.trim()==="" || price<=0 || price>50000 || inventory<0 || inventory>32000 || (img!==null&&img.size/1024 >2048) || condition === ""){
@@ -176,11 +204,35 @@ const Edititems = (props) => {
         }
         setClicked(true)
         
-        const patchData = async ()=>{
-            const data = await axiosInstanceImageJWT.patch(`/api/myproducts/${id}/`,formData)
-            
+        const patchProductData = async () => {
+            try {
+                const response = await axiosInstanceImageJWT.patch(`/api/myproducts/${id}/`,formData)
+                return response
+            } catch (error) {
+                throw error
+            }
         }
-        
+        const data = patchProductData()
+        data.then(data=>{
+            console.log(data);
+        }).catch(err=>{
+            setErr(true)
+            if (err.response) {
+                console.log(err);
+                if (err.response.status === 401) {
+                    logout();
+                }else if (err.response.status === 429) {
+                    alert("Too many requests.");
+                    setClicked(false)
+                } else {
+                    setMessage("Unexpected error with status code: ", err.response.status);
+                    setClicked(false)
+                }
+            } else {
+                setMessage("No response received from the server.");
+                setClicked(false)
+            }
+        })
 
         
     }

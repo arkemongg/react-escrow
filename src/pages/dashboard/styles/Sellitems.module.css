@@ -12,16 +12,7 @@
     top: 10px;
 }
 
-.ListProductImage{
-    max-height: 250px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-}
-.ListProductImage img{
-    width: 300px;
-}
+
 .TitleCategory , .InventoryCondition{
     display: flex;
     flex-wrap: wrap;
@@ -41,17 +32,23 @@
     position: relative;
     top: 20px;
 }
+.ListProductImage{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 300px;
+    overflow: hidden;
+}
 
 .ImgWrapper{
-    width: 330px;
-    height: 250px;
-    overflow: hidden;
-   
+    width: 344px;
+    height: 262.5px;
+    overflow: hidden; 
 }
 .ImgWrapper img{
     width: 100%;
-    max-height: 250px;
-    object-fit: cover;
+    height: 100%; 
+    object-fit:cover; 
 }
 
 /* Modal */

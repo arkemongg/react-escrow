@@ -35,7 +35,7 @@ const Featured = () => {
                     alert("Unexpected error.")
                 }
             }).catch(err=>{
-                if(data.request.status===0){
+                if(data.request){
                     // setErr(true)
                     // setErrMessage(data.message)
                 }

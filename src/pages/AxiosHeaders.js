@@ -93,6 +93,7 @@ export function validatePassword(password) {
 }
 
 export const post = async (url,data)=>{
+  const axiosInstanceJWT = AxiosInstanceJWT()
   try{
       const response =  await axiosInstance.post(url,data)
       return response
@@ -100,8 +101,9 @@ export const post = async (url,data)=>{
       throw error
   }
 }
-const axiosInstanceJWT = AxiosInstanceJWT()
+
 export const postJWT = async (url,data)=>{
+  const axiosInstanceJWT = AxiosInstanceJWT()
   try{
       const response =  await axiosInstanceJWT.post(url,data)
       return response
@@ -111,6 +113,7 @@ export const postJWT = async (url,data)=>{
 }
 
 export const getJWT = async (url)=>{
+  const axiosInstanceJWT = AxiosInstanceJWT()
   try{
       const response =  await axiosInstanceJWT.get(url)
       return response
