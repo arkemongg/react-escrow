@@ -7,11 +7,11 @@ import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
 import { apiUrl } from '../Urls';
 import { useAuth } from '../../AuthContext';
 import { EmptyMessage } from '../home/templates/Error';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const ManageItems = (props)=>{
-    
+    const [url,setUrl] = useState('/api/myproducts/')
     const [editData,setEditData] = useState(null)
     const [edit,setEdit] = useState(false)
     useEffect(()=>{
@@ -28,8 +28,8 @@ const ManageItems = (props)=>{
     return (
         <>
             <div className={styles.ManageItemsSection}>
-                <MyProducts setEditData = {setEditData} setHead ={props.setHead} setTail={props.setTail} setIndex={props.setIndex} setActive={props.setActive}/>
-                {edit?<Edititems editData = {editData} />:""}
+                <MyProducts url = {url} setUrl = {setUrl} setEditData = {setEditData} setHead ={props.setHead} setTail={props.setTail} setIndex={props.setIndex} setActive={props.setActive}/>
+                {edit?<Edititems editData = {editData}  url = {url} setUrl = {setUrl} />:""}
             </div>
         </>
     )
@@ -44,17 +44,26 @@ const MyProducts = (props)=>{
         props.setHead("Sell Items")
         props.setTail(`Sell Items`)
     }
-    const [url,setUrl] = useState('/api/myproducts/')
+
+    // const [url,setUrl] = useState('/api/myproducts/')
     const [data,setData] = useState([])
     
     const [fetched,setFetched] = useState(false)
     const [err,setErr] = useState(false)
     const [message, setMessage] = useState("")
+    
+    const handleClear = ()=>{
+        if(props.url==='/api/myproducts/'){
+            return;
+        }
+        props.setUrl('/api/myproducts/')
+        setFetched(false)
+    }
 
     useEffect(()=>{
 
         const timeout = setTimeout(() => {
-            const getData = getJWT(url)
+            const getData = getJWT(props.url)
             getData.then(data=>{
                 if(data.status===200){
                     setData(data.data.results)
@@ -77,14 +86,17 @@ const MyProducts = (props)=>{
                     setMessage("No response received from the server.");
                 }
             })
-        }, 0);
+        }, 2000);
 
         return () => clearTimeout(timeout);
-    },[url])
+    },[props.url])
 
     return (
         <div className={styles.MyProductsArea}>
-            <h1 className='text-2xl p-5'>My Products</h1>
+            <div className='text-2xl p-5 flex items-center justify-between'>
+                <h1>My Products</h1>
+                <div onClick={handleClear} className="btn btn-error">Clear filter</div>
+            </div>
             <hr />
             <div className={`${styles.searchArea} p-5`}>
                     <input type="text" placeholder="Type here" className={`max-w-[550px] ${styles.searchInput} input rounded-none input-bordered`} />
@@ -198,7 +210,9 @@ const Edititems = (props) => {
         }
         
         const formData = new FormData();
-        formData.append('image', img);
+        if(img!==null){
+            formData.append('image', img);
+        }
         for (const key in postData) {
             formData.append(key, postData[key]);
         }
@@ -212,27 +226,35 @@ const Edititems = (props) => {
                 throw error
             }
         }
-        const data = patchProductData()
-        data.then(data=>{
-            console.log(data);
-        }).catch(err=>{
-            setErr(true)
-            if (err.response) {
-                console.log(err);
-                if (err.response.status === 401) {
-                    logout();
-                }else if (err.response.status === 429) {
-                    alert("Too many requests.");
+        const timeout =  setTimeout(() => {
+            const data = patchProductData()
+            data.then(data=>{
+                if(data.status===200){
+                    setSuccess(true)
                     setClicked(false)
+                }else{
+                    setClicked(false)
+                    alert("Unexpected error.")
+                }
+            }).catch(err=>{
+                setErr(true)
+                if (err.response) {
+                    console.log(err);
+                    if (err.response.status === 401) {
+                        logout();
+                    }else if (err.response.status === 429) {
+                        alert("Too many requests.");
+                        setClicked(false)
+                    } else {
+                        setMessage("Unexpected error with status code: ", err.response.status);
+                        setClicked(false)
+                    }
                 } else {
-                    setMessage("Unexpected error with status code: ", err.response.status);
+                    setMessage("No response received from the server.");
                     setClicked(false)
                 }
-            } else {
-                setMessage("No response received from the server.");
-                setClicked(false)
-            }
-        })
+            })
+        }, 2000);
 
         
     }
@@ -259,7 +281,8 @@ const Edititems = (props) => {
 
                     <div className={styles.formArea}>
                         <h1 className="text-2xl p-3">
-                            Edit Product ID #{id}
+                            Edit Product <br />
+                            ID #{id}
                         </h1>
                         <hr />
 
@@ -295,7 +318,7 @@ const Edititems = (props) => {
                                 <div className='text-2xl'>
                                     Inventory
                                 </div>
-                                <input value={inventory} onChange={e=>setInventory(e.target.value)} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
+                                <input value={inventory} onChange={e=>setInventory(parseFloat(e.target.value).toFixed(0))} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
                                 
                             </div>
 
@@ -334,14 +357,52 @@ const Edititems = (props) => {
                         <div className="PriceSaveArea p-5">
                             <label className='block text-2xl' htmlFor="price">Price</label>
                             <div className="btnArea flex grow">
-                                <input value={price} onChange={e=>setPrice(e.target.value)} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
+                                <input value={price} onChange={e=>setPrice(parseFloat(e.target.value).toFixed(2))} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
                                 <div onClick={handleClick} className="btn btn-success ml-5 min-w-[200px]">{clicked?<span className="loading loading-dots loading-md"></span>:"List Product"}</div>
                             </div>
                         </div>
                     </div>
-                        
+                      
             </section>
+            <ProductEditSuccess  id = {id} setUrl = {props.setUrl} setSuccess = {setSuccess} success= {success} /> 
         </>
     )
 };
 
+const ProductEditSuccess = (props)=>{
+    const navigate = useNavigate();
+
+
+    const handleClose = ()=>{
+        props.setSuccess(false)
+    }
+    const handleCheckProduct = ()=>{
+        props.setUrl(``)
+        props.setUrl(`/api/myproducts?id=${props.id}`)
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+        props.setSuccess(false)
+    }
+    return(
+        <>
+            <div className={` ${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success?'':"hidden"}` }>
+                <div className={`${styles.ModalArea}`}>
+                    <div className='text-center text-2xl font-bold'>
+                        Product updated successflly.
+                    </div>
+                    <br />
+                    <div className='btnArea'>
+                            <div onClick={handleCheckProduct} className="btn btn-primary">
+                                Check The Product
+                            </div>
+                            <div onClick={handleClose} className="btn ml-5 min-w-[150px] btn-error">
+                                Close
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
