@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingProductsCard, Product } from './MyProducts/MyProductCards'
 import styles from './styles/ManageItems.module.css'
 import { AxiosInstanceImageJWT, AxiosInstanceJWT, getJWT } from '../AxiosHeaders';
@@ -6,11 +6,9 @@ import { CategoryData } from '../../CategoryContext';
 import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
 import { apiUrl } from '../Urls';
 import { useAuth } from '../../AuthContext';
-import { EmptyMessage } from '../home/templates/Error';
-import { Link, useNavigate } from 'react-router-dom';
-
 
 const ManageItems = (props)=>{
+    const [fetched,setFetched] = useState(false)
     const [url,setUrl] = useState('/api/myproducts/')
     const [editData,setEditData] = useState(null)
     const [edit,setEdit] = useState(false)
@@ -23,13 +21,15 @@ const ManageItems = (props)=>{
                     editItemsSection.scrollIntoView({ behavior: 'smooth' });
                   }
             }, 1000);
+        }else{
+            setEdit(false)
         }
     },[editData])
     return (
         <>
             <div className={styles.ManageItemsSection}>
-                <MyProducts url = {url} setUrl = {setUrl} setEditData = {setEditData} setHead ={props.setHead} setTail={props.setTail} setIndex={props.setIndex} setActive={props.setActive}/>
-                {edit?<Edititems editData = {editData}  url = {url} setUrl = {setUrl} />:""}
+                <MyProducts fetched = {fetched} setFetched={setFetched} url = {url} setUrl = {setUrl} setEditData = {setEditData} setHead ={props.setHead} setTail={props.setTail} setIndex={props.setIndex} setActive={props.setActive}/>
+                {edit?<Edititems setFetched={setFetched} editData = {editData}  url = {url} setUrl = {setUrl} setEditData = {setEditData}/>:""}
             </div>
         </>
     )
@@ -45,34 +45,50 @@ const MyProducts = (props)=>{
         props.setTail(`Sell Items`)
     }
 
-    // const [url,setUrl] = useState('/api/myproducts/')
+    const [search,setSearch] = useState("")
+    const [nextUrl,setNextUrl] = useState(null)
+    const [prevUrl,setPrevUrl] = useState(null)
     const [data,setData] = useState([])
     
-    const [fetched,setFetched] = useState(false)
     const [err,setErr] = useState(false)
     const [message, setMessage] = useState("")
-    
+    const [total, setTotal] = useState(-1)
     const handleClear = ()=>{
         if(props.url==='/api/myproducts/'){
             return;
         }
         props.setUrl('/api/myproducts/')
-        setFetched(false)
+        props.setFetched(false)
+    }
+    const handleRefresh = ()=>{
+        const url = props.url;
+        
+        let random = Math.floor(Math.random() * 1000) + 1;
+        let newUrl;
+        if (url.includes('random=')) {
+            newUrl = url.replace(/(random=)[^\&]+/, `$1${random}`);
+        } else {
+            newUrl = `${url}${url.includes('?') ? '&&' : '?'}random=${random}`;
+        }
+        props.setUrl(newUrl)
     }
 
     useEffect(()=>{
-
+        props.setFetched(false)
         const timeout = setTimeout(() => {
             const getData = getJWT(props.url)
             getData.then(data=>{
                 if(data.status===200){
+                    setTotal(data.data.count)
                     setData(data.data.results)
-                    setFetched(true)
+                    setPrevUrl(data.data.previous)
+                    setNextUrl(data.data.next)
+                    props.setFetched(true)
                 }
             }).catch(err=>{
                 setErr(true)
                 if (err.response) {
-                    console.log(err);
+                    
                     if (err.response.status === 401) {
                         logout();
                     }else if (err.response.status === 429) {
@@ -90,20 +106,48 @@ const MyProducts = (props)=>{
 
         return () => clearTimeout(timeout);
     },[props.url])
-
+    const handlePrevious = (event)=>{
+        if (prevUrl===null){
+            return;
+        }
+        props.setUrl(prevUrl)
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+    }
+    const handleNext = ()=>{
+        if (nextUrl===null){
+            return;
+        }
+        props.setUrl(nextUrl)
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+    }
+    const handleSearch = ()=>{
+        if (search.trim()===""){
+            return;
+        }
+        props.setUrl('/api/myproducts/'+`?search=${search}`)
+    }
     return (
         <div className={styles.MyProductsArea}>
             <div className='text-2xl p-5 flex items-center justify-between'>
                 <h1>My Products</h1>
-                <div onClick={handleClear} className="btn btn-error">Clear filter</div>
+                <div className="btnArea flex flex-wrap justify-end">
+                    <div onClick={handleRefresh} className="btn btn-success m-1 min-w-[150px]">Refresh</div>
+                    <div onClick={handleClear} className="btn btn-error m-1 min-w-[150px]">Clear Filter</div>
+                </div>
             </div>
             <hr />
             <div className={`${styles.searchArea} p-5`}>
-                    <input type="text" placeholder="Type here" className={`max-w-[550px] ${styles.searchInput} input rounded-none input-bordered`} />
-                    <button className={`max-w-[150px] ml-5 ${styles.homeSearchBtn} btn btn-primary`}>Search</button>
+                    <input onChange={e=>setSearch(e.target.value)} type="text" placeholder="Type here" className={`max-w-[550px] ${styles.searchInput} input rounded-none input-bordered`} />
+                    <button onClick={handleSearch} className={`max-w-[150px] ml-5 ${styles.homeSearchBtn} btn btn-primary`}>Search</button>
             </div>
             <div className={styles.MyProducts}>
-                {fetched?data.length>0?data.map(product=>{
+                {props.fetched?data.length>0?data.map(product=>{
                     return <Product
                      key={product.id} 
                      data = {product}
@@ -115,11 +159,11 @@ const MyProducts = (props)=>{
                     :Array.from({ length: 6 }, (_, index) => <LoadingProductsCard  key={index}/>)}
             </div>
            
-            <div className={`myProductBtns flex justify-center pt-5 ${data.length>6?"":"hidden"}`}>
-                    <div className="btn  w-[160px] btn-primary mr-5">
+            <div className={`myProductBtns flex justify-center pt-5 ${total>6?"":"hidden"}`}>
+                    <div onClick={handlePrevious} className="btn  w-[160px] btn-primary mr-5">
                         Previous
                     </div>
-                    <div className="btn w-[160px] btn-primary ">
+                    <div onClick={handleNext} className="btn w-[160px] btn-primary ">
                         Next
                     </div>
             </div>
@@ -132,7 +176,7 @@ const MyProducts = (props)=>{
 export default ManageItems;
 
 
-
+// Edit the product
 const Edititems = (props) => {
     const {logout} = useAuth()
 
@@ -157,14 +201,16 @@ const Edititems = (props) => {
     const [message, setMessage] = useState("")
 
     useEffect(()=>{
-        setId(props.editData.id)
-        setTitle(props.editData.title)
-        setDescription(props.editData.description)
-        setPrice(props.editData.price)
-        setCategory(props.editData.category.id)
-        setInventory(props.editData.inventory)
-        setCondition(props.editData.condition)
-        setProductImg(props.editData.image!==null?props.editData.image:"dd")
+        if(props.editData!==null){
+            setId(props.editData.id)
+            setTitle(props.editData.title)
+            setDescription(props.editData.description)
+            setPrice(props.editData.price)
+            setCategory(props.editData.category.id)
+            setInventory(props.editData.inventory)
+            setCondition(props.editData.condition)
+            setProductImg(props.editData.image!==null?props.editData.image:"dd")
+        }
     },[props.editData])
     
     const handleClick = (event)=>{
@@ -172,7 +218,7 @@ const Edititems = (props) => {
         const postData = {
             "title": title,
             "description": description,
-            "price": price,
+            "price": parseFloat(price).toFixed(2),
             "category": category,
             "inventory": inventory,
             "condition": condition,
@@ -218,6 +264,7 @@ const Edititems = (props) => {
         }
         setClicked(true)
         
+        // Edit product request
         const patchProductData = async () => {
             try {
                 const response = await axiosInstanceImageJWT.patch(`/api/myproducts/${id}/`,formData)
@@ -259,6 +306,7 @@ const Edititems = (props) => {
         
     }
 
+    // Image upload handler
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         setImg(file)
@@ -357,33 +405,40 @@ const Edititems = (props) => {
                         <div className="PriceSaveArea p-5">
                             <label className='block text-2xl' htmlFor="price">Price</label>
                             <div className="btnArea flex grow">
-                                <input value={price} onChange={e=>setPrice(parseFloat(e.target.value).toFixed(2))} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
+                                <input value={price} onChange={e=>setPrice(e.target.value)} id='price' type="number" placeholder="Product Price" className="input input-bordered rounded-none w-full"/>
                                 <div onClick={handleClick} className="btn btn-success ml-5 min-w-[200px]">{clicked?<span className="loading loading-dots loading-md"></span>:"List Product"}</div>
                             </div>
                         </div>
                     </div>
                       
             </section>
-            <ProductEditSuccess  id = {id} setUrl = {props.setUrl} setSuccess = {setSuccess} success= {success} /> 
+            {/*Edit Success card */}
+            <ProductEditSuccess setFetched={props.setFetched}  id = {id} setUrl = {props.setUrl} setSuccess = {setSuccess} success= {success} setEditData = {props.setEditData} /> 
         </>
     )
 };
-
+//Edit Success card 
 const ProductEditSuccess = (props)=>{
-    const navigate = useNavigate();
-
 
     const handleClose = ()=>{
         props.setSuccess(false)
+        props.setEditData(null)
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
     }
     const handleCheckProduct = ()=>{
+        let random = Math.floor(Math.random() * 1000) + 1;
         props.setUrl(``)
-        props.setUrl(`/api/myproducts?id=${props.id}`)
+        props.setUrl(`/api/myproducts?id=${props.id}&&${random}`)
             window.scrollTo({
               top: 0,
               behavior: 'smooth'
             });
         props.setSuccess(false)
+        props.setEditData(null)
+        props.setFetched(false)
     }
     return(
         <>
@@ -393,11 +448,11 @@ const ProductEditSuccess = (props)=>{
                         Product updated successflly.
                     </div>
                     <br />
-                    <div className='btnArea'>
-                            <div onClick={handleCheckProduct} className="btn btn-primary">
+                    <div className='btnArea flex flex-wrap justify-center'>
+                            <div onClick={handleCheckProduct} className="btn btn-primary m-1 ">
                                 Check The Product
                             </div>
-                            <div onClick={handleClose} className="btn ml-5 min-w-[150px] btn-error">
+                            <div onClick={handleClose} className="btn m-1 min-w-[180px] btn-error ">
                                 Close
                             </div>
                     </div>
@@ -406,3 +461,4 @@ const ProductEditSuccess = (props)=>{
         </>
     )
 }
+
