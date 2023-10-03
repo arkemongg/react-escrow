@@ -54,7 +54,7 @@ const ResetPasswordForm = () => {
                     alert("Unexpexcted error.")
                 }
             } else {
-                alert("Unexpected error.");
+                alert("No response from server.")
             }
         })
     }
@@ -173,7 +173,7 @@ const Confirm = (props) => {
                     }
                 }else{
                     setErr(true)
-                    setMessage("Unexpected error.")
+                    setMessage("No response from server.")
                     setHidden(true)
                 }
             })

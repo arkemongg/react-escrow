@@ -99,6 +99,7 @@ const MyProducts = (props)=>{
                         
                     }
                 } else {
+                    alert("No response from server.")
                     setMessage("No response received from the server.");
                 }
             })
@@ -299,6 +300,7 @@ const Edititems = (props) => {
                 } else {
                     setMessage("No response received from the server.");
                     setClicked(false)
+                    alert("No response from server.")
                 }
             })
         }, 2000);

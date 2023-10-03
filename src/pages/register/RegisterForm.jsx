@@ -68,7 +68,7 @@ const RegisterArea = () => {
                     }
                     
                 }else{
-                    alert("Unexpected error.");
+                    alert("No response from server.")
                 }
             })
             setHidden(true)

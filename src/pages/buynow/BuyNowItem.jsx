@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { PageLocation } from '../GlobalTemplates/PageLocation'
 import styles from './styles/BuyNowItem.module.css'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { axiosInstance, convertDatetimeToDate } from '../AxiosHeaders'
+import { axiosInstance, convertDatetimeToDate, postJWT } from '../AxiosHeaders'
 import LoadingArea from '../GlobalTemplates/LoadingArea'
 import { apiUrl } from '../Urls'
 import { EmptyMessage } from '../home/templates/Error'
+import { useAuth } from '../../AuthContext'
+import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom'
 
 const BuyNowItem = () => {
     //get the id from route
@@ -34,7 +36,7 @@ const BuyNowItem = () => {
                         alert("Unexpected error.")
                     }
                 }else{
-                    alert("Unexpected error.")
+                    alert("No response from server.")
                 }
             })
         }, 0);
@@ -122,7 +124,7 @@ const BuyNowProductArea = (props) => {
                         </div>
                         <div className="text-center font-light flex items-center justify-center">
                             <div className='text-2xl font-bold mr-1'>
-                                {parseFloat(rating).toFixed(2)}
+                                {rating === null?"0.00":parseFloat(rating).toFixed(2)}
                             </div>
                             <img className='w-[20px]' src="/dashboardassets/star.png" alt="star" />
                         </div>
@@ -302,7 +304,7 @@ const SellerProfile = (props) => {
                     alert("Unexpected error.")
                 }
             })
-        }, 0);
+        }, 2000);
 
         return (() => clearTimeout(timer))
     }, [])
@@ -312,11 +314,11 @@ const SellerProfile = (props) => {
             {/* Loading animation with fetched before loading seller profile */}
             {fetched ? <><div className={styles.ProfileDetails}>
                 <div className={styles.ProfileImageArea}>
-                    <img src={data.avatar.profile} alt="star" />
+                    <img src={data.avatar.profile===null?"/dashboardassets/d.jpg":data.avatar.profile} alt="profile" />
                 </div>
                 <div className="ProfileNames flex flex-col justify-center">
                     <div className="font-bold max-w-[340px] m-4 mb-0 text-center">
-                        {data.first_name + " " + data.last_name} 
+                        {data.first_name===""?"No Name": (data.first_name + " " + data.last_name)} 
                     </div>
                     <div className='text-sm text-center pt-1 p-5 '>
                         <div className='font-bold'>Member Since</div>
@@ -388,9 +390,25 @@ const SellerProfile = (props) => {
 const ProductReviews = (props) => {
        //data 
        const [url,setUrl] = useState(`/api/feedback/?seller__id=${props.seller_id}`)
+       const [nextUrl,setNextUrl] = useState(null)
+       const [prevUrl,setPrevUrl] = useState(null)
+
        const [data, setData] = useState([])
        const [fetched, setFetched] = useState(false)
        const [count, setCount] = useState(-1)
+
+       const handlePrevious = ()=>{
+            if(prevUrl===null){
+                return;
+            }
+            setUrl(prevUrl)
+       }
+       const handleNext = ()=>{
+            if(nextUrl===null){
+                return;
+            }
+            setUrl(nextUrl)
+       }
        useEffect(() => {
            setFetched(false)
            const timer = setTimeout(() => {
@@ -399,6 +417,11 @@ const ProductReviews = (props) => {
                    if (data.status === 200) {
                        setData(data.data.results)
                        setFetched(true)
+                       setCount(data.data.count)
+
+                       //Set prev and next url
+                       setPrevUrl(data.data.previous)
+                       setNextUrl(data.data.next)
                    }
                }).catch(err => {
                    //error handling
@@ -408,15 +431,17 @@ const ProductReviews = (props) => {
                        }else{
                            alert("Unexpected error.")
                        }
+                       
                    }else{
                        alert("Unexpected error.")
                    }
+                   console.log(err);
                })
                
-           }, 0);
+           }, 2000);
            
            return (() => clearTimeout(timer))
-       }, [])
+       }, [url])
        console.log(data);
     return (
         <div className={`${styles.ProductReviewsArea}`}>
@@ -427,11 +452,11 @@ const ProductReviews = (props) => {
                 }):<EmptyMessage message={"No reviews found."} />
             ):<LoadingArea />}
             </div>
-            <div className={`btnArea flex justify-center p-5 ${count>8?"":"hidden"}`}>
-                <button className="btn btn-primary min-w-[150px] mr-2">
+            <div className={`btnArea flex justify-center p-5 ${count>5?"":"hidden"}`}>
+                <button onClick={handlePrevious} className="btn btn-primary min-w-[150px] mr-2">
                     Previous
                 </button>
-                <button className="btn btn-primary min-w-[150px]">
+                <button onClick={handleNext} className="btn btn-primary min-w-[150px]">
                     Next
                 </button>
             </div>
@@ -469,7 +494,14 @@ const Review = (props) => {
 
 const BuyNowProductBuyArea = (props) => {
     const [price, setPrice] = useState("")
+    const [quantity, setQuantity] = useState("")
+    const { isLogged, logout } = useAuth();
 
+    const [orderId,setOrderId] = useState("")
+    const [success,setSuccess] = useState(false)
+    const [err,setErr] = useState(false)
+    const [message,setMessage] = useState("")
+    const [clicked,setClicked] = useState(false)
     // assign data to variables
     useEffect(() => {
         if (props.data !== null) {
@@ -477,11 +509,58 @@ const BuyNowProductBuyArea = (props) => {
         }
     }, [props.data])
 
-    const [total, setTotal] = useState(0.00)
-    const [logged, setLogged] = useState(true)
-    return (
-        <div className={`${styles.BuyNowProductBuyArea} ${logged ? "max-h-[450px]" : "max-h-[250px]"}`}>
+    const handleBuyNow = () =>{
+        if(props.data.inventory<quantity){
+            setErr(true)
+            setMessage("Quantity can't be greater than inventory.")
+            return;
+        }
+        setClicked(true)
+        setTimeout(() => {
+            const postData = {
+                "product_id": props.data.id,
+                "quantity": quantity
+            }
+            const url = '/api/create-order/'
+    
+            const getOrderData = postJWT(url,postData)
+    
+            getOrderData.then(data=>{
+                if(data.status===201){
+                    setSuccess(true)
+                    setOrderId(data.data.id)
+                }else{
+                    alert("Unexpected error.")
+                }
+            }).catch(err=>{
+                setErr(true)
+                if (err.response) {
+                    if (err.response.status === 400) {
+                        if(err.response.data.error){
+                            setMessage(err.response.data.error)
+                        }
+                    }else if (err.response.status === 401) {
+                        logout();
+                    } else if (err.response.status === 429) {
+                        alert("Too many requests.");
+    
+                    } else {
+                        setMessage("Unexpected error.");
+                    }
+                } else {
+                    setMessage("No response received from the server.");
+                }
+            })
+            setClicked(false)
+        }, 3000);
+    }
 
+    const [total, setTotal] = useState(0.00)
+
+    return (<>
+        {err?<FlaotingErrorCustom err={err} setErr={setErr} message = {message} />:""}
+        <div className={`${styles.BuyNowProductBuyArea} ${isLogged ? "max-h-[450px]" : "max-h-[250px]"}`}>
+            
             <div className={`${styles.ProductPrice}`}>
 
                 <div className="text-center text-xl font-light p-2 flex items-center justify-center">
@@ -498,13 +577,15 @@ const BuyNowProductBuyArea = (props) => {
             </div>
 
             <div className={`${styles.BuyNowBtnArea} p-5 min-w-[100%]`}>
-                <Link to='/login' className={`btn btn-primary min-w-[320px] ${logged ? "hidden" : ""}`}>Login</Link>
+                <Link to='/login' className={`btn btn-primary min-w-[320px] ${isLogged ? "hidden" : ""}`}>Login to buy</Link>
 
-                <input onChange={event => setTotal(event.target.value * price)} placeholder='Quantity' type="text" className={`input grow input-bordered rounded-none min-w-[330px] ${logged ? '' : 'hidden'}`} />
-                <div className={`btn btn-success grow min-w-[330px] ${logged ? "" : "hidden"}`}>Buy Now</div>
+                <input onChange={event => (setQuantity(event.target.value) , setTotal(event.target.value * price))} placeholder='Quantity' type="text" className={`input grow input-bordered rounded-none min-w-[330px] ${isLogged ? '' : 'hidden'}`} />
+                <div onClick={handleBuyNow} className={`btn btn-success grow min-w-[330px] ${isLogged ? "" : "hidden"}`}>
+                {clicked?<span className="loading loading-dots loading-md"></span>:"Buy Now"}
+                </div>
             </div>
 
-            <div className={`${styles.ProductPrice} ${logged ? "" : "hidden"}`}>
+            <div className={`${styles.ProductPrice} ${isLogged ? "" : "hidden"}`}>
 
                 <div className={`text-center text-xl font-light p-2 flex items-center justify-center `}>
                     <img className='w-[25px]' src="/dashboardassets/money.png" alt="" />
@@ -519,7 +600,35 @@ const BuyNowProductBuyArea = (props) => {
                 </div>
             </div>
         </div>
+        <ConfirmedModal id = {orderId} success = {success} setSuccess = {setSuccess} />
+    </>
     )
 
 }
 
+
+const ConfirmedModal = (props) => {
+    const handle = (event) => {
+        props.setSuccess(false)
+    }
+    return (
+        <>
+            <div className={`${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success ? "" : "hidden"} `}>
+                <div className={styles.ModalArea}>
+                    <button onClick={handle} className={styles.closeModal}>
+                        <img src="/dashboardassets/delete.png" alt="" />
+                    </button>
+                    <div className='text-xl font-bold flex justify-center items-center h-[100px]'>
+                        <img className='m-1' style={{width:"25px"}} src="/dashboardassets/success.png" alt="" /> Order successfully created. 
+                    </div>
+                    <div className='text-xl text-center'>
+                       ORDER ID #{props.id}
+                    </div>
+                    <div className='text-xl text-center pt-3'>
+                       <Link to={'/dashboard'} className="btn btn-primary">Go to Dashboard</Link>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}

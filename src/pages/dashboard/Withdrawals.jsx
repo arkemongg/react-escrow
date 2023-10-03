@@ -45,22 +45,23 @@ const Withdrawals = (props) => {
                     alert("Unexpected error.")
                 }
             }).catch(err=>{
+                setErr(true)
                 if(err.response){
                     if(err.response.status===400){
                         if(err.response.data.error){
-                            setErr(true)
+                            
                             setMessage(err.response.data.error)
                         }else{
                             alert("Unexpected error.")
                         }
                     }else if(err.response.status===429){
-                        setErr(true)
                         setMessage("Too many requests.")
                     }else{
                         alert("Unexpected error.")
                     }
                 }else{
                     setMessage("No response received from the server.");
+                    alert("No response from server.")
                 }
             })
             setClicked(false)
