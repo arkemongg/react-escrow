@@ -293,7 +293,7 @@ const Edititems = (props) => {
                         alert("Too many requests.");
                         setClicked(false)
                     } else {
-                        setMessage("Unexpected error with status code: ", err.response.status);
+                        setMessage("Unexpected error.");
                         setClicked(false)
                     }
                 } else {
