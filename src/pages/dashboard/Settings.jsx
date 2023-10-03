@@ -178,7 +178,7 @@ const Settings = (props) => {
                 if(data.status===200){
                     setSuccessProfile(true)
                 }else{
-                    alert("Too many requests.");
+                    alert("Unexpected error.");
                 }
             }).catch(err=>{
                 setErr(true)
@@ -240,7 +240,7 @@ const Settings = (props) => {
                         {clicked?<span className="loading loading-dots loading-md"></span>:"Save Profile"}
                     </button>
                 </div>
-                <ShippingDetails shippingEmail={shippingEmail} shippingDetails={shippingDetails} setShippingEmail = {setShippingEmail}  setShippingDetails={setShippingDetails} />
+                <ShippingDetails fetched={fetched} shippingEmail={shippingEmail} shippingDetails={shippingDetails} setShippingEmail = {setShippingEmail}  setShippingDetails={setShippingDetails} />
                 <ChangePassword />
 
             </section>
@@ -309,7 +309,7 @@ const SocialDetails = (props) => {
             </h1>
             <hr />
 
-            <div className={styles.SocialDetails}>
+            {props.fetched?<div className={styles.SocialDetails}>
                 <div className="social flex p-5">
                     <div className="socialImgArea w-[80px]">
                         <img className='w-[50px]' src="./dashboardassets/facebook.png" alt="ok" />
@@ -328,69 +328,187 @@ const SocialDetails = (props) => {
                     </div>
                     <input onChange={e=>props.setTelegram(e.target.value)} value={props.telegram} placeholder='Telegram Username' className='input rounded-none' type="text" />
                 </div>
-            </div>
+            </div>:<LoadingArea/>}
         </div>
     )
 }
 
 const ShippingDetails = (props) => {
+    const { logout } = useAuth()
+     // Save profle data
+     const [clicked,setClicked] = useState(false)
+     const [err,setErr] = useState(false)
+     const [successShipping,setSuccessShipping] = useState(false)
+     const [message,setMessage] = useState("")
+     
+     const handleSaveShipping = ()=>{
+        
+        if(!validateEmail(props.shippingEmail)){
+            setErr(true)
+            setMessage("Please enter a valid email.")
+            return;
+        }else if(props.shippingDetails.length > 249){
+            setErr(true)
+            setMessage("Shipping details can't be more than 250 charecters.")
+            return;
+        }
+         const axiosInstanceJWT = AxiosInstanceJWT()
+         const shippingData = {
+            email: props.shippingEmail,
+            details: props.shippingDetails
+         }
+         setClicked(true)
+         setTimeout(() => {
+             const data = axiosInstanceJWT.patch(`/api/shipping/`,shippingData)
+             data.then(data=>{
+                 if(data.status===200){
+                    setSuccessShipping(true)
+                 }else{
+                     alert("Too many requests.");
+                 }
+             }).catch(err=>{
+                 setErr(true)
+                 if (err.response) {
+                     if (err.response.status === 401) {
+                         logout();
+                     } else if (err.response.status === 429) {
+                         alert("Too many requests.");
+ 
+                     } else {
+                         setMessage("Unexpected error.");
+                     }
+                 } else {
+                     setMessage("No response received from the server.");
+                 }
+             })
+             setClicked(false)
+         }, 2000);
+     }
     return (
-        <div className={styles.ShippingDetailsArea}>
+        <>  
+            {err?<FlaotingErrorCustom err= {err} setErr={setErr} message = {message} /> :""}
+            <div className={styles.ShippingDetailsArea}>
             <h1 className='text-4xl p-5 text-center'>
             Shipping Details <br />
             <span className='text-sm font-light text-info'>***Changing Won't effect current orders***</span>
             </h1>
             <hr />
-
-            <div className={styles.ShippingDetails}>
+            {props.fetched ? <div className={styles.ShippingDetails}>
                 <div className='shippingEmail p-5'>
                     <label className='text-2xl block pb-2' htmlFor="shippingEmail">
                         Shipping Email
                     </label>
-                    <input onChange={e=>props.setShippingEmail(e.target.value)} defaultValue={props.shippingEmail} type="text" id='shippingemail' placeholder="Shipping Email" className="input input-bordered w-full rounded-none " />
+                    <input onChange={e=>props.setShippingEmail(e.target.value)} value={props.shippingEmail} type="text" id='shippingemail' placeholder="Shipping Email" className="input input-bordered w-full rounded-none " />
                 </div>
                 <div className="inptGroup flex flex-col p-5">
                     <label className='text-2xl pb-2' htmlFor="firstname ">Shipping Details</label>
-                    <textarea onChange={e=>props.setShippingDetails(e.target.value)} defaultValue={props.shippingDetails} placeholder="Shipping Details" className="textarea textarea-bordered textarea-lg rounded-none w-full h-[250px]" ></textarea>
+                    <textarea onChange={e=>props.setShippingDetails(e.target.value)} value={props.shippingDetails} placeholder="Shipping Details" className="textarea textarea-bordered textarea-lg rounded-none w-full h-[250px]" ></textarea>
                 </div>
-            </div>
+            </div> : <LoadingArea/>}
+            
             <div className="div flex justify-center pt-5 pb-5">
-                <button className='btn btn-primary w-[330px] '>Save Shipping</button>
+                <button onClick={handleSaveShipping} className='btn btn-primary w-[330px] '>
+                    {clicked?<span className="loading loading-dots loading-md"></span>:"Save Shipping"}
+                </button>
             </div>
+            
         </div>
+        <Success success= {successShipping} setSuccess = {setSuccessShipping} />
+
+        </>
     )
 }
 
 
 
 
-const ChangePassword = () => {
+const ChangePassword = (props) => {
+    const { logout } = useAuth()
+
+    // ChangePassowrd
+    const [clicked,setClicked] = useState(false)
+    const [err,setErr] = useState(false)
+    const [successPassword,setSuccessPassword] = useState(false)
+    const [message,setMessage] = useState("")
+    
+    const [currentpassword,setCurrentPassword] = useState("")
+    const [newpassword,setNewPassword] = useState("")
+    const [confirmpassword,setConfirmPassword] = useState("")
+    
+    const handleChangePassword = ()=>{
+
+        if(newpassword!==confirmpassword || !validatePassword(newpassword)){
+            return
+        }
+
+        const axiosInstanceJWT = AxiosInstanceJWT()
+        const passowrdData={
+                new_password: newpassword,
+                current_password: currentpassword
+            }
+        
+        setClicked(true)
+        setTimeout(() => {
+            const data = axiosInstanceJWT.post(`/auth/users/set_password/`,passowrdData)
+            data.then(data=>{
+                if(data.status===204){
+                    setSuccessPassword(true)
+                }else{
+                    alert("Unexpected error.");
+                }
+            }).catch(err=>{
+                setErr(true)
+                
+                if (err.response) {
+                    if (err.response.status === 400) {
+                        setMessage("Current passoword is invalid.")
+                    }else if (err.response.status === 401) {
+                        logout();
+                    } else if (err.response.status === 429) {
+                        alert("Too many requests.");
+                    } else {
+                        setMessage("Unexpected error.");
+                    }
+                } else {
+                    setMessage("No response received from the server.");
+                }
+            })
+            setClicked(false)
+        }, 2000);
+    }
     return (
-        <div className={styles.ChangePassoword}>
+        <>
+            {err?<FlaotingErrorCustom err= {err} setErr={setErr} message = {message} /> :""}
+            <div className={styles.ChangePassoword}>
             <h1 className='text-4xl p-5 text-center'>Security Details</h1>
             <hr />
             <div className={styles.PasswordForm}>
                 <div className="inptGroup flex flex-col pt-5">
                     <label className='text-2xl pb-2' htmlFor="firstname">Password</label>
-                    <input type="password" id='password' placeholder="Password" className="input input-bordered w-full max-w-xl" />
+                    <input onChange={e=>setNewPassword(e.target.value)} type="password" id='password' placeholder="Password" className="input input-bordered w-full max-w-xl" />
+                </div>
+                <p className={`text-error text-[12px] w-[95%] text-center  ${newpassword === ""?"hidden":validatePassword(newpassword) ? "hidden":""}`}>Password length is between 8 and 20 characters & requires an uppercase, a lowercase, and a number.</p>
+                <div className="inptGroup flex flex-col pt-5">
+                    <label className='text-2xl pb-2' htmlFor="firstname">Confrim Password</label>
+                    <input onChange={e=>setConfirmPassword(e.target.value)} type="password" id='confirmpassword' placeholder="Confrim Password" className="input input-bordered w-full max-w-xl" />
+                    <p className={`text-error text-sm w-[95%]  ${confirmpassword === ""?"hidden":newpassword===confirmpassword ? "hidden":""}`}>Password doesn't match.</p>
                 </div>
 
                 <div className="inptGroup flex flex-col pt-5">
                     <label className='text-2xl pb-2' htmlFor="firstname">Current Password</label>
-                    <input type="password" id='currentpassword' placeholder="Current Password" className="input input-bordered w-full max-w-xl" />
+                    <input onChange={e=>setCurrentPassword(e.target.value)} type="password" id='currentpassword' placeholder="Current Password" className="input input-bordered w-full max-w-xl" />
                 </div>
-
-                <div className="inptGroup flex flex-col pt-5">
-                    <label className='text-2xl pb-2' htmlFor="firstname">Confrim Password</label>
-                    <input type="password" id='confirmpassword' placeholder="Confrim Password" className="input input-bordered w-full max-w-xl" />
-                </div>
-
 
             </div>
             <div className="div flex justify-center pt-5 pb-5">
-                <button className='btn btn-primary w-[330px] '>Update Password</button>
+                <button onClick={handleChangePassword} className='btn btn-primary w-[330px] '>
+                    {clicked?<span className="loading loading-dots loading-md"></span>:"Change Password"}
+                </button>
             </div>
         </div>
+        <Success success= {successPassword} setSuccess = {setSuccessPassword} />
+
+        </>
     )
 }
 
@@ -417,3 +535,30 @@ const Success = (props)=>{
         </>
     )
 }
+
+
+
+function validateEmail(email) {
+    
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+    
+    return emailRegex.test(email);
+  }
+function validatePassword(password) {
+    // Regular expressions to check for uppercase, lowercase, and number
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const numberRegex = /[0-9]/;
+  
+    // Check if the password meets all the requirements
+    const hasUppercase = uppercaseRegex.test(password);
+    const hasLowercase = lowercaseRegex.test(password);
+    const hasNumber = numberRegex.test(password);
+    
+    // Check if the password length is between 8 and 20 characters
+    const isValidLength = password.length >= 8 && password.length <= 20;
+  
+    // Return true if all conditions are met
+    return hasUppercase && hasLowercase && hasNumber && isValidLength;
+  }
