@@ -205,11 +205,10 @@ const SalesHistory = () => {
                     ) : <LoadingArea />}
                 </ul>
                 <div className={`flex justify-center p-5 ${totalSales > 8 ? "" : "hidden"}`}>
-                        <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl === null ? "pointer-events-none" : ""}`}>Previous</button>
-                        <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl === null ? "pointer-events-none" : ""}`}>Next</button>
+                    <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl === null ? "pointer-events-none" : ""}`}>Previous</button>
+                    <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl === null ? "pointer-events-none" : ""}`}>Next</button>
                 </div>
             </div>
-
         </div>
     )
 }

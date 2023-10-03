@@ -66,9 +66,15 @@
 }
 
 /* Reviews */
+.ProductReviewsArea{
+    min-height: 300px;
+}
 .ReviewProfileDetails{
     display: flex;
     align-content: center;
+}
+.reviewArea{
+    min-height: 350px;
 }
 .ReviewProfileImageArea {
     min-width: 100px;

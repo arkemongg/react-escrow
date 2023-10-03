@@ -92,6 +92,8 @@ export function validatePassword(password) {
   return hasUppercase && hasLowercase && hasNumber && isValidLength;
 }
 
+
+
 export const post = async (url,data)=>{
   const axiosInstanceJWT = AxiosInstanceJWT()
   try{
