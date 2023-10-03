@@ -1,17 +1,74 @@
 import { memo, useEffect, useState } from 'react';
 import styles from './styles/Withdrawals.module.css'
-import { AxiosInstanceJWT, convertDatetimeToDate } from '../AxiosHeaders';
+import { AxiosInstanceJWT, convertDatetimeToDate, postJWT } from '../AxiosHeaders';
 import { EmptyMessage } from '../home/templates/Error';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { useAuth } from '../../AuthContext';
+import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
 
 const Withdrawals = (props) => {
     const [amount, setAmount] = useState(0)
-    const [address, setAddress] = useState(null)
+    const [address, setAddress] = useState("")
     const [method, setMethod] = useState(null)
+
+    const [success,setSuccess] = useState(false)
+    const [clicked,setClicked] = useState(false)
+    const [err,setErr] = useState(false)
+    const [message,setMessage] = useState("")
     
+    const handleWithdraw = ()=>{
+        if(amount<10 || amount > 5000 || address.trim()==="" || method === null){
+            setErr(true)
+            if(amount<10 || amount > 5000){
+                setMessage("Amount should be greater than 10 or smaller than 5000.")
+            }else if(method===null){
+                setMessage("Please select a currency.")
+            }else if(address.trim()===""){
+                setMessage("Please submit a valid crypto address.")
+            }
+            return
+        }
+        setClicked(true)
+        const withdrawData = {
+            amount:amount,
+            crypto:method,
+            cryptoaddress:address
+        }
+
+        setTimeout(() => {
+            const url = '/api/withdraw/'
+            const data = postJWT(url,withdrawData);
+            data.then(data=>{
+                if(data.status===201){
+                    setSuccess(true)
+                }else{
+                    alert("Unexpected error.")
+                }
+            }).catch(err=>{
+                if(err.response){
+                    if(err.response.status===400){
+                        if(err.response.data.error){
+                            setErr(true)
+                            setMessage(err.response.data.error)
+                        }else{
+                            alert("Unexpected error.")
+                        }
+                    }else if(err.response.status===429){
+                        setErr(true)
+                        setMessage("Too many requests.")
+                    }else{
+                        alert("Unexpected error.")
+                    }
+                }else{
+                    setMessage("No response received from the server.");
+                }
+            })
+            setClicked(false)
+        }, 2000);
+    }
     return (
         <>
+            {err?<FlaotingErrorCustom err = {err} setErr = {setErr} message = {message} />:""}
             <section className={`${styles.WithdrawalsSection} `}>
                 <div className={styles.WithdrawalsArea}>
                     <h1 className="text-4xl p-5">Withdrawals</h1>
@@ -32,16 +89,43 @@ const Withdrawals = (props) => {
                         <p className="text-2xl pb-5">Enter your selected method wallet address</p>
                         <input onChange={(e) => setAddress(e.target.value)} placeholder={"Enter your selected BTC/LTC wallet address."} type="text" className='input input-bordered rounded-none md:w-[80%] w-[100%] bg-[#EFF1F5]' />
                     </div>
-                    <div className="div flex p-5">
-                        <button className='btn btn-primary w-[310px] '>Withdraw</button>
+                    <p className='text-[13px] font-light text-error mx-5'>***Clicking the withdraw button will inititate a withdraw request.</p>
+                    <div className="div flex px-5 pt-2 pb-5">
+                        
+                        <button onClick={handleWithdraw} className='btn btn-primary w-[310px] '>
+                            {clicked?<span className="loading loading-dots loading-md"></span>:"Withdraw"}
+                        </button>
                     </div>
                 </div>
-
+                <WithdrawSuccess success = {success} setSuccess={setSuccess} />
                 <WithdrawalsHistory />
             </section>
         </>
     )
 };
+
+
+const WithdrawSuccess = (props)=>{
+    const handleClose = ()=>{
+        props.setSuccess(false)
+    }
+    return(
+        <>
+            <div className={` ${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success?'':"hidden"}` }>
+                <div className={`${styles.ModalArea}`}>
+                    <div className='text-center text-3xl font-bold'>
+                        Withdraw request is successful.
+                    </div>
+                    <p className='text-info text-sm'>We will process your withdraw as soon as possible.</p>
+                    <br />
+                    <div className='text-sm font-light text-primary p-5 text-center'>
+                         <button onClick={handleClose} className='btn btn-error min-w-[150px]' >Close</button>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
 
 const WithdrawalsHistory = () => {
     const {logout} = useAuth()

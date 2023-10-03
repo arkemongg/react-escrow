@@ -28,7 +28,7 @@ const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
-    const [active,setActive] = useState("Manage Items")
+    const [active,setActive] = useState("Withdrawals")
     useEffect(() => {
       window.scrollTo({
         top: 0,

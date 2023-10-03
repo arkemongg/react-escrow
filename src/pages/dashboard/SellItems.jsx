@@ -174,7 +174,7 @@ const Sellitems = (props) => {
                                 <div className='text-2xl'>
                                     Inventory
                                 </div>
-                                <input onChange={e=>setInventory(e.target.value)} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
+                                <input onChange={e=>setInventory(parseFloat(e.target.value).toFixed(0))} id='ListProductInventory' type="number" placeholder="How many products you want to list?" className="input input-bordered rounded-none w-full max-w-xl"/>
                                 
                             </div>
 
@@ -234,7 +234,7 @@ const ProductSuccess = (props)=>{
             <div className={` ${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success?'':"hidden"}` }>
                 <div className={`${styles.ModalArea}`}>
                     <div className='text-center text-2xl font-bold'>
-                        Product listed successflly.
+                        Product listed successfully.
                     </div>
                     <br />
                     <div className='text-sm font-light text-primary p-5 text-center'>

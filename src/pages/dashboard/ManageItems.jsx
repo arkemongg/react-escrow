@@ -9,7 +9,7 @@ import { useAuth } from '../../AuthContext';
 
 const ManageItems = (props)=>{
     const [fetched,setFetched] = useState(false)
-    const [url,setUrl] = useState('/api/myproducts/')
+    const [url,setUrl] = useState('/api/myproducts/?ordering=-id')
     const [editData,setEditData] = useState(null)
     const [edit,setEdit] = useState(false)
     useEffect(()=>{
@@ -54,10 +54,10 @@ const MyProducts = (props)=>{
     const [message, setMessage] = useState("")
     const [total, setTotal] = useState(-1)
     const handleClear = ()=>{
-        if(props.url==='/api/myproducts/'){
+        if(props.url==='/api/myproducts/?ordering=-id'){
             return;
         }
-        props.setUrl('/api/myproducts/')
+        props.setUrl('/api/myproducts/?ordering=-id')
         props.setFetched(false)
     }
     const handleRefresh = ()=>{
