@@ -1,8 +1,58 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import styles from './styles/Settings.module.css'
-
+import { getJWT } from '../AxiosHeaders';
+import { useAuth } from '../../AuthContext';
 const Settings = (props) => {
+    //Logout 
+    const {logout} = useAuth()
+    // Customer url
+    const [url,setUrl] = useState('/api/customer/')
+    const [fetched,setFetched] = useState('/api/customer/')
+    
+    // Personal Details
+    const [userName,setUserName] = useState("")
+    const [email,setEmail] = useState("")
+    const [firstName,setFirstName] = useState("")
+    const [lastName,setLastName] = useState("")
+
+    //Shipping Details
+    const [shippingEmail,setShippingEmail] = useState("")
+    const [shippingDetails,setShippingDetails] = useState("")
+    
+
+
+    // Effect to get customer data
+    useEffect(()=>{
+        const timer = setTimeout(() => {
+            const data = getJWT(url)
+            data.then(data=>{
+                if(data.status===200){
+                    const customer = data.data[0]
+
+                    //set Personal Details
+                    setUserName(customer.username)
+                    setEmail(customer.email)
+                    setFirstName(customer.first_name)
+                    setLastName(customer.lastName)
+                    
+                    //set sHIPPING Details
+
+                    setShippingEmail(customer.shipping.email)
+                    setShippingDetails(customer.shipping.details)
+                }
+            }).catch(err=>{
+                if(err.response){
+                    if(err.response.status === 401){
+                        logout()
+                    }
+                }
+            })
+        }, 2000);
+        return (() => clearTimeout(timer))
+    },[url])
+    
     const [img,setImg] = useState('./dashboardassets/subscrisbebg.jpg')
+    
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
     
@@ -16,6 +66,9 @@ const Settings = (props) => {
           reader.readAsDataURL(file);
         }
       };
+    const handleImageSave = ()=>{
+
+    }
     
     return (
         <>
@@ -28,18 +81,20 @@ const Settings = (props) => {
                                 <img src={img} alt="profile" />
                             </div>
                             <div className="btnArea">
+                                <p className='text-error text-center'>Lorem ipsum dolor sit amet.</p>
+                                <p className='text-success text-center'>Lorem ipsum dolor sit amet.</p>
                                 <label className="btn btn-primary">
                                         Upload Image
                                         <input onChange={handleImageUpload} type="file" className="hidden" />
                                 </label>
-                                <div className="btn btn-success ml-5">Save Image</div>
+                                <div onClick={handleImageSave} className="btn btn-success ml-5">Save Image</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <PersonalInformantion />
-                <ShippingDetails />
+                <PersonalInformantion username = {userName} email = {email} firstName = {firstName} lastName = {lastName} setFirstName = {setFirstName} setLastName = {setLastName} />
+                <ShippingDetails shippingEmail = {shippingEmail} shippingDetails = {shippingDetails} />
                 <SocialDetails />
                 <div className="div flex justify-center pt-5">
                     <button className='btn btn-primary w-[330px] '>Save Profile</button>
@@ -55,7 +110,7 @@ const Settings = (props) => {
 
 
 
-  const PersonalInformantion = ()=>{
+  const PersonalInformantion = (props)=>{
     return (
             <div className={styles.ProfileInformationArea}>
                 <div className="text-4xl text-center p-5">Personal Details</div>
@@ -65,11 +120,11 @@ const Settings = (props) => {
                     <div className='flex grow flex-wrap'>
                         <div className="inptGroup flex flex-col p-5">
                             <label className='text-2xl pb-2' htmlFor="username">Username</label>
-                            <input type="text" id='username' value="username" className="input input-bordered rounded-none " disabled />   
+                            <input defaultValue={props.username} type="text" id='username' placeholder="username" className="input input-bordered rounded-none " disabled />   
                         </div>
                         <div className="inptGroup flex flex-col p-5">
                             <label className='text-2xl pb-2' htmlFor="email">Email</label>
-                            <input type="text" id='email' value="email@email.com" className="input input-bordered rounded-none" disabled />   
+                            <input defaultValue={props.email} type="text" id='email' placeholder="email@email.com" className="input input-bordered rounded-none" disabled />   
                         </div>
                     </div>
 
@@ -77,25 +132,21 @@ const Settings = (props) => {
 
                         <div className="inptGroup flex flex-col p-5">
                             <label className='text-2xl pb-2' htmlFor="firstname">First Name</label>
-                            <input type="text" id='firstname' placeholder="First Name" className="input input-bordered rounded-none " />   
+                            <input onChange={e=>props.setFirstName(e.target.value)} value={props.firstName} type="text" id='firstname' placeholder="First Name" className="input input-bordered rounded-none " />   
                         </div>
                         <div className="inptGroup flex flex-col p-5">
                             <label className='text-2xl pb-2' htmlFor="lastname">Last Name</label>
-                            <input type="text" id='lastname' placeholder="Last Name" className="input input-bordered  rounded-none" />   
+                            <input onChange={e=>props.setLastName(e.target.value)} value={props.LastName} type="text" id='lastname' placeholder="Last Name" className="input input-bordered  rounded-none" />   
                         </div>
 
                     </div>
                     
-                    {/* <div className="inptGroup flex flex-col p-5">
-                        <label className='text-2xl pb-2' htmlFor="firstname ">Bio</label>
-                        <textarea placeholder="Bio" className="textarea textarea-bordered textarea-lg w-full" ></textarea>  
-                    </div> */}
                 </div>
             </div>
         )
   }
 
-const ShippingDetails = ()=>{
+const ShippingDetails = (props)=>{
     return (
         <div className={styles.ShippingDetailsArea}>
             <h1 className='text-4xl p-5 text-center'>Shipping Details</h1>
@@ -106,11 +157,11 @@ const ShippingDetails = ()=>{
                     <label  className='text-2xl block pb-2' htmlFor="shippingEmail">
                         Shipping Email
                     </label>
-                    <input type="text" id='shippingemail' placeholder="Shipping Email" className="input input-bordered w-full rounded-none " /> 
+                    <input defaultValue={props.shippingEmail} type="text" id='shippingemail' placeholder="Shipping Email" className="input input-bordered w-full rounded-none " /> 
                 </div>
                  <div className="inptGroup flex flex-col p-5">
                         <label className='text-2xl pb-2' htmlFor="firstname ">Shipping Details</label>
-                        <textarea placeholder="Shipping Details" className="textarea textarea-bordered textarea-lg rounded-none w-full h-[250px]" ></textarea>  
+                        <textarea defaultValue={props.shippingDetails} placeholder="Shipping Details" className="textarea textarea-bordered textarea-lg rounded-none w-full h-[250px]" ></textarea>  
                  </div>
             </div>
         </div>
@@ -129,19 +180,19 @@ const SocialDetails = ()=>{
                     <div className="socialImgArea w-[80px]">
                         <img className='w-[50px]' src="./dashboardassets/facebook.png" alt="ok" />
                     </div>
-                    <input className='input rounded-none' type="text"/>
+                    <input  placeholder='Facebook Username' className='input rounded-none' type="text"/>
                 </div>
                 <div className="social flex p-5">
                     <div className="socialImgArea w-[80px]">
                         <img className='w-[50px]' src="./dashboardassets/twitter.png" alt="ok" />
                     </div>
-                    <input className='input rounded-none' type="text"/>
+                    <input placeholder={`X Username`} className='input rounded-none' type="text"/>
                 </div>
                 <div className="social flex p-5">
                     <div className="socialImgArea w-[80px]">
                         <img className='w-[50px]' src="./dashboardassets/telegram.png" alt="ok" />
                     </div>
-                    <input className='input rounded-none' type="text"/>
+                    <input  placeholder='Telegram Username' className='input rounded-none' type="text"/>
                 </div>
             </div>
         </div>

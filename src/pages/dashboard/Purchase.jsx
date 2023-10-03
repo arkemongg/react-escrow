@@ -259,7 +259,7 @@ const PurchaseCard = (props) => {
             
             <li className={`${styles.Purchase} p-5 pt-0 pb-0 font-light`}>
                 <div className="w-[100px] min-w-[70px]">{props.id}</div>
-                <Link to={`/buynow/${props.id}/order_id=${props.id}/`} className='w-[120px] min-w-[120px] text-info'>{props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title}</Link>
+                <div className='w-[120px] min-w-[120px] '>{props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title}</div>
                 <div className="w-[100px] min-w-[100px]">{convertDatetimeToDate(props.date)}</div>
                 <div className="w-[100px] min-w-[100px] max-h-[80px]">
                     <img src={apiUrl + props.img} alt="productimg" />
