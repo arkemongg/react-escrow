@@ -33,7 +33,7 @@ const NavWithoutLogin = () => {
                                 <Link onClick={handleNav} to="/">Home</Link>
                             </li>
                             <li>
-                                <Link onClick={handleNav} to="/login">All Products</Link>
+                                <Link onClick={handleNav} to="/products">All Products</Link>
                             </li>
                             <li>
                                 <Link onClick={handleNav} to="/login">Login/Register</Link>
@@ -106,6 +106,11 @@ const NavWithLogin = () => {
     }
     const handleLogout = () => {
         logout()
+        if (navActive) {
+            setnavActive(false)
+        } else {
+            setnavActive(true)
+        }
     }
     return (
         <>
@@ -138,20 +143,22 @@ const NavWithLogin = () => {
                                 <Link onClick={handleNav} to="/">Home</Link>
                             </li>
                             <li>
-                                <Link onClick={handleNav} to="/login">Login/Register</Link>
+                                <Link onClick={handleNav} to="/products">All Products</Link>
                             </li>
                             <li>
-                                <Link onClick={handleNav} to="/login">All Products</Link>
+                                <Link onClick={handleNav} to="/dashboard">Dashboard</Link>
                             </li>
                             <li>
-                                <Link onClick={handleNav} to="/contact">About</Link>
-                            </li>
-                            <li>
-                                <Link onClick={handleNav} to="/contact">Logout</Link>
+                                <Link onClick={handleNav} to="/messages">Messages</Link>
                             </li>
                             <li>
                                 <Link onClick={handleNav} to="/contact">Contact Us</Link>
                             </li>
+
+                            <li>
+                                <Link onClick={handleLogout}>Logout</Link>
+                            </li>
+
                         </ul>
 
                     </div>

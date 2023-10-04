@@ -47,7 +47,7 @@ const NewProducts = () => {
                 const response =  getProducts()
                 
                 response.then(data=>{
-                    console.log(data);
+                    
                     if(data.status===200){
                         data = data.data.results
                         setData([...data])

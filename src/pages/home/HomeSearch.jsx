@@ -1,7 +1,12 @@
 import styles from './styles/HomeSearch.module.css'
 import { CategoryData } from '../../CategoryContext';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const HomeSearch = () => {
+    const [search,setsearch] = useState("")
+    const [selectedCategory,setSelectedCategory] = useState("")
+
     const category = CategoryData()
     const data = category.category
     return (
@@ -14,14 +19,14 @@ const HomeSearch = () => {
                     Escrow solution in palm of your hands.
                 </div>
                 <div className={`${styles.searchArea}`}>
-                    <input type="text" placeholder="Type here" className={`${styles.searchInput} input rounded-none input-bordered`} />
-                    <select className={`select rounded-none select-bordered ${styles.select}`} defaultValue="disabled" >
-                        <option value="disabled" disabled>Category</option>
+                    <input onChange={e=>setsearch(e.target.value)} type="text" placeholder="Type here" className={`${styles.searchInput} input rounded-none input-bordered`} />
+                    <select onChange={e=>setSelectedCategory(e.target.value)} className={`select rounded-none select-bordered ${styles.select}`} value={selectedCategory} >
+                        <option value="" disabled>Category</option>
                         {data.length > 0 &&data[0].map(category=>{
-                            return (<option key={category.id} value={category.title}>{category.title}</option>)
+                            return (<option key={category.id} value={category.id}>{category.title}</option>)
                         })}
                     </select>
-                    <button className={`${styles.homeSearchBtn} btn btn-primary`}>Search</button>
+                    {search.trim()===""?<Link className={`${styles.homeSearchBtn} btn btn-primary`}>Search</Link>:<Link to={`/products?search=${search}&&category=${selectedCategory}`} className={`${styles.homeSearchBtn} btn btn-primary`}>Search</Link>}
                 </div>
             </section>
         </>

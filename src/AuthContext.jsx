@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
         setIsLogged(true)
     }
   },[])
-  console.log(isLogged);
+  
   const login = (jwt) => {
     setCookie(jwt)
     setIsLogged(true);

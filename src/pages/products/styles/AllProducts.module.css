@@ -12,11 +12,14 @@
     align-items: center;
     flex-wrap: wrap;
     padding-top: 20px;
+    padding-bottom: 30px;
+    margin-top: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.146);
 }
 
 .SearchProductsSection{
-    background: #f1f1f1;
-    max-width: 1090px;
+    border: 1px solid rgba(0, 0, 0, 0.146);
+    max-width: 1140px;
     margin: auto;
     position: relative;
     top: 10px;

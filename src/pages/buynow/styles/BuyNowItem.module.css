@@ -1,6 +1,6 @@
 .BuyNowSection{
     background: #F1F2F7;
-    min-height: 1040px;
+    min-height: 840px;
 }
 .BuyNowSectionWrapper{
     max-width: 1160px;
@@ -10,7 +10,7 @@
     flex-wrap: wrap;
 }
 .BuyNowProductArea{
-    max-width: 760px;
+    max-width: 960px;
     min-height: 800px;
     overflow: hidden;
     background: white;
@@ -113,7 +113,7 @@
     min-width: 350px;
     flex-grow: 1;
     margin: 10px;
-    max-width: 760px;
+    max-width: 960px;
 }
 .ProductPrice{
     height: 100px;

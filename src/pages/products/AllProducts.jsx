@@ -1,11 +1,11 @@
 import styles from './styles/AllProducts.module.css'
 import { FeaturedProductsCard, LoadingProductsCard, Product } from '../home/templates/ProductCards';
-import { Link, useLocation, useParams,useHref,useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import {  useLocation,useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { EmptyMessage, Error } from '../home/templates/Error';
+import { EmptyMessage } from '../home/templates/Error';
 import { CategoryData } from '../../CategoryContext';
 import { axiosInstance } from '../AxiosHeaders';
+import { FlaotingErrorCustom } from '../GlobalTemplates/FloatingErrorCustom';
 
 const AllProducts = () => {
 
@@ -70,9 +70,16 @@ const AllProducts = () => {
                     alert("Unexpected error.")
                 }
             }).catch(err=>{
+                setErr(true)
                 if(err.request){
-                    // setErr(true)
-                    // setErrMessage(data.message)
+                    
+                    if(err.request.status===429){
+                        setErrMessage("Too many requests.")
+                    }else{
+                        setErrMessage("Unexpected error.")
+                    }
+                }else{
+                    setErrMessage("No response from server.") 
                 }
             })
         }, 2000);
@@ -118,6 +125,7 @@ const AllProducts = () => {
     }
     return (
         <>  
+        {err?<FlaotingErrorCustom err = {err} setErr={setErr} message = {errMessage} />:""}
         {/* SEARCHPRODUCTS COMPONENT / SEARCH FORM */}
             <SearchPrdoucts setUrl = {setUrl} />
             <section id='allproductsection' className={`${styles.AllProductsSection}`}>
@@ -159,12 +167,12 @@ const AllProducts = () => {
                             )
                         })
                     ):<EmptyMessage message = {"No Products found."}/>:(
-                       err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
+                       Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}
                 </div>
 
                 {/* NEXT PREVIOUS AND GO BTN */}
-                <div className={`nextPrev flex justify-center ${productsCount>6?"":"hidden"}`}>
+                <div className={`nextPrev flex justify-center ${productsCount>6?"":"hidden"} pt-[20px]`}>
                     <div onClick={handlePrev} className="btn btn-primary min-w-[150px]">Prev</div>
                     <div onClick={handleNext} className="btn btn-primary min-w-[150px] ml-5 ">Next</div>
                 </div>
@@ -195,16 +203,16 @@ const SearchPrdoucts = (props)=>{
     const searchUrl = searchParams.get('search');
     const price__gtUrl = searchParams.get('price__gt');
     const price__ltUrl = searchParams.get('price__lt');
-
+    
     // NAVIGATE TO URL
     const navigate = useNavigate()
 
     const [selectedCategory,setSelectedCategory] = useState(categoryUrl!=null?categoryUrl:"")
-    const [selectedSort,setSelectedSort] = useState(sortUrl!=null?sortUrl:"")
-    const [selectedFeatured,setSelectedFeatured] = useState(featuredUrl!=null?featuredUrl:"")
-    const [searchValue,setSearchValue] = useState(searchUrl!=null?searchUrl:"")
-    const [price__gt,setPrice__gt] = useState(price__gtUrl!=null?price__gtUrl:"")
-    const [price__lt,setPrice__lt] = useState(price__ltUrl!=null?price__ltUrl:"")
+    const [selectedSort,setSelectedSort] = useState(sortUrl!==null?sortUrl:"")
+    const [selectedFeatured,setSelectedFeatured] = useState(featuredUrl!==null?featuredUrl:"")
+    const [searchValue,setSearchValue] = useState(searchUrl!==null?searchUrl:"")
+    const [price__gt,setPrice__gt] = useState(price__gtUrl!==null?price__gtUrl:"")
+    const [price__lt,setPrice__lt] = useState(price__ltUrl!==null?price__ltUrl:"")
 
     // EFFECT TO UPDATE THE CATEGORIES FROM THE ROOT CATEGORY CONTEXT
     const category = CategoryData()
@@ -251,7 +259,7 @@ const SearchPrdoucts = (props)=>{
                 <hr />
                 <div className={`${styles.searchProducts} flex flex-col justify-center items-center`} >
                     <div className={`${styles.searchArea} p-5 pb-0`}>
-                        <input onChange={e=>setSearchValue(e.target.value)} type="text" placeholder="Product Name" className={`${styles.searchInput} input rounded-none input-bordered`} />
+                        <input onChange={e=>setSearchValue(e.target.value)} value={searchValue} type="text" placeholder="Product Name" className={`${styles.searchInput} input rounded-none input-bordered`} />
                         <select onChange={handleCategory} value={selectedCategory} className={`select rounded-none select-bordered ${styles.select} lg:max-w-[360px]`} >
                             <option value={""} disabled>Category</option>
                             {categoryData.length>0&&categoryData.map(category=>{
@@ -260,8 +268,8 @@ const SearchPrdoucts = (props)=>{
                         </select>
                     </div>
                     <div className={`${styles.FilterArea}  px-5 items-center`}>
-                        <input onChange={e=>setPrice__gt(e.target.value)} type="text" placeholder="Price greater than" className={`${styles.searchInput} input rounded-none input-bordered`} />
-                        <input onChange={e=>setPrice__lt(e.target.value)} type="text" placeholder="Price less than" className={`${styles.searchInput} input rounded-none input-bordered `} />
+                        <input value={price__gt} onChange={e=>setPrice__gt(e.target.value)} type="text" placeholder="Price greater than" className={`${styles.searchInput} input rounded-none input-bordered`} />
+                        <input value={price__lt} onChange={e=>setPrice__lt(e.target.value)} type="text" placeholder="Price less than" className={`${styles.searchInput} input rounded-none input-bordered `} />
                     </div>
                     
                     <div className={`${styles.FilterArea}  p-5 pt-0 items-center`}>
