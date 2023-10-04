@@ -1,7 +1,4 @@
 import styles from './styles/HowToBuy.module.css'
-import { FeaturedProductsCard } from './templates/ProductCards';
-import { Link } from 'react-router-dom';
-import img from './assets/digitalss.jpg'
 import down from './assets/down.png'
 import happy from './assets/happyface.png'
 
@@ -24,7 +21,7 @@ const HowToBuy = () => {
                     </div>
                     <div className={styles.RightArea}>
                        
-                       <img src={img} alt="" />
+                       <img src={"/homeassets/choose.png"} alt="" />
                         
                     </div>
                 </div>
@@ -38,18 +35,17 @@ const HowToBuy = () => {
                 </div>
                 <div className={styles.HowToBuyAreaTwo}>
                     <div className={styles.LeftArea}>
-                        <h1 className="text-4xl">Choose Your Product</h1>
+                        <h1 className="text-4xl">Select Quantity</h1>
                         <br /><br />
                         <p className="text-xl">
-                            Choose your proucts from the marketplace.
-                            Click on the product to go to the products 
-                            details page.
+                            Choose your quantity.
+                            Click on the buy button to create an order. 
                         </p>
 
                     </div>
                     <div className={styles.RightArea}>
                        
-                       <img src={img} alt="" />
+                       <img src={"/homeassets/quantity.png"} alt="qty" />
                         
                     </div>
                 </div>
@@ -63,17 +59,17 @@ const HowToBuy = () => {
                 </div>
                 <div className={styles.HowToBuyArea}>
                     <div className={styles.LeftArea}>
-                        <h1 className="text-4xl">Choose Your Product</h1>
+                        <h1 className="text-4xl">Order Successfully Created</h1>
                         <br /><br />
                         <p className="text-xl">
-                            Choose your proucts from the marketplace.
-                            Click on the product to go to the products 
-                            details page.
+                            Your order is successfull.
+                            You can release your fund via escrow anytime after you 
+                            received your product.
                         </p>
                     </div>
                     <div className={styles.RightArea}>
                        
-                       <img src={img} alt="" />
+                       <img src={"/homeassets/success.png"} alt="success" />
                         
                     </div>
                 </div>

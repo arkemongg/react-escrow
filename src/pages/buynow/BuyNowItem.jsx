@@ -39,7 +39,7 @@ const BuyNowItem = () => {
                     alert("No response from server.")
                 }
             })
-        }, 0);
+        }, 2000);
 
         return (() => clearTimeout(timer))
     }, [])

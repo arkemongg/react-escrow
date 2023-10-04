@@ -8,6 +8,14 @@ const ScrollToTop = (props) => {
       top: 0,
       behavior: 'smooth'
     });
+
+  }, [location]);
+
+  return <>{props.children}</>
+};
+
+export default ScrollToTop;
+
     // const loading = document.querySelector('.loading-effect')
     // loading.classList.toggle('invisible')
     // const t = setTimeout(() => {
@@ -17,9 +25,3 @@ const ScrollToTop = (props) => {
     // return () => {
     //   clearTimeout(t); // Clean up the timeout when the component unmounts or the effect re-runs
     // };
-  }, [location]);
-
-  return <>{props.children}</>
-};
-
-export default ScrollToTop;
