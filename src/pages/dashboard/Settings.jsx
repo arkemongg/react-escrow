@@ -501,7 +501,7 @@ const ChangePassword = (props) => {
                         setMessage("Unexpected error.");
                     }
                 } else {
-                    setMessage("No response received from the server.");
+                    alert("No response received from the server.");
                 }
             })
             setClicked(false)

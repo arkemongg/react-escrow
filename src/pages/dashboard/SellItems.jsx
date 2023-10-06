@@ -141,8 +141,6 @@ const Sellitems = (props) => {
                             List A Product
                         </h1>
                         <hr />
-
-
                         <div className={`${styles.TitleCategory} p-5`}>
                             <div className="ListTitle">
                                 <div className='text-2xl'>
@@ -233,8 +231,8 @@ const ProductSuccess = (props)=>{
         <>
             <div className={` ${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success?'':"hidden"}` }>
                 <div className={`${styles.ModalArea}`}>
-                    <div className='text-center text-2xl font-bold'>
-                        Product listed successfully.
+                    <div className='text-center text-2xl font-bold flex items-center'>
+                    <img className='w-[20px] h-[20px]' src="dashboardassets/success.png"  alt="" /> Product listed successfully.
                     </div>
                     <br />
                     <div className='text-sm font-light text-primary p-5 text-center'>

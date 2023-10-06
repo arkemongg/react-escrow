@@ -446,8 +446,8 @@ const ProductEditSuccess = (props)=>{
         <>
             <div className={` ${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success?'':"hidden"}` }>
                 <div className={`${styles.ModalArea}`}>
-                    <div className='text-center text-2xl font-bold'>
-                        Product updated successflly.
+                    <div className='text-center text-2xl font-bold flex items-center'>
+                    <img className='w-[20px] h-[20px]' src="dashboardassets/success.png"  alt="" />Product updated successflly.
                     </div>
                     <br />
                     <div className='btnArea flex flex-wrap justify-center'>

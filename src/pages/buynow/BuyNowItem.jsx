@@ -570,7 +570,7 @@ const BuyNowProductBuyArea = (props) => {
                         logout();
                     } else if (err.response.status === 429) {
                         alert("Too many requests.");
-
+                        setMessage("Too many requests.")
                     } else {
                         setMessage("Unexpected error.");
                     }

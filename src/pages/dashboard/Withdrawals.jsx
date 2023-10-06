@@ -114,8 +114,8 @@ const WithdrawSuccess = (props)=>{
         <>
             <div className={` ${styles.blurryBackgroundSection} ${styles.blurryBackground} ${props.success?'':"hidden"}` }>
                 <div className={`${styles.ModalArea}`}>
-                    <div className='text-center text-3xl font-bold'>
-                        Withdraw request is successful.
+                    <div className='text-center text-3xl font-bold flex items-center'>
+                    <img className='w-[20px] h-[20px]' src="dashboardassets/success.png"  alt="" />Withdraw request is successful. 
                     </div>
                     <p className='text-info text-sm'>We will process your withdraw as soon as possible.</p>
                     <br />

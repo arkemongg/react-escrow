@@ -114,7 +114,7 @@ const DashboardOption = (props) => {
                         alert("Too many requests.")
                     }
                 } else {
-                    alert("No response received from the server.");
+                    //alert("No response received from the server.");
                 }
             })
         }, 2000);

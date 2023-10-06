@@ -78,7 +78,7 @@ const MyReview = ()=>{
                     }
 
                 } else {
-                    alert("Unexpected error.")
+                    // alert("Unexpected error.")
                 }
 
             })
@@ -179,7 +179,7 @@ const ReviewReceived = ()=>{
                     }
 
                 } else {
-                    alert("Unexpected error.")
+                    alert("No response received from the server.");
                 }
 
             })
