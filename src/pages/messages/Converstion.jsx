@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import styles from './styles/Conversation.module.css'
 import { useEffect } from 'react';
+import { getJWT } from '../AxiosHeaders';
 const Conversation = () => {
     return (
         <>
@@ -15,7 +16,19 @@ const Conversation = () => {
 }
 
 const ConversationsHeads = () => {
-    const data = 6;
+    
+    useEffect(()=>{
+        const timeout = setTimeout(() => {
+            const conversations = getJWT('/api/conversations/')
+            conversations.then(data=>{
+                console.log(data);
+            }).catch(err=>{
+                console.log(err);
+            })
+        }, 2000);
+        return () => clearTimeout(timeout);
+    },[])
+    const data = 5;
     return (
         <>
             <div className={styles.ConverSationsArea}>
@@ -83,7 +96,7 @@ const MessageBox = () => {
                     <div className="chat chat-start">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
-                                <img src={img} />
+                                <img src={img} alt='-'/>
                             </div>
                         </div>
                         <div className="chat-bubble">It was said that you would, destroy the Sith, not join them. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam nam in nesciunt impedit esse corrupti quas maiores magni perferendis dolores aliquam voluptate nostrum amet repudiandae molestiae, ad beatae. Deleniti praesentium, possimus consequuntur blanditiis quas molestiae quidem commodi eius quasi voluptatem dolor, aut repudiandae harum earum cumque aspernatur explicabo ipsam? Corporis.</div>
@@ -91,7 +104,7 @@ const MessageBox = () => {
                     <div className="chat chat-end">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
-                                <img src={img} />
+                                <img src={img} alt='-' />
                             </div>
                         </div>
                         <div className="chat-bubble bg-primary">It was you who would bring balance to the Force</div>
@@ -99,7 +112,7 @@ const MessageBox = () => {
                     <div className="chat chat-end">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
-                                <img src={img} />
+                                <img src={img} alt='-' />
                             </div>
                         </div>
                         <div className="chat-bubble bg-primary">Not leave it in Darkness</div>
@@ -107,7 +120,7 @@ const MessageBox = () => {
                     <div className="chat chat-end">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
-                                <img src={img} />
+                                <img src={img} alt='-'/>
                             </div>
                         </div>
                         <div className="chat-bubble bg-primary">It was said that you would, destroy the Sith, not join them. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam nam in nesciunt impedit esse corrupti quas maiores magni perferendis dolores aliquam voluptate nostrum amet repudiandae molestiae, ad beatae. Deleniti praesentium, possimus consequuntur blanditiis quas molestiae quidem commodi eius quasi voluptatem dolor, aut repudiandae harum earum cumque aspernatur explicabo ipsam? Corporis.</div>
@@ -115,7 +128,7 @@ const MessageBox = () => {
                     <div className="chat chat-start">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
-                                <img src={img} />
+                                <img src={img} alt='-'/>
                             </div>
                         </div>
                         <div className="chat-bubble">It was you who would bring balance to the Force</div>
@@ -123,7 +136,7 @@ const MessageBox = () => {
                     <div className="chat chat-end">
                         <div className="chat-image avatar">
                             <div className="w-10 rounded-full">
-                                <img src={img} />
+                                <img src={img} alt='-'/>
                             </div>
                         </div>
                         <div className="chat-bubble bg-primary">Not leave it in Darkness</div>

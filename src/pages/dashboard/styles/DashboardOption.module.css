@@ -41,12 +41,13 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    
+    min-height: 450px;
 
 }
 .SoldItemsArea , .PopularProductArea{
+    
     max-width: 300px;
-    max-height:300px;
+    max-height:450px;
     background: white;
     margin: 5px;
     display: flex;
@@ -58,12 +59,16 @@
 .imageArea{
     min-width: 300px;
     max-width: 300px;
+    min-height: 200px;
+    max-height: 200px;
     overflow: hidden;
+    margin-bottom: 10px;
 }
-.SoldItemsArea img{
+.imageArea img{
     width: 100%;
-    object-fit: fill;
+    object-fit: cover;
 }
+
 
 /* Responsive */
 @media screen and (max-width: 950px){

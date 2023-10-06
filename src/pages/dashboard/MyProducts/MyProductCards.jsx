@@ -18,7 +18,7 @@ export const Product = (props) => {
     const handleRemove= ()=>{
         setHidden(false)
     }
-  
+    
   
     return (
         <>
@@ -28,7 +28,7 @@ export const Product = (props) => {
                     <img src={apiUrl+data.image}  alt="" />
                 </div>
                 <div className={styles.productTitle}>
-                    <div className="text-2xl font-bold">{data.title}</div>
+                    <Link target='_blank' to={`/buynow/${data.id}/${data.slug}`} className="text-2xl font-bold">{data.title}</Link>
                 </div>
                 <div className={`${styles.productPrice} text-primary text-sm`}>
                      <div className="span">
@@ -73,7 +73,7 @@ const CompleteDeleteModal = (props) => {
     const [err, setErr] = useState(false)
     const [message, setMessage] = useState("")
 
-    const [deleteModal, setDeleteModal] = useState(false)
+    // const [deleteModal, setDeleteModal] = useState(false)
 
     const handleClose = ()=>{
         props.setHidden(true)

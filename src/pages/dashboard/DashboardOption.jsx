@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import styles from './styles/DashboardOption.module.css'
-import { AxiosInstanceJWT, axiosInstanceJWT, convertToFourDigits } from '../AxiosHeaders';
+import { AxiosInstanceJWT, convertToFourDigits, getJWT } from '../AxiosHeaders';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { useAuth } from '../../AuthContext';
-import { FloatingError } from '../home/templates/Error';
+import { EmptyMessage, FloatingError } from '../home/templates/Error';
+import { apiUrl } from '../Urls';
 
 const DashboardOption = (props) => {
 
@@ -90,53 +91,110 @@ const DashboardOption = (props) => {
     )
   }
 
+//   Canged to most viewd items for simplicity (didn't change the component name)
   const RecentSoldItems = ()=>{
+    const { logout } = useAuth();
+    const [fetched,setFetched] = useState(false)
+    const [data,setData] = useState([])
+    
+    useEffect(()=>{
+
+        setTimeout(() => {
+            const popularProducts = getJWT('/api/myproducts/?limit=6&ordering=-view_count')
+            popularProducts.then(data=>{
+                if(data.status===200){
+                    setData(data.data.results)
+                    setFetched(true)
+                }
+            }).catch(err=>{
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout()
+                    } else if(err.response.status === 429)  {
+                        alert("Too many requests.")
+                    }
+                } else {
+                    alert("No response received from the server.");
+                }
+            })
+        }, 2000);
+
+    },[])
     return(
         <div className={`${styles.RecentSoldItemsArea}`}>
             <div className="text-2xl p-5">
-                Recent Items Sales
+                Most Viewed Products
             </div>
             <hr />
 
             <div className={styles.recentSoldItemsWrapper}>
-                <RecentSoldItem/>
-                <RecentSoldItem/>
-                <RecentSoldItem/>
-                <RecentSoldItem/>
-                <RecentSoldItem/>
+                {fetched ? (
+                        data.length > 0 ?
+                            data.map(product => {
+                                console.log(product);
+                                return <RecentSoldItem
+                                    key = {product.id}
+                                    title = {product.title}
+                                    price  = {product.price}
+                                    view_count = {product.view_count}
+                                    img = {product.image}
+                                />
+                            }) : <EmptyMessage message={"No Products found."} />
+                ) : <LoadingArea />}
+                
+
             </div>
             
         </div>
     )
   }
 
-  const RecentSoldItem = ()=>{
+  const RecentSoldItem = (props)=>{
     return(
         <>
         <div className={`${styles.SoldItemsArea} p-2`}>
                 <div className={styles.imageArea}>
-                    <img src="/dashboardassets/d.jpg" alt="" />
+                    <img src={apiUrl+props.img} alt="" />
                 </div>
                 <div>
-                    <p className='text-sm font-bold'> Lorem ipsum dolor sit amet.</p>
-                    <p className='text-sm text-center text-primary'> $60</p>
-                    <p className='text-sm text-center text-info'> 120 views</p>
+                    <p className='text-sm font-bold text-center'>{props.title}</p>
+                    <p className='text-sm text-center text-primary'> ${props.price}</p>
+                    <p className='text-sm text-center text-info'> {props.view_count} views</p>
                 </div>
-            </div>
-        </>
-    )
-  }
-  const RecentBlanceTransaction = ()=>{
-    return(
-        <>
-            <div className={`${styles.RecentBlanceTransaction} p-2`}>
-                
             </div>
         </>
     )
   }
 
+
   const PopularProducts = ()=>{
+    const { logout } = useAuth();
+    const [fetched,setFetched] = useState(false)
+    const [data,setData] = useState([])
+    
+    useEffect(()=>{
+
+        setTimeout(() => {
+            const popularProducts = getJWT('/api/myproducts/?limit=6&ordering=-sales')
+            popularProducts.then(data=>{
+                if(data.status===200){
+                    setData(data.data.results)
+                    setFetched(true)
+                }
+            }).catch(err=>{
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        logout()
+                    } else if(err.response.status === 429)  {
+                        
+                    }
+                } else {
+                    alert("No response received from the server.");
+                }
+            })
+        }, 2000);
+
+    },[])
     return(
         <div className={`${styles.RecentSoldItemsArea}`}>
             <div className="text-2xl p-5">
@@ -145,31 +203,40 @@ const DashboardOption = (props) => {
             <hr />
 
             <div className={styles.PopularProductWrapper}>
-                <PopularProduct />
-                <PopularProduct />
-                <PopularProduct />
-                <PopularProduct />
-                <PopularProduct />
-                <PopularProduct />
+            {fetched ? (
+                        data.length > 0 ?
+                            data.map(product => {
+                                console.log(product);
+                                return <PopularProduct
+                                    key = {product.id}
+                                    title = {product.title}
+                                    price  = {product.price}
+                                    sales = {product.sales}
+                                    img = {product.image}
+                                />
+                            }) : <EmptyMessage message={"No products found."} />
+                    ) : <LoadingArea />}
             </div>
         </div>
     )
   }
 
-  const PopularProduct = ()=>{
+  const PopularProduct = (props)=>{
+    
     return(
         <>
         <div className={`${styles.PopularProductArea}`}>
                 <div className={styles.imageArea}>
-                    <img src="/dashboardassets/d.jpg" alt="" />
+                    <img src={apiUrl+props.img} alt={props.title} />
                 </div>
                 <div>
-                    <p className='text-sm font-bold'> Lorem ipsum dolor sit amet.</p>
-                    <p className='text-sm text-center text-primary'> $60</p>
-                    <p className='text-sm text-center font-light'> 120 sales</p> 
+                    <p className='text-sm font-bold text-center'> {props.title} </p>
+                    <p className='text-sm text-center text-primary'> ${props.price}</p>
+                    <p className='text-sm text-center font-light'> {props.sales} sales</p> 
                 </div>
 
             </div>
+            
         </>
     )
   }

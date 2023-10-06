@@ -247,8 +247,8 @@ const SalesCard = (props) => {
                         <div className="w-[100px] min-w-[70px]">{props.id}</div>
                         <div className='w-[120px] min-w-[120px]'> {props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title} </div>
                         <div className="w-[120px] min-w-[120px]">{convertDatetimeToDate(props.date)}</div> 
-                        <div className="w-[100px] min-w-[100px] max-h-[80px]">
-                            <img src={apiUrl + props.img} alt="productimg" />
+                        <div className="w-[100px] min-w-[100px] max-h-[80px] overflow-hidden">
+                            <img className='w-[100%] object-cover' src={apiUrl + props.img} alt="productimg" />
                         </div>
                         <div className=" w-[100px] min-w-[50px]">{props.quantity}</div> 
                         <div className="w-[80px] min-w-[80px] text-primary">
