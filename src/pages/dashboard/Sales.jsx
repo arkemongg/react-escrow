@@ -134,7 +134,7 @@ const SalesHistory = () => {
             }
             const data = getPurchasecHistory()
             data.then(data => {
-                console.log(data);
+                
                 if (data.status === 200) {
                     setTotalSales(data.data.count)
                     setSales(data.data.results);

@@ -3,7 +3,7 @@ import styles from './styles/Featured.module.css'
 import {FeaturedProductsCard, LoadingProductsCard} from './templates/ProductCards';
 import { Link } from 'react-router-dom';
 import { axiosInstance } from '../AxiosHeaders';
-import { Error } from './templates/Error';
+import { EmptyMessage, Error } from './templates/Error';
 
 
 const Featured = () => {
@@ -56,7 +56,7 @@ const Featured = () => {
 
                 <div className={styles.featuredProudctsArea}>
                 {fetched?(
-                        data.map(product=>{                            
+                        data.length>0?data.map(product=>{                            
                             return <FeaturedProductsCard 
                                 id = {product.id}
                                 title = {product.title}
@@ -72,7 +72,7 @@ const Featured = () => {
                                 key={product.id}
                             />
                             
-                        })
+                        }):<EmptyMessage message={"No products found."} />
                     ):(
                        err?<Error error={errMessage} />:Array.from({ length: 6 }, (_, index) => <LoadingProductsCard key={index} />)
                     )}

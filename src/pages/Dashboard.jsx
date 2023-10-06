@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
 const Dashboard = () => {
-    const { isLogged, login, logout } = useAuth();
+    const { isLogged } = useAuth();
     const navigate = useNavigate()
     useEffect(()=>{
         if(!isLogged){
@@ -29,7 +29,7 @@ const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
-    const [active,setActive] = useState("Reviews")
+    const [active,setActive] = useState("Dashboard")
     useEffect(() => {
       window.scrollTo({
         top: 0,

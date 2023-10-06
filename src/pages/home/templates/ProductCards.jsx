@@ -4,6 +4,7 @@ import star from '../assets/star.png'
 import verifeid from '../assets/check.png'
 import superseller from '../assets/super.png'
 import { Link } from 'react-router-dom'
+import { apiUrl } from '../../Urls'
 
 export const FeaturedProductsCard = (props) => {
     return (
@@ -56,7 +57,7 @@ export const Product = (props) => {
         <>
             <Link to={`/buynow/${props.id}/${props.slug}`} className={styles.Product}>
                 <div className={styles.productImg}>
-                    <img src={`http://127.0.0.1:8000${props.img}`} alt="" />
+                    <img src={`${apiUrl}${props.img}`} alt="" />
                 </div>
                 <div className={styles.productTitle}>
                     <div className="text-2xl font-bold">{props.title}</div>

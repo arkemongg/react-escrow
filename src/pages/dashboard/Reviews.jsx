@@ -156,7 +156,7 @@ const ReviewReceived = ()=>{
     useEffect(() => {
         setFetched(false)
         const timer = setTimeout(() => {
-            const getSeller = axiosInstance.get(url)
+            const getSeller = getJWT(url)
             getSeller.then(data => {
                 if (data.status === 200) {
                     setData(data.data.results)

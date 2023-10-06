@@ -131,7 +131,7 @@ const DashboardOption = (props) => {
                 {fetched ? (
                         data.length > 0 ?
                             data.map(product => {
-                                console.log(product);
+                                
                                 return <RecentSoldItem
                                     key = {product.id}
                                     title = {product.title}
@@ -206,7 +206,7 @@ const DashboardOption = (props) => {
             {fetched ? (
                         data.length > 0 ?
                             data.map(product => {
-                                console.log(product);
+                                
                                 return <PopularProduct
                                     key = {product.id}
                                     title = {product.title}
