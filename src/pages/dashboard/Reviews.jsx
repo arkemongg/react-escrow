@@ -95,7 +95,7 @@ const MyReview = ()=>{
         <div id='myreview' className={`${styles.MyReviewsArea}`}>
             <div className='text-3xl p-5 flex justify-between items-center'>
                 <h1>My Review</h1>
-                <input onChange={handleID} type="text" placeholder="Review ID" className="input input-bordered w-full max-w-xs" />
+                <input  onChange={handleID} type="text" placeholder="Review ID" className="input input-bordered w-[150px] rounded-none " />
             </div>
             <hr />
             <div className={styles.reviewArea}>
@@ -193,7 +193,7 @@ const ReviewReceived = ()=>{
         <div id='receivedReview' className={`${styles.ReceivedReviewsArea}`}>
             <div className='text-3xl p-5 flex justify-between items-center'>
                 <h1>Received Review</h1>
-                <input onChange={handleID} type="text" placeholder="Review ID" className="input input-bordered w-full max-w-xs" />
+                <input onChange={handleID} type="text" placeholder="Review ID" className="input input-bordered  w-[150px] rounded-none" />
             </div>
             <hr />
             <div className={styles.reviewArea}>

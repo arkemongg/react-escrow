@@ -415,12 +415,20 @@ const ProductReviews = (props) => {
             return;
         }
         setUrl(prevUrl)
+        const element = document.getElementById('buynowreview');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
     }
     const handleNext = () => {
         if (nextUrl === null) {
             return;
         }
         setUrl(nextUrl)
+        const element = document.getElementById('buynowreview');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
     }
     useEffect(() => {
         setFetched(false)
@@ -457,7 +465,7 @@ const ProductReviews = (props) => {
     }, [url])
 
     return (
-        <div className={`${styles.ProductReviewsArea}`}>
+        <div id='buynowreview' className={`${styles.ProductReviewsArea}`}>
             <div className={styles.reviewArea}>
                 {fetched ? (
                     data.length > 0 ? data.map(review => {
