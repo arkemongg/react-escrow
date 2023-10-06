@@ -96,6 +96,15 @@
     max-width: 1140px;
     width: 100%;
 }
+/* VerificationSection */
+.VerificationSection{
+    max-width: 1140px;
+    width: 95%;
+    margin: auto;
+    margin-top: 20px;
+    min-height: 370px;
+    background: white;
+}
 /* Change Password */
 .ChangePassoword{
     max-width: 1140px;

@@ -189,7 +189,7 @@ const PurchaseHistory = () => {
                             }) : <EmptyMessage message={"No orders found."} />
                     ) : <LoadingArea />}
                 </ul>
-                <div className={`flex justify-center p-5 ${totalOrders > 8 ? "" : "hidden"}`}>
+                <div className={`flex justify-center p-5 ${totalOrders > 5 ? "" : "hidden"}`}>
                         <button onClick={handlePrevBtn} className={`btn btn-primary w-[150px] ${prevUrl === null ? "pointer-events-none" : ""}`}>Previous</button>
                         <button onClick={handleNextBtn} className={`btn btn-primary w-[150px] ml-5 ${nextUrl === null ? "pointer-events-none" : ""}`}>Next</button>
                 </div>
@@ -496,7 +496,7 @@ const BalanceHistory = () => {
     const { logout } = useAuth();
 
     const axiosInstanceJWT = AxiosInstanceJWT()
-    const [url, setUrl] = useState("/api/balancehistory/?transaction_direction=OUT")
+    const [url, setUrl] = useState("/api/balancehistory/?transaction_direction=OUT&limit=8")
 
     const [prevUrl, setPrevUrl] = useState(null)
     const [nextUrl, setNextUrl] = useState(null)

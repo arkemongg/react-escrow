@@ -131,7 +131,7 @@ const WithdrawSuccess = (props)=>{
 const WithdrawalsHistory = () => {
     const {logout} = useAuth()
     const axiosInstanceJWT = AxiosInstanceJWT()
-    const [url, setUrl] = useState("/api/transactions/?transaction_direction=OUT")
+    const [url, setUrl] = useState("/api/transactions/?transaction_direction=OUT&limit=8")
 
     const [prevUrl, setPrevUrl] = useState(null)
     const [nextUrl, setNextUrl] = useState(null)

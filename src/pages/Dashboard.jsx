@@ -11,6 +11,7 @@ import Purchase from "./dashboard/Purchase";
 import Sellitems from "./dashboard/SellItems";
 import Sales from "./dashboard/Sales";
 import ManageItems from "./dashboard/ManageItems";
+import ReviewsDashboard from "./dashboard/Reviews";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
@@ -28,7 +29,7 @@ const Dashboard = () => {
     const [head,setHead] = useState("Dashboard")
     const [tail,setTail] = useState("Dashboard")
 
-    const [active,setActive] = useState("Dashboard")
+    const [active,setActive] = useState("Reviews")
     useEffect(() => {
       window.scrollTo({
         top: 0,
@@ -49,6 +50,7 @@ const Dashboard = () => {
         {active === 'Sell Items' && <Sellitems setHead ={setHead} setTail={setTail} setIndex={setIndex} setActive={setActive}/>}
         {active === 'Withdrawals' && <Withdrawals  />}
         {active === 'Manage Items' && <ManageItems setHead ={setHead} setTail={setTail} setIndex={setIndex} setActive={setActive} />}
+        {active === 'Reviews' && <ReviewsDashboard  />}
 
         <Subscribe />
       </>

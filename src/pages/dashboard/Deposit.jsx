@@ -2,9 +2,9 @@ import { memo, useEffect, useState } from 'react';
 import styles from './styles/Deposit.module.css'
 import {AxiosInstanceJWT, convertDatetimeToDate} from '../AxiosHeaders.js';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
-import { EmptyMessage, FloatingError } from '../home/templates/Error';
+import { EmptyMessage } from '../home/templates/Error';
 import {FlaotingErrorCustom} from '../GlobalTemplates/FloatingErrorCustom'
-import Modal from '../GlobalTemplates/Modal';
+
 import { useAuth } from '../../AuthContext';
 
 const Deposit = (props) => {
@@ -80,12 +80,12 @@ const Deposit = (props) => {
                     <hr />
                     <p className="text-2xl p-5 pb-0">How much credit would you like to deposit?</p>
                     <div className="preDeposit flex flex-wrap">
-                        <div onClick={(event) => handleAmount(event, 10)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount == 10 ? styles.active : ""}`}>$10</div>
-                        <div onClick={(event) => handleAmount(event, 20)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount == 20 ? styles.active : ""}`}>$20</div>
-                        <div onClick={(event) => handleAmount(event, 50)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount == 50 ? styles.active : ""}`}>$50</div>
-                        <div onClick={(event) => handleAmount(event, 100)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount == 100 ? styles.active : ""}`}>$100</div>
-                        <div onClick={(event) => handleAmount(event, 250)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount == 250 ? styles.active : ""}`}>$250</div>
-                        <div onClick={(event) => handleAmount(event, 500)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount == 500 ? styles.active : ""}`}>$500</div>
+                        <div onClick={(event) => handleAmount(event, 10)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount === 10 ? styles.active : ""}`}>$10</div>
+                        <div onClick={(event) => handleAmount(event, 20)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount === 20 ? styles.active : ""}`}>$20</div>
+                        <div onClick={(event) => handleAmount(event, 50)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount === 50 ? styles.active : ""}`}>$50</div>
+                        <div onClick={(event) => handleAmount(event, 100)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount === 100 ? styles.active : ""}`}>$100</div>
+                        <div onClick={(event) => handleAmount(event, 250)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount === 250 ? styles.active : ""}`}>$250</div>
+                        <div onClick={(event) => handleAmount(event, 500)} className={`bg-[#EFF1F5] w-[100px] p-[15px] text-center cursor-pointer m-5 ${amount === 500 ? styles.active : ""}`}>$500</div>
                     </div>
 
                     <div className="customDepositArea px-5">
@@ -108,7 +108,7 @@ const Deposit = (props) => {
 
 const DepositHistory = () => {
     const { logout } = useAuth();
-    const [url,setUrl] = useState("/api/transactions/?transaction_direction=IN")
+    const [url,setUrl] = useState("/api/transactions/?transaction_direction=IN&limit=8")
     const axiosInstanceJWT = AxiosInstanceJWT()
     const [prevUrl,setPrevUrl] = useState(null)
     const [nextUrl,setNextUrl] = useState(null)

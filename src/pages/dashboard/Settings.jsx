@@ -199,7 +199,7 @@ const Settings = (props) => {
             setClicked(false)
         }, 2000);
     }
-
+    
     return (
         <>
             {/* Custom floating error for image */}
@@ -241,8 +241,9 @@ const Settings = (props) => {
                     </button>
                 </div>
                 <ShippingDetails fetched={fetched} shippingEmail={shippingEmail} shippingDetails={shippingDetails} setShippingEmail = {setShippingEmail}  setShippingDetails={setShippingDetails} />
+                {/* {fetched?verifiedUser?"":"":<Verify />} */}
+                <Verify />
                 <ChangePassword />
-
             </section>
 
             <Success success= {successProfile} setSuccess = {setSuccessProfile} />
@@ -255,7 +256,7 @@ export default memo(Settings);
 const PersonalInformantion = (props) => {
     return (
         <div className={styles.ProfileInformationArea}>
-            <div className="text-4xl text-center p-5">Personal Details</div>
+            <div className="text-4xl p-5">Personal Details</div>
             <hr />
 
             {props.fetched ? <div className={styles.FormArea}>
@@ -303,7 +304,7 @@ const PersonalInformantion = (props) => {
 const SocialDetails = (props) => {
     return (
         <div className={styles.SocialDetailsArea}>
-            <h1 className='text-4xl p-5 text-center'>
+            <h1 className='text-4xl p-5 '>
                 Social Details <br />
             <span className='text-sm font-light text-info'>***Only Usernames***</span>
             </h1>
@@ -388,7 +389,7 @@ const ShippingDetails = (props) => {
         <>  
             {err?<FlaotingErrorCustom err= {err} setErr={setErr} message = {message} /> :""}
             <div className={styles.ShippingDetailsArea}>
-            <h1 className='text-4xl p-5 text-center'>
+            <h1 className='text-4xl p-5'>
             Shipping Details <br />
             <span className='text-sm font-light text-info'>***Changing Won't effect current orders***</span>
             </h1>
@@ -419,7 +420,37 @@ const ShippingDetails = (props) => {
     )
 }
 
+const Verify = (props)=>{
+    return (
+        <>
+            <div className={styles.VerificationSection}>
+            <div className="VerificationArea">
+                <h1 className='text-4xl p-5'>
+                Submit Documents <br />
+                </h1>
+                <hr />
+                
+                <div className="VerificationInputs p-5 flex flex-col">
+                    <label className='text-xl pb-5'  htmlFor="front">Frontside of the NID</label>
+                    <input id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
+                </div>
+                <div className="VerificationInputs p-5 flex flex-col">
+                    <label className='text-xl pb-5'  htmlFor="front">Backside of NID</label>
+                    <input id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
+                </div>
+                <div className="VerificationInputs p-5 flex flex-col">
+                    <label className='text-xl pb-5'  htmlFor="front">Selfie with the NID</label>
+                    <input id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
+                </div>
+                <div className="btnarea flex justify-center p-5">
+                    <div className="btn btn-primary">Submit Documents</div>
+                </div>
+            </div>
 
+            </div>
+        </>
+    )
+}
 
 
 const ChangePassword = (props) => {
@@ -480,7 +511,7 @@ const ChangePassword = (props) => {
         <>
             {err?<FlaotingErrorCustom err= {err} setErr={setErr} message = {message} /> :""}
             <div className={styles.ChangePassoword}>
-            <h1 className='text-4xl p-5 text-center'>Security Details</h1>
+            <h1 className='text-4xl p-5'>Security Details</h1>
             <hr />
             <div className={styles.PasswordForm}>
                 <div className="inptGroup flex flex-col pt-5">
@@ -507,7 +538,6 @@ const ChangePassword = (props) => {
             </div>
         </div>
         <Success success= {successPassword} setSuccess = {setSuccessPassword} />
-
         </>
     )
 }

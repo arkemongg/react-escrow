@@ -59,6 +59,10 @@ const DashboardMenu = (props) => {
                         <img src="./dashboardassets/withdrawal.png" alt="" /> 
                         <div className="ml-2">Withdrawals</div>
                     </button>
+                    <button onClick={(event) => handleClick(event, 8)} className={`${styles.dashboard} flex justify-center items-center text-white ${styles.button} ${buttonIndex===8?styles.clicked:""}`}>
+                        <img src="./dashboardassets/reviews.png" alt="" /> 
+                        <div className="ml-2">Reviews</div>
+                    </button>
                 </div>
             </section>
         </>

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import styles from './styles/Conversation.module.css'
 import { useEffect } from 'react';
 import { getJWT } from '../AxiosHeaders';
@@ -16,19 +16,20 @@ const Conversation = () => {
 }
 
 const ConversationsHeads = () => {
-    
+    const [data,setData] = useState([])
+    const [totalCount,setTotalCount] = useState(-1)
     useEffect(()=>{
         const timeout = setTimeout(() => {
             const conversations = getJWT('/api/conversations/')
             conversations.then(data=>{
-                console.log(data);
+                setData(data.data.results)
             }).catch(err=>{
                 console.log(err);
             })
         }, 2000);
         return () => clearTimeout(timeout);
     },[])
-    const data = 5;
+    
     return (
         <>
             <div className={styles.ConverSationsArea}>
