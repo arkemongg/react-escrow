@@ -206,9 +206,9 @@ const WithdrawalsHistory = () => {
                         <div className="text-xl w-[150px] min-w-[150px]">Transaction ID</div>
                         <div className="text-xl w-[180px] min-w-[180px]">Transaction Status</div>
                         <div className="text-xl w-[100px] min-w-[100px]">Amount</div>
-                        <div className="text-xl w-[100px] min-w-[100px]">TX ID</div>
+                        <div className="text-xl w-[500px] min-w-[500px]">TX ID</div>
                     </li>
-                    <hr />
+                    
                     {fetched ? (
                         transactions.length > 0 ?
                             transactions.map(transaction => {
@@ -219,6 +219,7 @@ const WithdrawalsHistory = () => {
                                     status={transaction.status}
                                     amount={transaction.amount}
                                     paymenturl={transaction.payment_url}
+                                    TX_ID={transaction.TX_ID}
                                 />
                             }) : <EmptyMessage message={"No transactions found."} />
                     ) : <LoadingArea />}
@@ -259,9 +260,11 @@ const Transaction = (props) => {
                     {status}
                 </div>
                 <div className="w-[100px] min-w-[100px]">${(props.amount).toFixed(2)}</div>
-                <div className="w-[100px] min-w-[100px]">-</div>
+                <div title={props.TX_ID} className="w-[500px] min-w-[500px]">
+                     {props.TX_ID}
+                </div>
             </li>
-            <hr />
+            
         </>
     )
 }

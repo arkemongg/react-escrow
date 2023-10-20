@@ -26,11 +26,11 @@ export const AuthProvider = ({ children }) => {
   }
 
 
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
 
   useEffect(()=>{
-    if(getCookie("token")){
-        setIsLogged(true)
+    if(!getCookie("token")){
+        setIsLogged(false)
     }
   },[])
   

@@ -34,16 +34,21 @@
     overflow: hidden;
 }
 .WithdrawalsList{
+    
     overflow-x: auto;
     min-height: 400px;
 }
 .Withdrawals{
+    min-width: 1500px;
     display: flex;
+    border-bottom: 1px solid rgba(8, 0, 0, 0.136);
 }
 .Withdrawals div{
     margin: 5px;
     flex-grow: 1;
+    overflow: hidden;
 }
+
 
 /* Responsive */
 @media screen and (max-width: 450px){

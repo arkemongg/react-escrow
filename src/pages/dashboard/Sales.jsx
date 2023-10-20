@@ -180,7 +180,7 @@ const SalesHistory = () => {
                         <div className="font-bold w-[100px] min-w-[120px]">Review ID</div>
                         <div className="font-bold w-[100px] min-w-[120px]">Shipping Details </div>
                     </li>
-                    <hr />
+                    
                     {fetched ? (
                         sales.length > 0 ?
                             sales.map(sale => {

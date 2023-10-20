@@ -316,6 +316,9 @@ const CompleteEscrowModal = (props) => {
                 if (err.response) {
                     if (err.response.status === 401) {
                         logout()
+                    }else if(err.response.status === 429){
+                        
+                        alert("Too many requests please trt again in few seconds.");
                     } else {
                         if(err.response.data.error){
                             setErrorMessage(err.response.data.error);
