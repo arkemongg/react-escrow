@@ -308,7 +308,7 @@ const PersonalInformantion = (props) => {
             </div> : <LoadingArea />}
             <div className={`flex justify-end grow ${props.fetched ? props.verified ? 'hidden' : '' : 'hidden'}`}>
                 <div onClick={handleVerify} className="btn-primary btn min-w-[200px] m-2">Verify</div>
-                {props.verified ? '' : <VerifiedModal id = {props.id}/>}
+                {props.verified ? '' : <VerifiedModal id={props.id} />}
             </div>
         </div>
     )
@@ -433,30 +433,102 @@ const ShippingDetails = (props) => {
     )
 }
 const VerifiedModal = (props) => {
-    const [submitted ,setSubmitted]= useState(false)
-    const [fetched ,setFetched]= useState(false)
+    const {logout} = useAuth()
+    //Upload image handler
+    const [nid_front,setNidFront] = useState(null)
+    const [nid_back,setNidBack] = useState(null)
+    const [selfie,setSelfie] = useState(null)
+    const handleImageUploadFront = (event) => {
+        const file = event.target.files[0];
+        setNidFront(file)
+    };
+    const handleImageUploadBack = (event) => {
+        const file = event.target.files[0];
+        setNidBack(file)
+    };
+    const handleImageUploadSelfie = (event) => {
+        const file = event.target.files[0];
+        setSelfie(file)
+    };
+    const  axiosInstanceImageJWT = AxiosInstanceImageJWT()
+    const [submitted, setSubmitted] = useState(false)
+    const [fetched, setFetched] = useState(false)
+    //   Image save and error handler
+    const [clicked, setClicked] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [imgErr, setImgErr] = useState(false)
+    const [imgMessage, setImgMessage] = useState("")
+    const handleImageSave = () => {
+
+        if ((nid_front === null || nid_front.size / 1024 > 2048)||(nid_back === null || nid_back.size / 1024 > 2048)||(selfie === null || selfie.size / 1024 > 2048)) {
+            setImgErr(true)
+            setImgMessage("No image uploaded or image size is greater than 2MB.")
+            return;
+        }
+        const formData = new FormData();
+        formData.append("nid_verify_front", nid_front);
+        formData.append("nid_verify_back", nid_back);
+        formData.append("nid_verify_selfie", selfie);
+        setClicked(true)
+
+        setTimeout(() => {
+            // Edit product request
+            const putImageData = async () => {
+                try {
+                    const response = await axiosInstanceImageJWT.put(`/api/verification/`, formData)
+                    return response
+                } catch (error) {
+                    throw error
+                }
+            }
+            const imageData = putImageData()
+            imageData.then(data => {
+                if (data.status === 200 || data.status === 201) {
+                    setSuccess(true)
+                }
+            }).catch(err => {
+                setImgErr(true)
+                if (err.response) {
+                    console.log(err);
+                    if (err.response.status === 401) {
+                        logout();
+                    } else if (err.response.status === 429) {
+                        alert("Too many requests.");
+                    } else {
+                        setImgMessage("Unexpected error.");
+                    }
+                } else {
+                    setImgMessage("No response received from the server.");
+                }
+            })
+            setClicked(false)
+        }, 2000);
+    }
     
-    useEffect(()=>{
+
+    useEffect(() => {
 
         const timer = setTimeout(() => {
             const verifydata = getJWT('/api/verification/')
-            verifydata.then(data=>{
+            verifydata.then(data => {
                 setSubmitted(data.data.submited)
                 setFetched(true)
-            }).catch(err=>{
-                
+            }).catch(err => {
+
             })
         }, 2000);
         return (() => clearTimeout(timer))
-    },[])
-    
+    }, [])
+   
     return (
         <>
+            {/* Custom floating error for image */}
+            {imgErr ? <FlaotingErrorCustom err={imgErr} setErr={setImgErr} message={imgMessage} /> : ""}
 
             <dialog id="verifymodal" className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
 
-                    {!fetched ?"":submitted ?
+                    {!fetched ? "" : submitted ?
                         <h1 className='text-2xl p-5'>
                             Already Submitted.
                         </h1>
@@ -469,18 +541,24 @@ const VerifiedModal = (props) => {
                                 <hr />
                                 <div className="VerificationInputs p-5 flex flex-col">
                                     <label className='text-xl pb-5' htmlFor="front">Frontside of the NID</label>
-                                    <input id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
+                                    <input onChange={handleImageUploadFront} id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
                                 </div>
                                 <div className="VerificationInputs p-5 flex flex-col">
                                     <label className='text-xl pb-5' htmlFor="front">Backside of NID</label>
-                                    <input id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
+                                    <input onChange={handleImageUploadBack} id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
                                 </div>
                                 <div className="VerificationInputs p-5 flex flex-col">
                                     <label className='text-xl pb-5' htmlFor="front">Selfie with the NID</label>
-                                    <input id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
+                                    <input onChange={handleImageUploadSelfie} id='front' type="file" className="file-input file-input-bordered file-input-primary w-full" />
                                 </div>
+                                {/* handle error */}
+                                <p  className={`text-error ${imgErr?"":"hidden"}`}>{imgMessage}</p>
+                                <p  className={`text-success ${success?"":"hidden"}`}>Successfully submitted.</p>
+                                
                                 <div className="btnarea flex justify-center p-5">
-                                    <div className="btn btn-primary">Submit Documents</div>
+                                    <div onClick={handleImageSave} className="btn btn-primary min-w-[150px]">
+                                        {clicked ? <span className="loading loading-dots loading-md"></span> : "Submit Documents"}
+                                    </div>
                                 </div>
                             </div>
                         </div>}
