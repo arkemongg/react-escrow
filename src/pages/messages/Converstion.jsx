@@ -193,26 +193,36 @@ const MessageBoxs = (props) => {
                 setFetched(true)
                 setTotalCount(data.data.count)
                 setNext(data.data.next)
+                setTimeout(() => {
+                    const convoElement = document.getElementById('convos');
+                    convoElement.scrollTo({
+                        top: convoElement.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 0);
             }).catch(error => {
                 console.log(error);
             })
         }, 2000);
         return () => { };
     }, [props.data]);
-    const [newData, setNewData] = useState([])
     const handleSend = () => {
-        const data =
-        {
+        const data = {
             "id": 69420,
             "message": Math.random(5),
             "sender": 2
         }
-
+    
         setTotalCount(1)
-        setNewData(old => [...old, data])
-        const convoElement = document.getElementById('convo');
-        convoElement.scrollTop = convoElement.scrollHeight;
-    }
+        setData(old => [...old, data])
+        setTimeout(() => {
+            const convoElement = document.getElementById('convos');
+            convoElement.scrollTo({
+                top: convoElement.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 0);
+      }
     return (
         <>
             <dialog id="messageboxs" className="modal">
@@ -227,7 +237,7 @@ const MessageBoxs = (props) => {
                         <div onClick={handleNext} className="btn btn-primary ">Load More</div>
                     </div>
                     <hr />
-                    <div id="convo" className={styles.MessageTexteArea}>
+                    <div id="convos" className={styles.MessageTexteArea}>
                         <div  className={`${styles.MessageText} `}>
                             {fetched ? data.map(message => {
                                 if (message.sender === props.data.me) {
@@ -246,23 +256,6 @@ const MessageBoxs = (props) => {
                                     created_at={message.created_at}
                                 />
                             }) : <LoadingArea />}
-                            {fetched ? newData.map(message => {
-                                if (message.sender === props.data.me) {
-                                    return <ChatMe
-                                        key={"key" + Math.random(2)}
-                                        dp={props.data.my_dp === null ? default_dp : apiUrl + props.data.my_dp}
-                                        message={message.message}
-                                        created_at={message.created_at}
-                                    />
-                                }
-                                return <ChatSeller
-                                    key={"key" + Math.random(2)}
-                                    seller={props.data.seller}
-                                    dp={props.data.seller_dp === null ? default_dp : apiUrl + props.data.seller_dp}
-                                    message={message.message}
-                                    created_at={message.created_at}
-                                />
-                            }) : ""}
                             {fetched && totalCount === 0 ? <EmptyMessage message={"Empty"} /> : ""}
                         </div>
                     </div>
@@ -330,6 +323,30 @@ const ChatSeller = (props) => {
             </div>
         </>
     )
+}
+
+const chat = (userName, timestamp, messageContent)=>{
+    const chatDiv = document.createElement('div');
+    chatDiv.classList.add('chat', 'chat-start');
+
+    const chatHeader = document.createElement('div');
+    chatHeader.classList.add('chat-header');
+    chatHeader.innerHTML = userName + ' <br />';
+
+    const timeElement = document.createElement('time');
+    timeElement.classList.add('text-xs', 'opacity-50');
+    timeElement.textContent = timestamp;
+
+    chatHeader.appendChild(timeElement);
+
+    const chatBubble = document.createElement('div');
+    chatBubble.classList.add('chat-bubble');
+    chatBubble.textContent = messageContent;
+
+    chatDiv.appendChild(chatHeader);
+    chatDiv.appendChild(chatBubble);
+
+    return chatDiv;
 }
 function convertToReadableTime(timestamp) {
     const dt = new Date(timestamp);
