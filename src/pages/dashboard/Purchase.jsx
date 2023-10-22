@@ -276,7 +276,7 @@ const PurchaseCard = (props) => {
                     {review}
                 </div>
                 <div className=" w-[100px] min-w-[120px]">
-                    <button className='bg-primary text-sm text-white w-[100px] py-1  rounded text-center'> Contact Seller </button>
+                    <Link target='_blank' to={`/messages?seller=${props.seller_id}`} className='bg-primary text-sm text-white w-[100px] py-2 px-3  rounded text-center'> Contact Seller </Link>
                 </div>
             </li>
 

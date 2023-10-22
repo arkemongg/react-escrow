@@ -202,6 +202,7 @@ const BuyNowProductsDetailsArea = (props) => {
 const ProductDetails = (props) => {
     const [id, setID] = useState("")
 
+    const [seller_id, setSellerId] = useState("")
     const [category, setCategory] = useState("")
     const [description, setDescription] = useState("")
     const [featured, setFeatured] = useState("")
@@ -217,12 +218,12 @@ const ProductDetails = (props) => {
             setCondition(props.data.condition)
             setDescription(props.data.description)
             setFeatured(props.data.featured)
-
+            setSellerId(props.data.seller)
         }
     }, [props.data])
-
+    
     return (
-        <div className={`${styles.ProductDetailsArea} text-xl font-light pb-[100px]`}>
+        <div className={` text-xl font-light pb-[10px]`}>
 
             <div className='flex justify-between p-3'>
                 <div className="id min-w-[200px]">
@@ -277,9 +278,12 @@ const ProductDetails = (props) => {
                 <div className="category min-w-[200px]">
                     Product Description:
                 </div>
-                <div className="description pt-1 text-sm">
+                <div className="description pt-1 text-sm min-h-[150px]">
                     {renderTextWithLineBreaks(description)}
                 </div>
+            </div>
+            <div className='flex justify-end p-5'>
+                <Link target='_blank' to={`/messages?seller=${seller_id}`} className="btn btn-primary">Contact Seller</Link>
             </div>
         </div>
     )

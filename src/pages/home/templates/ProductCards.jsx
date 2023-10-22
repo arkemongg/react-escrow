@@ -25,17 +25,17 @@ export const FeaturedProductsCard = (props) => {
                     <div className={styles.sellerLogo}>
                         <img src="/dashboardassets/featuredSeller.png" alt="" />
                     </div>
-                    <div className={`${styles.sellerFirstName} text-xl flex`}>
-                        {props.seller_name}
+                    <div title={props.seller_name} className={`text-xl flex whitespace-nowrap`}>
+                        {props.seller_name.length > 10 ? props.seller_name.substring(0, 9) : props.seller_name}
                         <img className={`w-[20px] h-[20px] m-1 ${props.verified?"":"hidden"}`} title='Verified'  src={verifeid} alt="verified" /> 
                         <img className={`w-[20px] h-[20px] m-1 ${props.super?"":"hidden"}`} title='Super Seller'  src={superseller} alt="super" />
                     </div>
-                    <div className={`${styles.ProductCategory} text-sm`}>
+                    <div className={`text-sm`}>
                         in {props.category}
                     </div>
                 </div>
                 <hr />
-                <div className={`${styles.priceSection} flex justify-between pr-5`}>
+                <div className={` flex justify-between pr-5`}>
                     <div className={`${styles.productPrice} text-primary text-xl`}>
                     $ {props.price.toFixed(2)}
                     </div>
@@ -68,8 +68,8 @@ export const Product = (props) => {
                         <img src="/dashboardassets/user.png" alt="seller" />
                     </div>
                     
-                    <div className={`${styles.sellerFirstName} text-xl flex `}>
-                        {props.seller_name}
+                    <div title={props.seller_name} className={`${styles.sellerFirstName} text-xl flex `}>
+                        {props.seller_name.length > 10 ? props.seller_name.substring(0, 9) : props.seller_name}
                         <img className={`w-[20px] h-[20px] m-1 ${props.verified?"":"hidden"}`} title='Verified'  src={verifeid} alt="verified" /> 
                         <img className={`w-[20px] h-[20px] m-1 ${props.super?"":"hidden"}`} title='Super Seller'  src={superseller} alt="super" />
                     </div>

@@ -1,10 +1,10 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useState } from 'react';
 import styles from './styles/Conversation.module.css'
 import { useEffect } from 'react';
 import { getCookie, getJWT, postJWT } from '../AxiosHeaders';
 import { useAuth } from '../../AuthContext';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation} from 'react-router-dom';
 import { apiUrl } from '../Urls';
 import { EmptyMessage } from '../home/templates/Error';
 
@@ -15,7 +15,7 @@ const Conversation = () => {
 
     useEffect(() => {
         if (location.search !== "") {
-            console.log(location.search);
+            
             const params = new URLSearchParams(location.search);
             const seller = params.get("seller");
             const timeout = setTimeout(() => {
@@ -27,8 +27,20 @@ const Conversation = () => {
                         setData(data.data)
 
                         document.getElementById('messageboxs').showModal()
-                    }).catch(error => {
-                        console.log(error);
+                    }).catch(err => {
+                        if (err.response) {
+                            if (err.response.status === 401) {
+                                logout();
+                            } else if (err.response.status === 404) {
+                                alert("Can't send message to yourself.");
+                            }else if (err.response.status === 429) {
+                                alert("Too many requests.");
+                            } else {
+                                alert("Unexpected error with status code: ", err.response.status);
+                            }
+                        } else {
+                            alert("No response received from the server.");
+                        }
                     })
             }, 100);
 
@@ -73,6 +85,9 @@ const ConversationsHeads = (props) => {
         setUrl(next)
     }
     useEffect(() => {
+        if (location.search !== ""){
+            setTotalCount(0)
+        }
         setFetched(false)
         const timeout = setTimeout(() => {
             const conversations = getJWT(url)
@@ -117,7 +132,9 @@ const ConversationsHeads = (props) => {
                             setConvo={props.setConvo}
                         />
                     }) : <LoadingArea />}
+                    {fetched && totalCount === 0 ? <EmptyMessage message={"No conversations found."} /> : ""}
                 </div>
+                
                 <div className={`${totalCount <= 5 ? 'hidden' : ''} ConversationPage flex justify-center`}>
                     <div onClick={handlePrev} className="btn btn-primary w-[150px] m-2 ">Previous</div>
                     <div onClick={handleNext} className="btn btn-primary w-[150px] m-2 ">Next</div>
@@ -128,29 +145,31 @@ const ConversationsHeads = (props) => {
 }
 
 const ConversationComponent = (props) => {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     const handle = () => {
         props.setConvo(props.data)
         document.getElementById('messageboxs').showModal()
         // navigate(`/messages?seller=${props.seller_id}`)
     }
+    console.log(props.data);
     return (
         <>
-            <div onClick={handle} className={`${styles.conversation}  p-2 flex items-center justify-between`}>
+            <div onClick={handle} className={`${styles.conversation} cursor-pointer  p-2 flex items-center justify-between`}>
                 <div className={`${styles.ConverSationProfile}`}>
-                    <img src="/dashboardassets/d.jpg" alt="chat head" />
+                    <img src={props.data.seller_dp===null?"/person.png":apiUrl+props.data.seller_dp} alt="chat head" />
                 </div>
                 <div className={`${styles.ConversationName} p-5 min-w-[190px] grow`}>
                     <div className="name text-xl">
                         {props.data.seller}
                     </div>
                     <div className="name text-sm font-bold">
-                        Lorem, ipsum dolor .......
+                        {props.data.last_message===null?"No Message":props.data.last_message.message.slice(0,15)}
                     </div>
                 </div>
                 <div className={`${styles.ConversationLastMessage} p-2 flex justify-end`}>
                     <div className="time font-light text-sm ">
-                        12/12/45 12:45
+                        
+                        {props.data.last_message===null?convertToReadableTime(props.data.created_at):convertToReadableTime(props.data.last_message.created_at)}
                     </div>
                 </div>
             </div>
@@ -176,11 +195,22 @@ const MessageBoxs = (props) => {
             const newData = data.data.results.reverse()
             setData(old => [...newData, ...old])
             setNext(data.data.next)
-        }).catch(error => {
-            console.log(error);
+        }).catch(err => {
+            if (err.response) {
+                if (err.response.status === 401) {
+                    logout();
+                } else if (err.response.status === 429) {
+                    alert("Too many requests.");
+                } else {
+                    alert("Unexpected error with status code: ", err.response.status);
+                }
+            } else {
+                alert("No response received from the server.");
+            }
         })
     }
-
+    const audio = new Audio('/beep.mp3');
+    
     useEffect(() => {
         if (props.data.id === undefined) {
             return
@@ -192,28 +222,32 @@ const MessageBoxs = (props) => {
             const messages = getJWT(`/api/conversations/${props.data.id}/message/`)
             messages.then(data => {
                 setData(data.data.results.reverse())
-                setFetched(true)
+                
                 setTotalCount(data.data.count)
                 setNext(data.data.next)
-                setTimeout(() => {
-                    const convoElement = document.getElementById('convos');
-                    convoElement.scrollTo({
-                        top: convoElement.scrollHeight,
-                        behavior: 'smooth'
-                    });
-                }, 0);
-                // const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/${token}/`)
-                const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3OTU1NzIyLCJpYXQiOjE2OTc4NjkzMjIsImp0aSI6IjNiYzU0NGEyZGEyNzQzZWM5N2Q2MmViMTE1NThiMGJhIiwidXNlcl9pZCI6MTZ9.BOfYRooFLUy4mJJuVfcTSgDMJq-iT19MLFaRq39b6M4/`)
+
+                const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/${token}/`)
+                //const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3OTU1NzIyLCJpYXQiOjE2OTc4NjkzMjIsImp0aSI6IjNiYzU0NGEyZGEyNzQzZWM5N2Q2MmViMTE1NThiMGJhIiwidXNlcl9pZCI6MTZ9.BOfYRooFLUy4mJJuVfcTSgDMJq-iT19MLFaRq39b6M4/`)
                 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3OTU1NzIyLCJpYXQiOjE2OTc4NjkzMjIsImp0aSI6IjNiYzU0NGEyZGEyNzQzZWM5N2Q2MmViMTE1NThiMGJhIiwidXNlcl9pZCI6MTZ9.BOfYRooFLUy4mJJuVfcTSgDMJq-iT19MLFaRq39b6M4
 
                 socket.onmessage = event=>{
                     const data = JSON.parse(event.data)
                     if(data.accepted){
-                        
+                        setFetched(true)
                         setMessageSocket(socket)
-                        // socket.send("hi")
+                        setTimeout(() => {
+                            const convoElement = document.getElementById('convos');
+                            convoElement.scrollTo({
+                                top: convoElement.scrollHeight,
+                                behavior: 'smooth'
+                            });
+                        }, 0);
+
                     }else if(data.message){
-                        
+
+                        if(data.message.sender!==props.data.me){
+                            audio.play();
+                        }
                         setData(old => [...old, data.message])
                         setTimeout(() => {
                             const convoElement = document.getElementById('convos');
@@ -224,18 +258,9 @@ const MessageBoxs = (props) => {
                         }, 0);
                     }
                 }
-                socket.onclose = (event) => {
-                    console.log(event);
-                    if (event.code === 401) {
-                      // Handle the 404 error
-                      console.log('WebSocket connection not found (404)');
-                    } else {
-                      // Handle other close events
-                      console.log(`WebSocket closed with code: ${event.code}`);
-                    }
-                  };
+
                 socket.onerror = (event)=>{
-                    console.log(event);
+                    alert("Unexpected error. Please reload or try again!")
                 }
                 
 
@@ -245,18 +270,21 @@ const MessageBoxs = (props) => {
         }, 2000);
         return () => { };
     }, [props.data]);
+    const [message,setMessage]= useState("")
     const handleSend = () => {
-
-        messageSocket.send(Math.random(5))
+        if(message==="" || message.length>500){
+            alert("Message length should be 1 to 500.")
+            return;
+        }
+        messageSocket.send(message)
+        setMessage("")
         setTotalCount(1)
 
       }
       const handleClose = () => {
-        console.log(messageSocket);
         props.setConvo([])
         if(messageSocket!==null){
             messageSocket.close()
-            
         }
       }
     return (
@@ -295,11 +323,11 @@ const MessageBoxs = (props) => {
                             {fetched && totalCount === 0 ? <EmptyMessage message={"Empty"} /> : ""}
                         </div>
                     </div>
-                    <div className={styles.MessageSenderArea}>
-                        <div className={`${styles.MessageSender}`}>
-                            <input type="text" placeholder="Message" className="h-[100px] input input-bordered w-full rounded-none " />
+                    <div className={`${styles.MessageSenderArea}`}>
+                        <div className={`${styles.MessageSender} ${fetched?"":"hidden"}`}>
+                            <input value={message} onChange={e=>setMessage(e.target.value)} type="text" placeholder="Message" className="h-[100px] input input-bordered w-full rounded-none " />
                         </div>
-                        <div className="btnArea py-2">
+                        <div className={`py-2 ${fetched?"":"hidden"}`}>
                             <button onClick={handleSend} className="btn btn-primary rounded-none min-w-[150px]">
                                 Send
                             </button>
@@ -361,122 +389,23 @@ const ChatSeller = (props) => {
     )
 }
 
-const chat = (userName, timestamp, messageContent)=>{
-    const chatDiv = document.createElement('div');
-    chatDiv.classList.add('chat', 'chat-start');
 
-    const chatHeader = document.createElement('div');
-    chatHeader.classList.add('chat-header');
-    chatHeader.innerHTML = userName + ' <br />';
-
-    const timeElement = document.createElement('time');
-    timeElement.classList.add('text-xs', 'opacity-50');
-    timeElement.textContent = timestamp;
-
-    chatHeader.appendChild(timeElement);
-
-    const chatBubble = document.createElement('div');
-    chatBubble.classList.add('chat-bubble');
-    chatBubble.textContent = messageContent;
-
-    chatDiv.appendChild(chatHeader);
-    chatDiv.appendChild(chatBubble);
-
-    return chatDiv;
-}
 function convertToReadableTime(timestamp) {
     const dt = new Date(timestamp);
-    const year = dt.getFullYear();
-    const month = String(dt.getMonth() + 1).padStart(2, '0');
-    const day = String(dt.getDate()).padStart(2, '0');
-    const hours = String(dt.getHours() % 12 || 12).padStart(2, '0'); // Adjusted for AM/PM
-    const minutes = String(dt.getMinutes()).padStart(2, '0');
-    const seconds = String(dt.getSeconds()).padStart(2, '0');
-    const ampm = dt.getHours() >= 12 ? 'PM' : 'AM'; // Determine AM or PM
+    const localDt = dt.toLocaleString();
+    // console.log(localDt);
+    // const year = localDt.split(',')[0].split('/')[2];
+    // const month = localDt.split(',')[0].split('/')[0].padStart(2, '0');
+    // const day = localDt.split(',')[0].split('/')[1].padStart(2, '0');
+    // const hours = localDt.split(',')[1].split(':')[0].padStart(2, '0');
+    // const minutes = localDt.split(',')[1].split(':')[1].padStart(2, '0');
+    // const seconds = localDt.split(',')[1].split(':')[2].padStart(2, '0');
+    // const ampm = dt.getHours() >= 12 ? 'PM' : 'AM';
+    // const readableTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
 
-    const readableTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
-
-    return readableTime;
+    return localDt;
 }
-const MessageBox = (props) => {
 
-    const img = '/dashboardassets/d.jpg'
-    return (
-        <>
-            <div id='messagebox' className={`${styles.MessageBoxArea} ${props.conversation ? "" : "hidden"} `}>
-                <div className='flex justify-between items-center p-5'>
-                    <div className="text-2xl">
-                        Seller Name
-                    </div>
-                    <div className="btn btn-primary ">Load More</div>
-                </div>
-                <hr />
-                <div className={styles.MessageTexteArea}>
-                    <div className={`${styles.MessageText}`}>
-                        <div className="chat chat-start">
-                            <div className="chat-image avatar">
-                                <div className="w-10 rounded-full">
-                                    <img src={img} alt='-' />
-                                </div>
-                            </div>
-                            <div className="chat-bubble">It was said .</div>
-                        </div>
-                        <div className="chat chat-end">
-                            <div className="chat-image avatar">
-                                <div className="w-10 rounded-full">
-                                    <img src={img} alt='-' />
-                                </div>
-                            </div>
-                            <div className="chat-bubble bg-primary">It was you who would bring balance to the Force</div>
-                        </div>
-                        <div className="chat chat-end">
-                            <div className="chat-image avatar">
-                                <div className="w-10 rounded-full">
-                                    <img src={img} alt='-' />
-                                </div>
-                            </div>
-                            <div className="chat-bubble bg-primary">Not leave it in Darkness</div>
-                        </div>
-                        <div className="chat chat-end">
-                            <div className="chat-image avatar">
-                                <div className="w-10 rounded-full">
-                                    <img src={img} alt='-' />
-                                </div>
-                            </div>
-                            <div className="chat-bubble bg-primary">It was said that you would, destroy the Sith, not join them. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam nam in nesciunt impedit esse corrupti quas maiores magni perferendis dolores aliquam voluptate nostrum amet repudiandae molestiae, ad beatae. Deleniti praesentium, possimus consequuntur blanditiis quas molestiae quidem commodi eius quasi voluptatem dolor, aut repudiandae harum earum cumque aspernatur explicabo ipsam? Corporis.</div>
-                        </div>
-                        <div className="chat chat-start">
-                            <div className="chat-image avatar">
-                                <div className="w-10 rounded-full">
-                                    <img src={img} alt='-' />
-                                </div>
-                            </div>
-                            <div className="chat-bubble">It was you who would bring balance to the Force</div>
-                        </div>
-                        <div className="chat chat-end">
-                            <div className="chat-image avatar">
-                                <div className="w-10 rounded-full">
-                                    <img src={img} alt='-' />
-                                </div>
-                            </div>
-                            <div className="chat-bubble bg-primary">Not leave it in Darkness</div>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.MessageSenderArea}>
-                    <div className={`${styles.MessageSender}`}>
-                        <input type="text" placeholder="Message" className="h-[100px] input input-bordered w-full rounded-none " />
-                    </div>
-                    <div className="btnArea py-2">
-                        <button className="btn btn-primary rounded-none min-w-[150px]">
-                            Send
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </>
-    )
-}
 
 export default memo(Conversation)
 
