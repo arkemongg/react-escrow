@@ -1,7 +1,7 @@
 import { memo, useRef, useState } from 'react';
 import styles from './styles/Conversation.module.css'
 import { useEffect } from 'react';
-import { getJWT, postJWT } from '../AxiosHeaders';
+import { getCookie, getJWT, postJWT } from '../AxiosHeaders';
 import { useAuth } from '../../AuthContext';
 import LoadingArea from '../GlobalTemplates/LoadingArea';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -42,7 +42,7 @@ const Conversation = () => {
                 <div className={styles.ConversationWrapper}>
                     <ConversationsHeads setConvo={setData} />
                     {/* <MessageBox conversation={conversation} fetched={fetched} /> */}
-                    <MessageBoxs data={data} />
+                    <MessageBoxs data={data} setConvo={setData} />
                 </div>
             </div>
         </>
@@ -159,13 +159,14 @@ const ConversationComponent = (props) => {
     )
 }
 const MessageBoxs = (props) => {
-    const convoRef = useRef(null);
     const default_dp = '/dashboardassets/d.jpg'
     const [fetched, setFetched] = useState(false)
     const { logout } = useAuth()
     const [data, setData] = useState([])
     const [totalCount, setTotalCount] = useState(0)
     const [next, setNext] = useState(null)
+    const [messageSocket,setMessageSocket] = useState(null)
+
     const handleNext = () => {
         if (next === null) {
             return;
@@ -184,6 +185,7 @@ const MessageBoxs = (props) => {
         if (props.data.id === undefined) {
             return
         }
+        const token = getCookie('token')
         setData([])
         setFetched(false)
         setTimeout(() => {
@@ -200,6 +202,43 @@ const MessageBoxs = (props) => {
                         behavior: 'smooth'
                     });
                 }, 0);
+                // const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/${token}/`)
+                const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3OTU1NzIyLCJpYXQiOjE2OTc4NjkzMjIsImp0aSI6IjNiYzU0NGEyZGEyNzQzZWM5N2Q2MmViMTE1NThiMGJhIiwidXNlcl9pZCI6MTZ9.BOfYRooFLUy4mJJuVfcTSgDMJq-iT19MLFaRq39b6M4/`)
+                //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3OTU1NzIyLCJpYXQiOjE2OTc4NjkzMjIsImp0aSI6IjNiYzU0NGEyZGEyNzQzZWM5N2Q2MmViMTE1NThiMGJhIiwidXNlcl9pZCI6MTZ9.BOfYRooFLUy4mJJuVfcTSgDMJq-iT19MLFaRq39b6M4
+
+                socket.onmessage = event=>{
+                    const data = JSON.parse(event.data)
+                    if(data.accepted){
+                        
+                        setMessageSocket(socket)
+                        // socket.send("hi")
+                    }else if(data.message){
+                        
+                        setData(old => [...old, data.message])
+                        setTimeout(() => {
+                            const convoElement = document.getElementById('convos');
+                            convoElement.scrollTo({
+                                top: convoElement.scrollHeight,
+                                behavior: 'smooth'
+                            });
+                        }, 0);
+                    }
+                }
+                socket.onclose = (event) => {
+                    console.log(event);
+                    if (event.code === 401) {
+                      // Handle the 404 error
+                      console.log('WebSocket connection not found (404)');
+                    } else {
+                      // Handle other close events
+                      console.log(`WebSocket closed with code: ${event.code}`);
+                    }
+                  };
+                socket.onerror = (event)=>{
+                    console.log(event);
+                }
+                
+
             }).catch(error => {
                 console.log(error);
             })
@@ -207,21 +246,18 @@ const MessageBoxs = (props) => {
         return () => { };
     }, [props.data]);
     const handleSend = () => {
-        const data = {
-            "id": 69420,
-            "message": Math.random(5),
-            "sender": 2
-        }
-    
+
+        messageSocket.send(Math.random(5))
         setTotalCount(1)
-        setData(old => [...old, data])
-        setTimeout(() => {
-            const convoElement = document.getElementById('convos');
-            convoElement.scrollTo({
-                top: convoElement.scrollHeight,
-                behavior: 'smooth'
-            });
-        }, 0);
+
+      }
+      const handleClose = () => {
+        console.log(messageSocket);
+        props.setConvo([])
+        if(messageSocket!==null){
+            messageSocket.close()
+            
+        }
       }
     return (
         <>
@@ -274,7 +310,7 @@ const MessageBoxs = (props) => {
                     <div className="modal-action">
                         <form method="dialog">
                             {/* if there is a button, it will close the modal */}
-                            <button className="btn">Close</button>
+                            <button onClick={handleClose} className="btn">Close</button>
                         </form>
                     </div>
                 </div>
