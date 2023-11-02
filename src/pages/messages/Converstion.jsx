@@ -151,7 +151,7 @@ const ConversationComponent = (props) => {
         document.getElementById('messageboxs').showModal()
         // navigate(`/messages?seller=${props.seller_id}`)
     }
-    console.log(props.data);
+    // console.log(props.data);
     return (
         <>
             <div onClick={handle} className={`${styles.conversation} cursor-pointer  p-2 flex items-center justify-between`}>
@@ -226,13 +226,16 @@ const MessageBoxs = (props) => {
                 setTotalCount(data.data.count)
                 setNext(data.data.next)
 
-                const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/${token}/`)
+                const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/?token=${token}`)
                 //const socket = new WebSocket(`ws://127.0.0.1:8000/conversations/${props.data.id}/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3OTU1NzIyLCJpYXQiOjE2OTc4NjkzMjIsImp0aSI6IjNiYzU0NGEyZGEyNzQzZWM5N2Q2MmViMTE1NThiMGJhIiwidXNlcl9pZCI6MTZ9.BOfYRooFLUy4mJJuVfcTSgDMJq-iT19MLFaRq39b6M4/`)
                 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3OTU1NzIyLCJpYXQiOjE2OTc4NjkzMjIsImp0aSI6IjNiYzU0NGEyZGEyNzQzZWM5N2Q2MmViMTE1NThiMGJhIiwidXNlcl9pZCI6MTZ9.BOfYRooFLUy4mJJuVfcTSgDMJq-iT19MLFaRq39b6M4
 
                 socket.onmessage = event=>{
+                    
                     const data = JSON.parse(event.data)
-                    if(data.accepted){
+                    if(data.login){
+                        socket.send({"message":"message"})
+                    }else if(data.accepted){
                         setFetched(true)
                         setMessageSocket(socket)
                         setTimeout(() => {
@@ -260,6 +263,7 @@ const MessageBoxs = (props) => {
                 }
 
                 socket.onerror = (event)=>{
+                    console.log(event);
                     alert("Unexpected error. Please reload or try again!")
                 }
                 
